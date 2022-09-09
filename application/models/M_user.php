@@ -150,8 +150,8 @@ class M_user extends CI_Model
     public function sum_cart_byid($id)
     {
         return $this->db->select_sum('cart.fill')
-            ->select_sum('cart.mtm')
-            ->select_sum('cart.zenx')
+            ->select_sum('cart.usdt')
+            ->select_sum('cart.krp')
             ->from('cart')
             ->join('package', 'cart.package_id = package.id')
             ->where('cart.user_id', $id)
@@ -746,17 +746,23 @@ class M_user extends CI_Model
 
     public function get_today_bonus($date, $id)
     {
-        return $this->db->select('user.id, 
-                                    (SELECT sum(bonus.filecoin) FROM bonus WHERE bonus.user_id = user.id AND from_unixtime(bonus.datecreate, "%Y-%m-%d") = "' . $date . '") sponsorfil, 
-                                    (SELECT sum(bonus_sm.filecoin) FROM bonus_sm WHERE bonus_sm.user_id = user.id AND from_unixtime(bonus_sm.datecreate, "%Y-%m-%d") = "' . $date . '") sponmatchingfil, 
-                                    (SELECT sum(bonus.mtm) FROM bonus WHERE bonus.user_id = user.id AND from_unixtime(bonus.datecreate, "%Y-%m-%d") = "' . $date . '") sponsormtm,
-                                    (SELECT sum(bonus_sm.mtm) FROM bonus_sm WHERE bonus_sm.user_id = user.id AND from_unixtime(bonus_sm.datecreate, "%Y-%m-%d") = "' . $date . '") sponmatchingmtm,
-                                    (SELECT sum(bonus_maxmatching.mtm) FROM bonus_maxmatching WHERE bonus_maxmatching.user_id = user.id AND from_unixtime(bonus_maxmatching.datecreate, "%Y-%m-%d") = "' . $date . '") pairingmatch,
-                                    (SELECT sum(bonus_minmatching.amount) FROM bonus_minmatching WHERE bonus_minmatching.user_id = user.id AND from_unixtime(bonus_minmatching.datecreate, "%Y-%m-%d") = "' . $date . '") minmatching,
-                                    (SELECT sum(bonus_minpairing.amount) FROM bonus_minpairing WHERE bonus_minpairing.user_id = user.id AND from_unixtime(bonus_minpairing.datecreate, "%Y-%m-%d") = "' . $date . '") minpairing,
-                                    (SELECT sum(bonus_binarymatch.mtm) FROM bonus_binarymatch WHERE bonus_binarymatch.user_id = user.id AND from_unixtime(bonus_binarymatch.datecreate, "%Y-%m-%d") = "' . $date . '") binarymatch,
-                                    (SELECT sum(bonus_global.mtm) FROM bonus_global WHERE bonus_global.user_id = user.id AND from_unixtime(bonus_global.datecreate, "%Y-%m-%d") = "' . $date . '") bonusglobal,
-                                    (SELECT sum(bonus_basecamp.mtm) FROM bonus_basecamp WHERE bonus_basecamp.user_id = user.id AND bonus_basecamp.status = 1 AND from_unixtime(bonus_basecamp.update_date, "%Y-%m-%d") = "' . $date . '") basecampmtm')
+        return $this->db->select('user.id,
+                                    (SELECT sum(bonus.usdt) FROM bonus WHERE bonus.user_id = user.id AND from_unixtime(bonus.datecreate, "%Y-%m-%d") = "' . $date . '") sponsorusdt,
+                                    (SELECT sum(bonus.krp) FROM bonus WHERE bonus.user_id = user.id AND from_unixtime(bonus.datecreate, "%Y-%m-%d") = "' . $date . '") sponsorkrp,
+                                    (SELECT sum(bonus_sm.usdt) FROM bonus_sm WHERE bonus_sm.user_id = user.id AND from_unixtime(bonus_sm.datecreate, "%Y-%m-%d") = "' . $date . '") sponmatchingusdt,
+                                    (SELECT sum(bonus_sm.krp) FROM bonus_sm WHERE bonus_sm.user_id = user.id AND from_unixtime(bonus_sm.datecreate, "%Y-%m-%d") = "' . $date . '") sponmatchingkrp,
+                                    (SELECT sum(bonus_maxmatching.usdt) FROM bonus_maxmatching WHERE bonus_maxmatching.user_id = user.id AND from_unixtime(bonus_maxmatching.datecreate, "%Y-%m-%d") = "' . $date . '") pairingmatchusdt,
+                                    (SELECT sum(bonus_maxmatching.krp) FROM bonus_maxmatching WHERE bonus_maxmatching.user_id = user.id AND from_unixtime(bonus_maxmatching.datecreate, "%Y-%m-%d") = "' . $date . '") pairingmatchkrp,
+                                    (SELECT sum(bonus_minmatching.usdt) FROM bonus_minmatching WHERE bonus_minmatching.user_id = user.id AND from_unixtime(bonus_minmatching.datecreate, "%Y-%m-%d") = "' . $date . '") minmatchingusdt,
+                                    (SELECT sum(bonus_minmatching.krp) FROM bonus_minmatching WHERE bonus_minmatching.user_id = user.id AND from_unixtime(bonus_minmatching.datecreate, "%Y-%m-%d") = "' . $date . '") minmatchingkrp,
+                                    (SELECT sum(bonus_minpairing.usdt) FROM bonus_minpairing WHERE bonus_minpairing.user_id = user.id AND from_unixtime(bonus_minpairing.datecreate, "%Y-%m-%d") = "' . $date . '") minpairingusdt,
+                                    (SELECT sum(bonus_minpairing.krp) FROM bonus_minpairing WHERE bonus_minpairing.user_id = user.id AND from_unixtime(bonus_minpairing.datecreate, "%Y-%m-%d") = "' . $date . '") minpairingkrp,
+                                    (SELECT sum(bonus_binarymatch.usdt) FROM bonus_binarymatch WHERE bonus_binarymatch.user_id = user.id AND from_unixtime(bonus_binarymatch.datecreate, "%Y-%m-%d") = "' . $date . '") binarymatchusdt,
+                                    (SELECT sum(bonus_binarymatch.krp) FROM bonus_binarymatch WHERE bonus_binarymatch.user_id = user.id AND from_unixtime(bonus_binarymatch.datecreate, "%Y-%m-%d") = "' . $date . '") binarymatchkrp,
+                                    (SELECT sum(bonus_global.usdt) FROM bonus_global WHERE bonus_global.user_id = user.id AND from_unixtime(bonus_global.datecreate, "%Y-%m-%d") = "' . $date . '") bonusglobalusdt,
+                                    (SELECT sum(bonus_global.krp) FROM bonus_global WHERE bonus_global.user_id = user.id AND from_unixtime(bonus_global.datecreate, "%Y-%m-%d") = "' . $date . '") bonusglobalkrp,
+                                    (SELECT sum(bonus_basecamp.usdt) FROM bonus_basecamp WHERE bonus_basecamp.user_id = user.id AND bonus_basecamp.status = 1 AND from_unixtime(bonus_basecamp.update_date, "%Y-%m-%d") = "' . $date . '") basecampusdt,
+                                    (SELECT sum(bonus_basecamp.krp) FROM bonus_basecamp WHERE bonus_basecamp.user_id = user.id AND bonus_basecamp.status = 1 AND from_unixtime(bonus_basecamp.update_date, "%Y-%m-%d") = "' . $date . '") basecampkrp,')
             ->from('user')
             ->where('user.id', $id)
             ->get();
@@ -765,16 +771,23 @@ class M_user extends CI_Model
     public function get_total_bonus($id)
     {
         return $this->db->select('user.id, 
-                                    (SELECT sum(bonus.filecoin) FROM bonus WHERE bonus.user_id = user.id) sponsorfil, 
-                                    (SELECT sum(bonus_sm.filecoin) FROM bonus_sm WHERE bonus_sm.user_id = user.id) sponmatchingfil, 
-                                    (SELECT sum(bonus.mtm) FROM bonus WHERE bonus.user_id = user.id) sponsormtm,
-                                    (SELECT sum(bonus_sm.mtm) FROM bonus_sm WHERE bonus_sm.user_id = user.id) sponmatchingmtm,
-                                    (SELECT sum(bonus_maxmatching.mtm) FROM bonus_maxmatching WHERE bonus_maxmatching.user_id = user.id) pairingmatch,
-                                    (SELECT sum(bonus_minmatching.amount) FROM bonus_minmatching WHERE bonus_minmatching.user_id = user.id) minmatching,
-                                    (SELECT sum(bonus_minpairing.amount) FROM bonus_minpairing WHERE bonus_minpairing.user_id = user.id) minpairing,
-                                    (SELECT sum(bonus_binarymatch.mtm) FROM bonus_binarymatch WHERE bonus_binarymatch.user_id = user.id) binarymatch,
-                                    (SELECT sum(bonus_global.mtm) FROM bonus_global WHERE bonus_global.user_id = user.id) bonusglobal,
-                                    (SELECT sum(bonus_basecamp.mtm) FROM bonus_basecamp WHERE bonus_basecamp.user_id = user.id and bonus_basecamp.status = 1) basecampmtm')
+                                    (SELECT sum(bonus.usdt) FROM bonus WHERE bonus.user_id = user.id) sponsorusdt, 
+                                    (SELECT sum(bonus.krp) FROM bonus WHERE bonus.user_id = user.id) sponsorkrp, 
+                                    (SELECT sum(bonus_sm.usdt) FROM bonus_sm WHERE bonus_sm.user_id = user.id) sponmatchingusdt, 
+                                    (SELECT sum(bonus_sm.krp) FROM bonus_sm WHERE bonus_sm.user_id = user.id) sponmatchingkrp,
+                                    (SELECT sum(bonus_maxmatching.usdt) FROM bonus_maxmatching WHERE bonus_maxmatching.user_id = user.id) pairingmatchusdt,
+                                    (SELECT sum(bonus_maxmatching.krp) FROM bonus_maxmatching WHERE bonus_maxmatching.user_id = user.id) pairingmatchkrp,
+                                    (SELECT sum(bonus_minmatching.usdt) FROM bonus_minmatching WHERE bonus_minmatching.user_id = user.id) minmatchingusdt,
+                                    (SELECT sum(bonus_minmatching.krp) FROM bonus_minmatching WHERE bonus_minmatching.user_id = user.id) minmatchingkrp,
+                                    (SELECT sum(bonus_minpairing.usdt) FROM bonus_minpairing WHERE bonus_minpairing.user_id = user.id) minpairingusdt,
+                                    (SELECT sum(bonus_minpairing.krp) FROM bonus_minpairing WHERE bonus_minpairing.user_id = user.id) minpairingkrp,
+                                    (SELECT sum(bonus_binarymatch.usdt) FROM bonus_binarymatch WHERE bonus_binarymatch.user_id = user.id) binarymatchusdt,
+                                    (SELECT sum(bonus_binarymatch.krp) FROM bonus_binarymatch WHERE bonus_binarymatch.user_id = user.id) binarymatchkrp,
+                                    (SELECT sum(bonus_global.usdt) FROM bonus_global WHERE bonus_global.user_id = user.id) bonusglobalusdt,
+                                    (SELECT sum(bonus_global.krp) FROM bonus_global WHERE bonus_global.user_id = user.id) bonusglobalkrp,
+                                    (SELECT sum(bonus_basecamp.usdt) FROM bonus_basecamp WHERE bonus_basecamp.user_id = user.id and bonus_basecamp.status = 1) basecampusdt,
+                                    (SELECT sum(bonus_basecamp.krp) FROM bonus_basecamp WHERE bonus_basecamp.user_id = user.id and bonus_basecamp.status = 1) basecampkrp
+                                    ')
             ->from('user')
             ->where('user.id', $id)
             ->get();

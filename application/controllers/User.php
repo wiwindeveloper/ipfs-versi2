@@ -95,27 +95,25 @@ class User extends CI_Controller
             $update_notif = $this->M_user->update_data_byid('notifi', $data_notif, 'id', $this->uri->segment(3));
         }
 
-        $data['news']              = $this->M_user->get_all_news()->row_array();
-        $data['news_limit']        = $this->M_user->get_all_news_limit()->result();
-        $query_user                = $this->M_user->get_user_byemail($this->session->userdata('email'));
-        $user_id = $query_user['id'] ?? null;
-        $query_today               = $this->M_user->get_today_bonus($dateNow, $user_id)->row_array();
-        $query_total               = $this->M_user->get_total_bonus($user_id)->row_array();
-        $query_today_fill          = $this->M_user->get_data_bydate_user('mining_user', 'datecreate', 'user_id', $dateNow, $user_id)->row_array();
-        $query_total_fill          = $this->M_user->get_total_byuser('mining_user', 'amount', 'user_id', $user_id);
-        $query_today_mtm           = $this->M_user->get_data_bydate_user('airdrop_mtm', 'datecreate', 'user_id', $dateNow, $user_id)->row_array();
-        $query_total_mtm           = $this->M_user->get_total_byuser('airdrop_mtm', 'amount', 'user_id', $user_id);
-        $query_transfer_fill       = $this->M_user->get_total_byuser('mining_user_transfer', 'amount', 'user_id', $user_id);
-        $query_transfer_mtm        = $this->M_user->get_total_byuser('airdrop_mtm_transfer', 'amount', 'user_id', $user_id);
-        $query_transfer_bonus_fill = $this->M_user->get_transfer_bonus($user_id, 'filecoin');
-        $query_transfer_bonus_mtm  = $this->M_user->get_transfer_bonus($user_id, 'mtm');
-        $query_withdrawal_fil      = $this->M_user->get_total_withdrawal($user_id, 'filecoin');
-        $query_withdrawal_mtm      = $this->M_user->get_total_withdrawal($user_id, 'mtm');
-        $query_withdrawal_zenx      = $this->M_user->get_total_withdrawal($user_id, 'zenx');
+        $data['news']               = $this->M_user->get_all_news()->row_array();
+        $data['news_limit']         = $this->M_user->get_all_news_limit()->result();
+        $query_user                 = $this->M_user->get_user_byemail($this->session->userdata('email'));
+        $user_id                    = $query_user['id'] ?? null;
+        $query_today                = $this->M_user->get_today_bonus($dateNow, $user_id)->row_array();
+        $query_total                = $this->M_user->get_total_bonus($user_id)->row_array();
+        $query_today_fill           = $this->M_user->get_data_bydate_user('mining_user', 'datecreate', 'user_id', $dateNow, $user_id)->row_array();
+        $query_total_fill           = $this->M_user->get_total_byuser('mining_user', 'amount', 'user_id', $user_id);
+        $query_transfer_fill        = $this->M_user->get_total_byuser('mining_user_transfer', 'amount', 'user_id', $user_id);
+        $query_transfer_bonus_fill  = $this->M_user->get_transfer_bonus($user_id, 'filecoin');
+        $query_transfer_bonus_usdt  = $this->M_user->get_transfer_bonus($user_id, 'usdt');
+        $query_transfer_bonus_krp   = $this->M_user->get_transfer_bonus($user_id, 'krp');
+        $query_withdrawal_fil       = $this->M_user->get_total_withdrawal($user_id, 'filecoin');
+        $query_withdrawal_usdt      = $this->M_user->get_total_withdrawal($user_id, 'usdt');
+        $query_withdrawal_krp       = $this->M_user->get_total_withdrawal($user_id, 'krp');
 
         $query_deposit_fil         = $this->M_user->get_sum_deposit($user_id, '1');
-        $query_deposit_mtm         = $this->M_user->get_sum_deposit($user_id, '2');
-        $query_deposit_zenx        = $this->M_user->get_sum_deposit($user_id, '3');
+        $query_deposit_usdt        = $this->M_user->get_sum_deposit($user_id, '4');
+        $query_deposit_krp        = $this->M_user->get_sum_deposit($user_id, '5');
 
         $query_row_notif = $this->M_user->row_newnotif_byuser($user_id);
         $query_new_notif = $this->M_user->show_newnotif_byuser($user_id);
@@ -129,59 +127,67 @@ class User extends CI_Controller
         $data['list_notif']       = $query_new_notif;
         $data['list_notif_order'] = $query_new_notif_order;
 
-        $today_sponsorfil = $query_today['sponsorfil'] ?? null;
-        $today_sponmatchingfill = $query_today['sponmatchingfil'] ?? null;
-        $today_minmatching = $query_today['minmatching'] ?? null;
-        $today_minpairing = $query_today['minpairing'] ?? null;
+        $today_sponsorusdt          = $query_today['sponsorusdt'] ?? null;
+        $today_sponmatchingusdt     = $query_today['sponmatchingusdt'] ?? null;
+        $today_pairingmatch_usdt    = $query_today['pairingmatchusdt'] ?? null;
+        $today_minmatchingusdt      = $query_today['minmatchingusdt'] ?? null;
+        $today_minpairingusdt       = $query_today['minpairingusdt'] ?? null;
+        $today_binarymatch_usdt     = $query_today['binarymatchusdt'] ?? null;
+        $today_bonusglobal_usdt     = $query_today['bonusglobalusdt'] ?? null;
+        $today_basecamp_usdt        = $query_today['basecampusdt'] ?? null;
 
-        $today_sponsormtm = $query_today['sponsormtm'] ?? null;
-        $today_sponmatchingmtm = $query_today['sponmatchingmtm'] ?? null;
-        $today_pairingmatch_mtm = $query_today['pairingmatch'] ?? null;
-        $today_binarymatch_mtm = $query_today['binarymatch'] ?? null;
-        $today_bonusglobal_mtm = $query_today['bonusglobal'] ?? null;
-        $today_basecamp_mtm = $query_today['basecampmtm'] ?? null;
+        $today_sponsorkrp           = $query_today['sponsorkrp'] ?? null;
+        $today_sponmatchingkrp      = $query_today['sponmatchingkrp'] ?? null;
+        $today_pairingmatch_krp     = $query_today['pairingmatchkrp'] ?? null;
+        $today_minmatchingkrp       = $query_today['minmatchingkrp'] ?? null;
+        $today_minpairingkrp        = $query_today['minpairingkrp'] ?? null;
+        $today_binarymatch_krp      = $query_today['binarymatchkrp'] ?? null;
+        $today_bonusglobal_krp      = $query_today['bonusglobalkrp'] ?? null;
+        $today_basecamp_krp         = $query_today['basecampkrp'] ?? null;
 
-        $total_sponsorfil = $query_total['sponsorfil'] ?? null;
-        $total_sponmatchingfil = $query_total['sponmatchingfil'] ?? null;
-        $total_minmatchingfil = $query_total['minmatching'] ?? null;
-        $total_minpairingfil = $query_total['minpairing'] ?? null;
-        $total_basecampfill = $query_total['basecampfill'] ?? null;
+        $total_sponsorusdt          = $query_total['sponsorusdt'] ?? null;
+        $total_sponmatchingusdt     = $query_total['sponmatchingusdt'] ?? null;
+        $total_pairingmatchusdt     = $query_total['pairingmatchusdt'] ?? null;
+        $total_minmatchingusdt      = $query_total['minmatchingusdt'] ?? null;
+        $total_minpairingusdt       = $query_total['minpairingusdt'] ?? null;
+        $total_binarymatchusdt      = $query_total['binarymatchusdt'] ?? null;
+        $total_globalusdt           = $query_total['bonusglobalusdt'] ?? null;
+        $total_basecampusdt         = $query_total['basecampusdt'] ?? null;
 
-        $total_sponsormtm = $query_total['sponsormtm'] ?? null;
-        $total_sponmatchingmtm = $query_total['sponmatchingmtm'] ?? null;
-        $total_pairingmatch_mtm = $query_total['pairingmatch'] ?? null;
-        $total_binarymatch_mtm = $query_total['binarymatch'] ?? null;
-        $total_bonusglobal_mtm = $query_total['bonusglobal'] ?? null;
-        $total_basecampmtm = $query_total['basecampmtm'] ?? null;
+        $total_sponsorkrp           = $query_total['sponsorkrp'] ?? null;
+        $total_sponmatchingkrp      = $query_total['sponmatchingkrp'] ?? null;
+        $total_pairingmatch_krp     = $query_total['pairingmatchkrp'] ?? null;
+        $total_minmatchingkrp       = $query_total['minmatchingkrp'] ?? null;
+        $total_minpairingkrp        = $query_total['minpairingkrp'] ?? null;
+        $total_binarymatch_krp      = $query_total['binarymatchkrp'] ?? null;
+        $total_global_krp           = $query_total['bonusglobalkrp'] ?? null;
+        $total_basecampkrp          = $query_total['basecampkrp'] ?? null;
 
         if ($this->session->userdata('email')) {
             if ($this->session->userdata('role_id') == '2') {
                 $data['cart']                = $this->M_user->show_home_withsumpoint($user_id)->row_array();
                 $data['banner1']             = $this->M_user->get_banner_home(1);
                 $data['banner2']             = $this->M_user->get_banner_home(2);
-                $data['today_fil']           = $today_sponsorfil + $today_sponmatchingfill + $today_minmatching + $today_minpairing;
-                $data['today_mtm']           = $today_sponsormtm + $today_sponmatchingmtm + $today_pairingmatch_mtm + $today_binarymatch_mtm + $today_bonusglobal_mtm + $today_basecamp_mtm;
-                $data['total_fil']           = $total_sponsorfil + $total_sponmatchingfil + $total_minmatchingfil + $total_minpairingfil + $total_basecampfill;
-                $data['total_mtm']           = $total_sponsormtm + $total_sponmatchingmtm + $total_pairingmatch_mtm + $total_binarymatch_mtm + $total_bonusglobal_mtm + $total_basecampmtm;
+                $data['today_usdt']          = $today_sponsorusdt + $today_sponmatchingusdt + $today_pairingmatch_usdt + $today_minmatchingusdt + $today_minpairingusdt + $today_binarymatch_usdt + $today_bonusglobal_usdt + $today_basecamp_usdt;
+                $data['today_krp']           = $today_sponsorkrp + $today_sponmatchingkrp + $today_pairingmatch_krp + $today_minmatchingkrp + $today_minpairingusdt + $today_binarymatch_usdt + $today_bonusglobal_krp + $today_basecamp_krp;
+                $data['total_usdt']          = $total_sponsorusdt + $total_sponmatchingusdt + $total_pairingmatchusdt + $total_minmatchingusdt + $total_minpairingusdt + $total_binarymatchusdt + $total_globalusdt + $total_basecampusdt;
+                $data['total_krp']           = $total_sponsorkrp + $total_sponmatchingkrp + $total_pairingmatch_krp + $total_minmatchingkrp + $total_minpairingkrp + $total_binarymatch_krp + $total_global_krp + $total_basecampkrp;
 
-                $data['balance_fil']         = $data['total_fil'] - $query_transfer_bonus_fill['amount'];
-                $data['balance_mtm']         = $data['total_mtm'] - $query_transfer_bonus_mtm['amount'];
+                $data['balance_usdt']        = $data['total_usdt'] - $query_transfer_bonus_usdt['amount'];
+                $data['balance_krp']         = $data['total_krp'] - $query_transfer_bonus_krp['amount'];
                 $data['mining_fil_today']    = isset($query_today_fill['amount']) ? $query_today_fill['amount'] : 0;
                 $data['mining_fil_total']    = isset($query_total_fill['amount']) ? $query_total_fill['amount'] : 0;
                 $data['mining_fil_balance']  = $query_total_fill['amount'] - $query_transfer_fill['amount'];
-                $data['mining_mtm_today']    = isset($query_today_mtm['amount']) ? $query_today_mtm['amount'] : 0;
-                $data['mining_mtm_total']    = $query_total_mtm['amount'];
-                $data['mining_mtm_balance']  = $query_total_mtm['amount'] - $query_transfer_mtm['amount'];
 
                 $data['market_price']        = $this->M_user->get_price_coin()->row_array();
 
-                $data['general_balance_fil']  = $query_transfer_fill['amount'] + $query_transfer_bonus_fill['amount'] + $query_deposit_fil['coin'] - $query_withdrawal_fil['amount'] - $query_total_purchase['fill'];
-                $data['general_balance_mtm']  = ($query_transfer_mtm['amount'] + $query_transfer_bonus_mtm['amount']) - $query_withdrawal_mtm['amount'] + $query_deposit_mtm['coin'] - $query_total_purchase['mtm'];
-                $data['general_balance_zenx'] = $query_deposit_zenx['coin'] - $query_total_purchase['zenx'] - $query_withdrawal_zenx['amount'];
+                $data['general_balance_fil']    = $query_transfer_fill['amount'] + $query_transfer_bonus_fill['amount'] + $query_deposit_fil['coin'] - $query_withdrawal_fil['amount'] - $query_total_purchase['fill'];
+                $data['general_balance_usdt']   = ($query_transfer_bonus_usdt['amount']) - $query_withdrawal_usdt['amount'] + $query_deposit_usdt['coin'] - $query_total_purchase['usdt'];
+                $data['general_balance_krp']   = ($query_transfer_bonus_krp['amount']) - $query_withdrawal_krp['amount'] + $query_deposit_krp['coin'] - $query_total_purchase['krp'];
 
-                $data['total_balance_fil'] =  $data['total_fil'] + $data['mining_fil_total'] + $query_deposit_fil['coin'] - $query_total_purchase['fill'] - $query_withdrawal_fil['amount'];
-                $data['total_balance_mtm'] =  $data['total_mtm'] + $query_total_mtm['amount'] + $query_deposit_mtm['coin'] - $query_total_purchase['mtm'] - $query_withdrawal_mtm['amount'];
-                $data['total_balance_zenx'] =  $query_deposit_zenx['coin'] - $query_total_purchase['zenx'] - $query_withdrawal_zenx['amount'];
+                $data['total_balance_fil']      = $data['mining_fil_total'] + $query_deposit_fil['coin'] - $query_total_purchase['fill'] - $query_withdrawal_fil['amount'];
+                $data['total_balance_usdt']     =  $data['total_usdt']  + $query_deposit_usdt['coin'] - $query_total_purchase['usdt'] - $query_withdrawal_usdt['amount'];
+                $data['total_balance_krp']      =  $data['total_krp']  + $query_deposit_krp['coin'] - $query_total_purchase['krp'] - $query_withdrawal_krp['amount'];
 
                 $this->load->view('templates/user_header', $data);
                 $this->load->view('templates/user_sidebar', $data);
