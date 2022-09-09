@@ -11,13 +11,13 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link <?= $currentTab == 'mtm' ? 'active' : ''; ?>" id="mtm-tab" data-toggle="tab" href="#mtm" role="tab" aria-controls="mtm" aria-selected="false">
-                MTM
+            <a class="nav-link <?= $currentTab == 'usdt' ? 'active' : ''; ?>" id="usdt-tab" data-toggle="tab" href="#usdt" role="tab" aria-controls="usdt" aria-selected="false">
+                USDT
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link <?= $currentTab == 'zenx' ? 'active' : ''; ?>" id="zenx-tab" data-toggle="tab" href="#zenx" role="tab" aria-controls="zenx" aria-selected="false">
-                ZENX
+            <a class="nav-link <?= $currentTab == 'krp' ? 'active' : ''; ?>" id="krp-tab" data-toggle="tab" href="#krp" role="tab" aria-controls="krp" aria-selected="false">
+                KRP
             </a>
         </li>
     </ul>
@@ -82,16 +82,17 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade <?= $currentTab == 'mtm' ? 'show active' : ''; ?>" id="mtm" role="tabpanel" aria-labelledby="mtm-tab">
+
+        <div class="tab-pane fade <?= $currentTab == 'usdt' ? 'show active' : ''; ?>" id="usdt" role="tabpanel" aria-labelledby="usdt-tab">
             <div class="row">
                 <div class="col-md-12">
-                    <form class="payment" method="post" action="<?= base_url('user/deposit/2'); ?>" enctype="multipart/form-data">
+                    <form class="payment" method="post" action="<?= base_url('user/deposit/4'); ?>" enctype="multipart/form-data">
                         <div class="payment text-center text-white">
                             <div id="qr_code">
                                 <p><?= $this->lang->line('address_wallet_payment');?></p>
-                                <p><img src="<?= base_url('assets/img/wallet_mtm_qr.png'); ?>" alt="" width="200"></p>
+                                <p><img src="<?= base_url('assets/img/wallet_usdt_qr.png'); ?>" alt="" width="200"></p>
                                 <p class="code-text">
-                                    <b><?= $wallet_address['mtm']; ?></b>
+                                    <b><?= $wallet_address['usdt']; ?></b>
                                 </p>
                                 <p class="note"><?= $this->lang->line('note');?>: <?= $this->lang->line('copy_txid');?></p>
                                 <p class="note">* <?= $this->lang->line('check_txid');?></p>
@@ -141,16 +142,17 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade <?= $currentTab == 'zenx' ? 'show active' : ''; ?>" id="zenx" role="tabpanel" aria-labelledby="zenx-tab">
+
+        <div class="tab-pane fade <?= $currentTab == 'krp' ? 'show active' : ''; ?>" id="krp" role="tabpanel" aria-labelledby="krp-tab">
             <div class="row">
                 <div class="col-md-12">
-                    <form class="payment" method="post" action="<?= base_url('user/deposit/3'); ?>" enctype="multipart/form-data">
+                    <form class="payment" method="post" action="<?= base_url('user/deposit/5'); ?>" enctype="multipart/form-data">
                         <div class="payment text-center text-white">
                             <div id="qr_code">
                                 <p><?= $this->lang->line('address_wallet_payment');?></p>
-                                <p><img src="<?= base_url('assets/img/wallet_zenx_qr.png'); ?>" alt="" width="200"></p>
+                                <p><img src="<?= base_url('assets/img/wallet_krp_qr.png'); ?>" alt="" width="200"></p>
                                 <p class="code-text">
-                                    <b><?= $wallet_address['zenx']; ?></b>
+                                    <b><?= $wallet_address['krp']; ?></b>
                                 </p>
                                 <p class="note"><?= $this->lang->line('note');?>: <?= $this->lang->line('copy_txid');?></p>
                                 <p class="note">* <?= $this->lang->line('check_txid');?></p>

@@ -2065,10 +2065,10 @@ class User extends CI_Controller
             'numeric' => $this->lang->line('numeric_coin')
         ]);
 
-        if ($this->uri->segment(3) == '2') {
-            $data['currentTab'] = 'mtm';
-        } elseif ($this->uri->segment(3) == '3') {
-            $data['currentTab'] = 'zenx';
+        if ($this->uri->segment(3) == '4') {
+            $data['currentTab'] = 'usdt';
+        } elseif ($this->uri->segment(3) == '5') {
+            $data['currentTab'] = 'krp';
         } else {
             $data['currentTab'] = 'fil';
         }
@@ -2088,8 +2088,8 @@ class User extends CI_Controller
                 $this->ciqrcode->initialize($config);
 
                 $image_name     = 'wallet_fil_qr.png';
-                $image_name2    = 'wallet_mtm_qr.png';
-                $image_name3    = 'wallet_zenx_qr.png';
+                $image_name2    = 'wallet_usdt_qr.png';
+                $image_name3    = 'wallet_krp_qr.png';
 
                 $params['data'] = $data['wallet_address']['filecoin'];
                 $params['level'] = 'H';
@@ -2097,13 +2097,13 @@ class User extends CI_Controller
                 $params['savename'] = FCPATH . $config['imagedir'] . $image_name;
                 $this->ciqrcode->generate($params);
 
-                $params2['data'] = $data['wallet_address']['mtm'];
+                $params2['data'] = $data['wallet_address']['usdt'];
                 $params2['level'] = 'H';
                 $params2['size'] = 10;
                 $params2['savename'] = FCPATH . $config['imagedir'] . $image_name2;
                 $this->ciqrcode->generate($params2);
 
-                $params3['data'] = $data['wallet_address']['zenx'];
+                $params3['data'] = $data['wallet_address']['krp'];
                 $params3['level'] = 'H';
                 $params3['size'] = 10;
                 $params3['savename'] = FCPATH . $config['imagedir'] . $image_name3;
