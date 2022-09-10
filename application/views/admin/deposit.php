@@ -27,18 +27,18 @@
                                         <button class="btn btn-primary w-100 mt-2" name="save_fil">Save</button>
                                     </div>
                                     <div class="col-lg-4 mb-2">
-                                        <label style="font-size: 16px;" for="wallet_mtm">Wallet MTM</label>
+                                        <label style="font-size: 16px;" for="wallet_usdt">Wallet USDT</label>
                                         <div class="input-group">
-                                            <input type=" text" class="form-control" id="wallet_mtm" name="wallet_mtm" value="<?= $wallet_address['mtm']; ?>" placeholder="Wallet MTM">
+                                            <input type=" text" class="form-control" id="wallet_usdt" name="wallet_usdt" value="<?= $wallet_address['usdt']; ?>" placeholder="Wallet MTM">
                                         </div>
-                                        <button class="btn btn-primary w-100 mt-2" name="save_mtm">Save</button>
+                                        <button class="btn btn-primary w-100 mt-2" name="save_usdt">Save</button>
                                     </div>
                                     <div class="col-lg-4 mb-2">
-                                        <label style="font-size: 16px;" for="wallet_zenx">Wallet ZENX</label>
+                                        <label style="font-size: 16px;" for="wallet_krp">Wallet KRP</label>
                                         <div class="input-group">
-                                            <input type=" text" class="form-control" id="wallet_zenx" name="wallet_zenx" value="<?= $wallet_address['zenx']; ?>" placeholder="Wallet ZENX">
+                                            <input type=" text" class="form-control" id="wallet_krp" name="wallet_krp" value="<?= $wallet_address['krp']; ?>" placeholder="Wallet ZENX">
                                         </div>
-                                        <button class="btn btn-primary w-100 mt-2" name="save_zenx">Save</button>
+                                        <button class="btn btn-primary w-100 mt-2" name="save_krp">Save</button>
                                     </div>
                                 </div>
                             </form>
@@ -81,6 +81,13 @@
                                         echo "MTM";
                                     } elseif ($row_deposit->type_coin == 3) {
                                         echo "ZENX";
+                                    }
+                                    elseif($row_deposit->type_coin == 4)
+                                    {
+                                        echo "USDT";
+                                    }
+                                    else{
+                                        echo "KRP";
                                     }
                                     ?>
                                 </td>

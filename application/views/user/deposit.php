@@ -123,9 +123,9 @@
 
                                 <div class="d-flex justify-content-center">
                                     <div class="p-5">
-                                        <input type="hidden" name="typecoin" value="2">
-                                        <input type="hidden" name="iddeposit" value="<?= $currentTab == 'mtm' ? $id_deposit : ''; ?>">
-                                        <input type="hidden" name="id_notif" value="<?= $currentTab == 'mtm' ? $id_notif : ''; ?>">
+                                        <input type="hidden" name="typecoin" value="4">
+                                        <input type="hidden" name="iddeposit" value="<?= $currentTab == 'usdt' ? $id_deposit : ''; ?>">
+                                        <input type="hidden" name="id_notif" value="<?= $currentTab == 'usdt' ? $id_notif : ''; ?>">
                                         <button type="submit" class="btn btn-ok btn-block wd-100-pr">
                                         <?= $this->lang->line('deposit_request');?>
                                         </button>
@@ -183,9 +183,9 @@
 
                                 <div class="d-flex justify-content-center">
                                     <div class="p-5">
-                                        <input type="hidden" name="typecoin" value="3">
-                                        <input type="hidden" name="iddeposit" value="<?= $currentTab == 'zenx' ? $id_deposit : ''; ?>">
-                                        <input type="hidden" name="id_notif" value="<?= $currentTab == 'zenx' ? $id_notif : ''; ?>">
+                                        <input type="hidden" name="typecoin" value="5">
+                                        <input type="hidden" name="iddeposit" value="<?= $currentTab == 'krp' ? $id_deposit : ''; ?>">
+                                        <input type="hidden" name="id_notif" value="<?= $currentTab == 'krp' ? $id_notif : ''; ?>">
                                         <button type="submit" class="btn btn-ok btn-block wd-100-pr">
                                         <?= $this->lang->line('deposit_request');?>
                                         </button>

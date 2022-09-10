@@ -249,7 +249,7 @@ function show_confirm_deposit(a)
     $('#confirmModal').modal("show");
     var agent_id=$(a).attr('id');
 
-    var urlNnetwork = baseUrl + "/confirmDeposit/" + agent_id;
+    var urlNnetwork = baseUrl + "/admin/confirmDeposit/" + agent_id;
 
     document.getElementById("confirmModalLabel").innerHTML = "Are you ready to confirm this deposit?";
     document.getElementById("confirmModalBody").innerHTML = "Select 'OK' below if you are ready to confirm this deposit.";
@@ -287,7 +287,7 @@ function open_basecamp(a)
 function show_image_deposit(a) {
     // alert('halo dunia');
     var getUrl = window.location;
-    var baseUrl = getUrl.protocol + "//" + getUrl.host + "/";
+    var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
 
     $('#imageModal').modal("show");
     var image = $(a).attr('id');

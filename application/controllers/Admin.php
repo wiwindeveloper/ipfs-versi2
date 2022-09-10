@@ -1482,26 +1482,26 @@ class Admin extends CI_Controller
                 $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Update Wallet FIL failed</div>');
                 redirect('admin/deposit');
             }
-        } elseif (isset($_POST['save_mtm'])) {
-            $wallet = $this->input->post('wallet_mtm');
-            $this->db->set('mtm', $wallet);
+        } elseif (isset($_POST['save_usdt'])) {
+            $wallet = $this->input->post('wallet_usdt');
+            $this->db->set('usdt', $wallet);
             $update = $this->db->update('wallet_address');
             if ($update == true) {
-                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Update Wallet MTM success</div>');
+                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Update Wallet USDT success</div>');
                 redirect('admin/deposit');
             } else {
-                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Update Wallet MTM failed</div>');
+                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Update Wallet USDT failed</div>');
                 redirect('admin/deposit');
             }
-        } elseif (isset($_POST['save_zenx'])) {
-            $wallet = $this->input->post('wallet_zenx');
-            $this->db->set('zenx', $wallet);
+        } elseif (isset($_POST['save_krp'])) {
+            $wallet = $this->input->post('wallet_krp');
+            $this->db->set('krp', $wallet);
             $update = $this->db->update('wallet_address');
             if ($update == true) {
-                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Update Wallet ZENX success</div>');
+                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Update Wallet KRP success</div>');
                 redirect('admin/deposit');
             } else {
-                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Update Wallet ZENX failed</div>');
+                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Update Wallet KRP failed</div>');
                 redirect('admin/deposit');
             }
         }
