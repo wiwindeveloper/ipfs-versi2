@@ -112,8 +112,8 @@
                             <p class="p-mining-3 font-wight-bold text-white" style="margin-top:-25px"><?= $row_filecoin->daysmining / 2; ?><span class="span-mining-3 text-white"> <?= $this->lang->line('days_paid_cost');?></span></p>
                             <p class="p-mining-4 font-italic text-white mt-4 mb-0"><?= $this->lang->line('start_after');?> :</p>
                             <p class="p-mining-5 font-italic text-white mb-0"><?= $row_filecoin->startafter; ?> <?= $this->lang->line('days_for_fil');?></p>
-                            <p class="p-mining-6 font-italic text-white" style="margin-top:-7px">7 <?= $this->lang->line('days_for_mtm');?></p>
-                            <p class="p-mining-7 font-italic text-white mb-0" style="margin-top: -8px;">
+                            <!-- <p class="p-mining-6 font-italic text-white" style="margin-top:-7px">7 <?= $this->lang->line('days_for_mtm');?></p> -->
+                            <p class="p-mining-7 font-italic text-white mb-0">
                                 <?= $this->lang->line('hashrate');?> : <span class="span-mining-7"><?= $row_filecoin->hashrate; ?> GiB</span>
                                 <?= $row_filecoin->tib != 0 ? '/' . $row_filecoin->tib . 'TiB' : ''; ?>
                             </p>

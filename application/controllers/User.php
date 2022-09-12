@@ -1013,35 +1013,31 @@ class User extends CI_Controller
         $query_row_notif    = $this->M_user->row_newnotif_byuser($query_user['id']);
         $query_new_notif    = $this->M_user->show_newnotif_byuser($query_user['id']);
         $query_transfer_fill = $this->M_user->get_total_byuser('mining_user_transfer', 'amount', 'user_id', $query_user['id']);
-        $query_transfer_bonus_fill = $this->M_user->get_transfer_bonus($query_user['id'], 'filecoin');
         $query_withdrawal_fil      = $this->M_user->get_total_withdrawal($query_user['id'], 'filecoin');
-        $query_transfer_mtm        = $this->M_user->get_total_byuser('airdrop_mtm_transfer', 'amount', 'user_id', $query_user['id']);
-        $query_transfer_bonus_mtm  = $this->M_user->get_transfer_bonus($query_user['id'], 'mtm');
-        $query_withdrawal_mtm      = $this->M_user->get_total_withdrawal($query_user['id'], 'mtm');
+        $query_transfer_bonus_usdt  = $this->M_user->get_transfer_bonus($query_user['id'], 'usdt');
+        $query_transfer_bonus_krp  = $this->M_user->get_transfer_bonus($query_user['id'], 'krp');
+        $query_withdrawal_usdt      = $this->M_user->get_total_withdrawal($query_user['id'], 'usdt');
+        $query_withdrawal_krp      = $this->M_user->get_total_withdrawal($query_user['id'], 'usdt');
         $query_deposit_fil         = $this->M_user->get_sum_deposit($query_user['id'], '1');
-        $query_deposit_mtm         = $this->M_user->get_sum_deposit($query_user['id'], '2');
-        $query_deposit_zenx        = $this->M_user->get_sum_deposit($query_user['id'], '3');
+        $query_deposit_usdt         = $this->M_user->get_sum_deposit($query_user['id'], '4');
+        $query_deposit_krp        = $this->M_user->get_sum_deposit($query_user['id'], '5');
         $query_total_purchase      = $this->M_user->sum_cart_byid($query_user['id']);
 
-        $data['title']              = 'Terms and Conditions';
-        $data['user']               = $query_user;
-        $data['amount_notif']       = $query_row_notif;
-        $data['list_notif']         = $query_new_notif;
-        $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
-        $data['general_balance_fil'] = ($query_transfer_fill['amount'] + $query_transfer_bonus_fill['amount']) - $query_withdrawal_fil['amount'] + $query_deposit_fil['coin'] - $query_total_purchase['fill'];
-        $data['general_balance_mtm'] = ($query_transfer_mtm['amount'] + $query_transfer_bonus_mtm['amount']) - $query_withdrawal_mtm['amount'] + $query_deposit_mtm['coin'] - $query_total_purchase['mtm'];
-        $data['general_balance_zenx'] = $query_deposit_zenx['coin'] - $query_total_purchase['zenx'];
+        $data['title']                  = 'Terms and Conditions';
+        $data['user']                   = $query_user;
+        $data['amount_notif']           = $query_row_notif;
+        $data['list_notif']             = $query_new_notif;
+        $data['cart']                   = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
+        $data['general_balance_fil']    = $query_transfer_fill['amount'] - $query_withdrawal_fil['amount'] + $query_deposit_fil['coin'] - $query_total_purchase['fill'];
+        $data['general_balance_usdt']   = ($query_transfer_bonus_usdt['amount']) - $query_withdrawal_usdt['amount'] + $query_deposit_usdt['coin'] - $query_total_purchase['usdt'];
+        $data['general_balance_krp']    = ($query_transfer_bonus_krp['amount']) - $query_withdrawal_krp['amount'] + $query_deposit_krp['coin'] - $query_total_purchase['krp'];
 
         $this->session->set_userdata('purchase', $id_package);
 
-        $data['fil'] = $data_package['fil'];
-        $data['price_fil'] = $data_package['price_fil'];
-        $data['price_mtm'] = $data_package['price_mtm'];
-        $data['price_zenx'] = $data_package['price_zenx'];
-
-        // $deposit = $this->_count_deposit($query_user['id']);
-
-        // $data['balance'] = $deposit;
+        $data['fil']        = $data_package['fil'];
+        $data['price_fil']  = $data_package['price_fil'];
+        $data['price_usdt'] = $data_package['usdt'];
+        $data['price_krp']  = $data_package['krp'];
 
         if ($this->session->userdata('email') && $this->session->userdata('role_id') == '2') {
             $this->load->view('templates/user_header', $data);
@@ -1126,14 +1122,14 @@ class User extends CI_Controller
         $query_row_notif    = $this->M_user->row_newnotif_byuser($user['id']);
         $query_new_notif    = $this->M_user->show_newnotif_byuser($user['id']);
         $query_transfer_fill = $this->M_user->get_total_byuser('mining_user_transfer', 'amount', 'user_id', $user['id']);
-        $query_transfer_bonus_fill = $this->M_user->get_transfer_bonus($user['id'], 'filecoin');
         $query_withdrawal_fil      = $this->M_user->get_total_withdrawal($user['id'], 'filecoin');
-        $query_transfer_mtm        = $this->M_user->get_total_byuser('airdrop_mtm_transfer', 'amount', 'user_id', $user['id']);
-        $query_transfer_bonus_mtm  = $this->M_user->get_transfer_bonus($user['id'], 'mtm');
-        $query_withdrawal_mtm      = $this->M_user->get_total_withdrawal($user['id'], 'mtm');
+        $query_transfer_bonus_usdt  = $this->M_user->get_transfer_bonus($user['id'], 'usdt');
+        $query_transfer_bonus_krp  = $this->M_user->get_transfer_bonus($user['id'], 'krp');
+        $query_withdrawal_usdt      = $this->M_user->get_total_withdrawal($user['id'], 'usdt');
+        $query_withdrawal_krp      = $this->M_user->get_total_withdrawal($user['id'], 'usdt');
         $query_deposit_fil         = $this->M_user->get_sum_deposit($user['id'], '1');
-        $query_deposit_mtm         = $this->M_user->get_sum_deposit($user['id'], '2');
-        $query_deposit_zenx        = $this->M_user->get_sum_deposit($user['id'], '3');
+        $query_deposit_usdt         = $this->M_user->get_sum_deposit($user['id'], '4');
+        $query_deposit_krp        = $this->M_user->get_sum_deposit($user['id'], '5');
         $query_total_purchase      = $this->M_user->sum_cart_byid($user['id']);
 
         $data['title']                  = $this->lang->line('term_condition');
@@ -1141,12 +1137,9 @@ class User extends CI_Controller
         $data['amount_notif']           = $query_row_notif;
         $data['list_notif']             = $query_new_notif;
         $data['cart']                   = $this->M_user->show_home_withsumpoint($user['id'])->row_array();
-        $data['general_balance_fil']    = ($query_transfer_fill['amount'] + $query_transfer_bonus_fill['amount']) - $query_withdrawal_fil['amount'] + $query_deposit_fil['coin'] - $query_total_purchase['fill'];
-        $data['general_balance_mtm']    = ($query_transfer_mtm['amount'] + $query_transfer_bonus_mtm['amount']) - $query_withdrawal_mtm['amount'] + $query_deposit_mtm['coin'] - $query_total_purchase['mtm'];
-        $data['general_balance_zenx']   =  $query_deposit_zenx['coin'] - $query_total_purchase['zenx'];
-
-        // $query_deposit = $this->db->select_sum('coin')->where(['is_confirm' => 1, 'user_id' => $user['id']])->get('deposit')->row();
-        // $data['balance'] = $query_deposit->coin;
+        $data['general_balance_fil']    = $query_transfer_fill['amount'] - $query_withdrawal_fil['amount'] + $query_deposit_fil['coin'] - $query_total_purchase['fill'];
+        $data['general_balance_usdt']   = ($query_transfer_bonus_usdt['amount']) - $query_withdrawal_usdt['amount'] + $query_deposit_usdt['coin'] - $query_total_purchase['usdt'];
+        $data['general_balance_krp']    = ($query_transfer_bonus_krp['amount']) - $query_withdrawal_krp['amount'] + $query_deposit_krp['coin'] - $query_total_purchase['krp'];
 
         if (empty($data['cart']['name'])) {
             $this->form_validation->set_rules('sponsor', 'Recommended ID', 'required|trim', [
@@ -1170,13 +1163,8 @@ class User extends CI_Controller
 
         $data['fil']        = $data_package['fil'];
         $data['price_fil']  = $data_package['price_fil'];
-        $data['price_mtm']  = $data_package['price_mtm'];
-        $data['price_zenx'] = $data_package['price_zenx'];
-
-        //$check_matching_id = $this->db->get_where('user', ['username' => $this->input->post('matching')])->row_array();
-        //$check_sponsor_id  = $this->db->get_where('user', ['username' => $this->input->post('sponsor')])->row_array();
-        //$check_position_id = $this->db->get_where('user', ['username' => $this->input->post('position')])->row_array();
-        //$check_belong_matching = $this->db->get_where('cart', ['user_id' => $check_sponsor_id['id']])->row_array();
+        $data['price_usdt'] = $data_package['usdt'];
+        $data['price_krp']  = $data_package['krp'];
 
         $check_sponsor_id   = $this->M_user->get_member_byusername($this->input->post('sponsor'));
 
@@ -1184,14 +1172,6 @@ class User extends CI_Controller
 
         $check_position_id  = $this->M_user->get_member_byusername($this->input->post('position'));
         $query_matching     = $this->M_user->get_mactching_id($sponsorid_notnull);
-
-        // if (isset($_POST['buy'])) {
-        //     $balance = explode(' ', trim($this->input->post('balance')))[0];
-        //     $price = explode(' ', trim($this->input->post('price')))[0];
-        //     var_dump($balance);
-        //     var_dump($price);
-        //     die;
-        // }
 
         if ($this->form_validation->run() == false) {
             $data['checked1'] = $this->input->post('accept_terms');
@@ -1205,53 +1185,6 @@ class User extends CI_Controller
             $this->load->view('templates/user_footer');
         } else {
             if (!empty($this->input->post('data_purchase'))) {
-                // if($this->input->post('matching') == '' && $this->input->post('sponsor') == '' && $this->input->post('position') == '')
-                // {
-                //     $this->_insert_cart($this->input->post('data_purchase'), $user['id'], $this->input->post('data_fil'), '0', '0', '0', '');
-                // }
-                // elseif($this->input->post('matching') == '' && $this->input->post('sponsor') != '' && $this->input->post('position') != '')
-                // {
-                //     $check_line = $this->db->get_where('cart', ['sponsor_id' => $check_position_id['id'], 'line' => $this->input->post('line')])->row_array();
-
-                //     if($check_line)
-                //     {
-                //         $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Line '.$this->input->post('line').' for this Position ID is already filled</div>');
-
-                //         $this->load->view('templates/user_header', $data);
-                //         $this->load->view('templates/user_sidebar', $data);
-                //         $this->load->view('templates/user_topbar', $data);
-                //         $this->load->view('user/term_condition', $data);
-                //         $this->load->view('templates/user_footer');
-                //     }
-                //     else
-                //     {
-                //         $this->_insert_cart($this->input->post('data_purchase'), $user['id'], $this->input->post('data_fil'), '0', $check_sponsor_id['id'], $check_position_id['id'], $this->input->post('line'));
-                //     }
-                // }
-                // elseif($check_matching_id['id'] == $check_position_id['id'] || $check_matching_id['id'] == $check_sponsor_id['id'])
-                // {
-                //     $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Invalid Matching ID</div>');
-
-                //     $this->load->view('templates/user_header', $data);
-                //     $this->load->view('templates/user_sidebar', $data);
-                //     $this->load->view('templates/user_topbar', $data);
-                //     $this->load->view('user/term_condition', $data);
-                //     $this->load->view('templates/user_footer');
-                // }
-                // elseif($check_matching_id['id'] != $check_belong_matching['position_id'])
-                // {
-                //     $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Matching ID has no relationship with Sponsor ID</div>');
-
-                //     $this->load->view('templates/user_header', $data);
-                //     $this->load->view('templates/user_sidebar', $data);
-                //     $this->load->view('templates/user_topbar', $data);
-                //     $this->load->view('user/term_condition', $data);
-                //     $this->load->view('templates/user_footer');
-                // }
-                // else
-                // {
-                // if($check_matching_id)
-                // {
 
                 //komentar start
                 if (empty($data['cart']['name'])) {
@@ -1271,12 +1204,12 @@ class User extends CI_Controller
                                 if ($this->input->post('cointype') == 'fil') {
                                     $dataBalance = $data['general_balance_fil'];
                                     $dataPrice = $data['price_fil'];
-                                } elseif ($this->input->post('cointype') == 'mtm') {
-                                    $dataBalance = $data['general_balance_mtm'];
-                                    $dataPrice = $data['price_mtm'];
-                                } elseif ($this->input->post('cointype') == 'zenx') {
-                                    $dataBalance = $data['general_balance_zenx'];
-                                    $dataPrice = $data['price_zenx'];
+                                } elseif ($this->input->post('cointype') == 'usdt') {
+                                    $dataBalance = $data['general_balance_usdt'];
+                                    $dataPrice = $data['price_usdt'];
+                                } elseif ($this->input->post('cointype') == 'krp') {
+                                    $dataBalance = $data['general_balance_krp'];
+                                    $dataPrice = $data['price_krp'];
                                 }
 
                                 if ($dataBalance < $dataPrice) {
@@ -1313,12 +1246,12 @@ class User extends CI_Controller
                     if ($this->input->post('cointype') == 'fil') {
                         $dataBalance = $data['general_balance_fil'];
                         $dataPrice = $data['price_fil'];
-                    } elseif ($this->input->post('cointype') == 'mtm') {
-                        $dataBalance = $data['general_balance_mtm'];
-                        $dataPrice = $data['price_mtm'];
-                    } elseif ($this->input->post('cointype') == 'zenx') {
-                        $dataBalance = $data['general_balance_zenx'];
-                        $dataPrice = $data['price_zenx'];
+                    } elseif ($this->input->post('cointype') == 'usdt') {
+                        $dataBalance = $data['general_balance_usdt'];
+                        $dataPrice = $data['price_usdt'];
+                    } elseif ($this->input->post('cointype') == 'krp') {
+                        $dataBalance = $data['general_balance_krp'];
+                        $dataPrice = $data['price_krp'];
                     }
 
                     if ($dataBalance < $dataPrice) {
@@ -1334,20 +1267,6 @@ class User extends CI_Controller
                     }
                 }
 
-                //komentar end
-
-                // }
-                // else
-                // {
-                //     $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Matching ID not found</div>');
-
-                //     $this->load->view('templates/user_header', $data);
-                //     $this->load->view('templates/user_sidebar', $data);
-                //     $this->load->view('templates/user_topbar', $data);
-                //     $this->load->view('user/term_condition', $data);
-                //     $this->load->view('templates/user_footer');
-                // }
-                // }
             } else {
                 redirect('user/package');
             }
@@ -1369,11 +1288,11 @@ class User extends CI_Controller
                 'datecreate' => time(),
                 'update_date' => time()
             ];
-        } elseif ($typeCoin == 'mtm') {
+        } elseif ($typeCoin == 'usdt') {
             $data_insert = [
                 'package_id' => $dataPurchase,
                 'user_id' => $userId,
-                'mtm' => $price,
+                'usdt' => $price,
                 'matching_id' => $matchingId,
                 'sponsor_id' => $sponsorId,
                 'position_id' => $positionId,
@@ -1382,11 +1301,11 @@ class User extends CI_Controller
                 'datecreate' => time(),
                 'update_date' => time()
             ];
-        } elseif ($typeCoin == 'zenx') {
+        } elseif ($typeCoin == 'krp') {
             $data_insert = [
                 'package_id' => $dataPurchase,
                 'user_id' => $userId,
-                'zenx' => $price,
+                'krp' => $price,
                 'matching_id' => $matchingId,
                 'sponsor_id' => $sponsorId,
                 'position_id' => $positionId,
@@ -1399,18 +1318,18 @@ class User extends CI_Controller
 
         $last_cartid = $this->M_user->insert_cart('cart', $data_insert);
 
-        // /**Bonus sponsor */
+        /**Bonus sponsor */
         $bonus = $this->_sponsorBonus($last_cartid);
 
         // /**Level FM */
         $this->_insertFm($last_cartid);
 
         //Excess Bonus
-        $this->_insert_Excess($userId);
+        // $this->_insert_Excess($userId);
 
-        $this->session->set_userdata('cart', $last_cartid);
-        $this->session->set_flashdata('message', '<div class="alert alert-info" role="alert">'.$this->lang->line('success_purchase').'</div>');
-        redirect('user/history');
+        // $this->session->set_userdata('cart', $last_cartid);
+        // $this->session->set_flashdata('message', '<div class="alert alert-info" role="alert">'.$this->lang->line('success_purchase').'</div>');
+        // redirect('user/history');
     }
     
     private function _insert_Excess($userId)
@@ -1596,24 +1515,32 @@ class User extends CI_Controller
             
             $id_bs_sponsor = $query_bs_sponsor['id_basecamp'] ?? null;
 
+            $query_fil_price = $this->M_user->get_fil_price();
+
             if ($datapayment['price'] != 0) {
                 $count_bonus    = ($datapayment['price'] * $datapayment['amount_sp']) / 100;
                 // $query_basecamp = $this->M_user->get_camp_fm($sponsor_id);
 
                 if ($matching_id == 0) {
-                    $count_sponsor  = $count_bonus / 2;
-                    $count_mtm      = $count_sponsor * 4;
+                    $count_sponsor   = $count_bonus / 2;
 
-                    $limit_bonus        = $this->_check_limit_bonus($sponsor_id, $count_mtm);
+                    //usdt
+                    $count_usdt         = $count_sponsor * $query_fil_price['usdt'];
+                    $limit_bonus        = $this->_check_limit_bonus($sponsor_id, $count_usdt, 'usdt');
+                    $excess_bonus       = $count_usdt - $limit_bonus;
+                    $limit_count_usdt   = $limit_bonus;
 
-                    $excess_bonus       = $count_mtm - $limit_bonus;
-
-                    $limit_count_mtm    = $limit_bonus;
+                    //krp
+                    $count_krp         = $count_sponsor * $query_fil_price['krp'];
+                    $limit_bonus_krp   = $this->_check_limit_bonus($sponsor_id, $count_krp, 'krp');
+                    $excess_bonus_krp  = $count_krp - $limit_bonus_krp;
+                    $limit_count_krp  = $limit_bonus_krp;
 
                     $data_excess_sponsor = [
                         'user_id' => $sponsor_id,
                         'type_bonus' => '1',
-                        'mtm' => $excess_bonus,
+                        'usdt' => $excess_bonus,
+                        'krp' => $excess_bonus_krp,
                         'cart_id' => $id,
                         'code_bonus' => $datapayment['code'],
                         'user_sponsor' => '0',
@@ -1628,8 +1555,8 @@ class User extends CI_Controller
                         'cart_id' => $id,
                         'user_id' => $sponsor_id,
                         'code_bonus' => $datapayment['code'],
-                        'filecoin' => $count_sponsor,
-                        'mtm' => $limit_count_mtm,
+                        'usdt' => $limit_count_usdt,
+                        'krp' => $limit_count_krp,
                         'datecreate' => time()
                     ];
 
@@ -1657,14 +1584,16 @@ class User extends CI_Controller
     
                                 $count_bonus_basecamp = ($datapayment['price'] * $additionalBonus) / 100;
     
-                                $bonus_basecamp_mtm = $count_bonus_basecamp * 4;
+                                $bonus_basecamp_usdt = $count_bonus_basecamp * $query_fil_price['usdt'];
+                                $bonus_basecamp_krp = $count_bonus_basecamp * $query_fil_price['krp'];
                                 
                                 $data_insert_basecamp = [
                                     'cart_id' => $id,
                                     'user_id' => $leader_id,
                                     'id_bs' => $id_bs_sponsor,
                                     'code_bonus' => $datapayment['code'],
-                                    'mtm' => $bonus_basecamp_mtm,
+                                    'usdt' => $bonus_basecamp_usdt,
+                                    'krp' => $bonus_basecamp_krp,
                                     'type' => '1',
                                     'status' => '0',
                                     'datecreate' => time()
@@ -1680,20 +1609,25 @@ class User extends CI_Controller
                         return false;
                     }
                 } else {
-                    $count_sponsor_matching = (($count_bonus * $datapayment['amount_sm']) / 100) / 2;
-                    $count_sm_mtm           = $count_sponsor_matching * 4;
+                    $count_sponsor_matching  = (($count_bonus * $datapayment['amount_sm']) / 100) / 2;
+                    $count_sm_usdt           = $count_sponsor_matching * $query_fil_price['usdt'];
+                    $count_sm_krp            = $count_sponsor_matching * $query_fil_price['krp'];
 
                     $count_sponsor          = ($count_bonus) / 2;
-                    $count_mtm              = $count_sponsor * 4;
+                    $count_usdt             = $count_sponsor * $query_fil_price['usdt'];
+                    $count_krp              = $count_sponsor * $query_fil_price['krp'];
 
-                    $limit_bonus    = $this->_check_limit_bonus($sponsor_id, $count_mtm);
+                    $limit_bonus    = $this->_check_limit_bonus($sponsor_id, $count_usdt, 'usdt');
+                    $excess_bonus  = $count_usdt - $limit_bonus;
 
-                    $excess_bonus  = $count_mtm - $limit_bonus;
+                    $limit_bonus_krp    = $this->_check_limit_bonus($sponsor_id, $count_krp, 'krp');
+                    $excess_bonus_krp   = $count_usdt - $limit_bonus;
 
                     $data_excess_sponsor = [
                         'user_id' => $sponsor_id,
                         'type_bonus' => '1',
-                        'mtm' => $excess_bonus,
+                        'usdt' => $excess_bonus,
+                        'krp' => $excess_bonus_krp,
                         'cart_id' => $id,
                         'code_bonus' => $datapayment['code'],
                         'user_sponsor' => '0',
@@ -1704,14 +1638,15 @@ class User extends CI_Controller
 
                     $this->M_user->insert_data('excess_bonus', $data_excess_sponsor);
 
-                    $limit_count_mtm = $limit_bonus;
+                    $limit_count_usdt = $limit_bonus;
+                    $limit_count_krp  = $limit_bonus_krp;
 
                     $data_insert = [
                         'cart_id' => $id,
                         'user_id' => $sponsor_id,
                         'code_bonus' => $datapayment['code'],
-                        'filecoin' => $count_sponsor,
-                        'mtm' => $limit_count_mtm,
+                        'usdt' => $limit_count_usdt,
+                        'krp' => $limit_count_krp,
                         'datecreate' => time()
                     ];
 
@@ -1719,15 +1654,19 @@ class User extends CI_Controller
 
                     if ($insert) 
                     {
-                        $limit_bonus_sm    = $this->_check_limit_bonus($matching_id, $count_sm_mtm);
-                        $excess_bonus_sm = $count_sm_mtm - $limit_bonus_sm;
+                        $limit_bonus_sm         = $this->_check_limit_bonus($matching_id, $count_sm_usdt, 'usdt');
+                        $excess_bonus_sm        = $count_sm_usdt - $limit_bonus_sm;
+                        $limit_count_sm_usdt    = $limit_bonus_sm;
 
-                        $limit_count_sm_mtm = $limit_bonus_sm;
+                        $limit_bonus_sm_krp     = $this->_check_limit_bonus($matching_id, $count_sm_krp, 'krp');
+                        $excess_bonus_sm_krp    = $count_sm_krp - $limit_bonus_sm_krp;
+                        $limit_count_sm_krp     = $limit_bonus_sm_krp;
 
                         $data_excess_sm = [
                             'user_id' => $matching_id,
                             'type_bonus' => '2',
-                            'mtm' => $excess_bonus_sm,
+                            'usdt' => $excess_bonus_sm,
+                            'krp' => $excess_bonus_sm_krp,
                             'cart_id' => $id,
                             'code_bonus' => $datapayment['code'],
                             'user_sponsor' => '0',
@@ -1742,8 +1681,8 @@ class User extends CI_Controller
                             'user_id' => $matching_id,
                             'cart_id' => $id,
                             'code_bonus' => $datapayment['code'],
-                            'filecoin' => $count_sponsor_matching,
-                            'mtm' => $limit_count_sm_mtm,
+                            'usdt' => $limit_count_sm_usdt,
+                            'krp' => $limit_count_sm_krp,
                             'datecreate' => time()
                         ];
 
@@ -1770,23 +1709,28 @@ class User extends CI_Controller
                                     } elseif ($query_basecamp['fm'] == 'FM8') {
                                         $additionalBonus = 3.5;
                                     }
-    
-                                    $count_bonus_basecamp = ($datapayment['price'] * $additionalBonus) / 100;
-    
-                                    $bonus_basecamp_mtm = $count_bonus_basecamp * 4;
                                     
-                                    $data_insert_basecamp = [
-                                        'cart_id' => $id,
-                                        'user_id' => $leader_id,
-                                        'id_bs' => $id_bs_sponsor,
-                                        'code_bonus' => $datapayment['code'],
-                                        'mtm' => $bonus_basecamp_mtm,
-                                        'type' => '1',
-                                        'status' => '0',
-                                        'datecreate' => time()
-                                    ];
-    
-                                    $insert_basecamp = $this->M_user->insert_data('bonus_basecamp', $data_insert_basecamp);
+                                    if(!empty($additionalBonus))
+                                    {
+                                        $count_bonus_basecamp = ($datapayment['price'] * $additionalBonus) / 100;
+        
+                                        $bonus_basecamp_usdt = $count_bonus_basecamp * $query_fil_price['usdt'];
+                                        $bonus_basecamp_krp = $count_bonus_basecamp * $query_fil_price['krp'];
+                                        
+                                        $data_insert_basecamp = [
+                                            'cart_id' => $id,
+                                            'user_id' => $leader_id,
+                                            'id_bs' => $id_bs_sponsor,
+                                            'code_bonus' => $datapayment['code'],
+                                            'usdt' => $bonus_basecamp_usdt,
+                                            'krp' => $bonus_basecamp_krp,
+                                            'type' => '1',
+                                            'status' => '0',
+                                            'datecreate' => time()
+                                        ];
+        
+                                        $insert_basecamp = $this->M_user->insert_data('bonus_basecamp', $data_insert_basecamp);
+                                    }
                                 }
                             }
 
@@ -1800,45 +1744,53 @@ class User extends CI_Controller
         }
     }
 
-    private function _check_limit_bonus($user_id, $count_mtm)
+    private function _check_limit_bonus($user_id, $count_coin, $type)
     {
         $query_top = $this->M_user->get_user_toplevel($user_id);
         $user_top = $query_top['id'] ?? null;
 
         if($user_id == $user_top)
         {
-            return $count_mtm;
+            return $count_coin;
         }
         else
         {
-            $query_box      = $this->M_user->get_totalbox_byid($user_id);
-            $query_total    = $this->M_user->get_total_bonus($user_id)->row_array();
-            $query_airdrop  = $this->M_user->sum_airdrop_byuser($user_id); 
-    
-            $box    = $query_box['mtm'];
-            $limit  = ($box*300)/100;
-    
-            $total_bonus = $query_airdrop['amount']+$query_total['sponsormtm']+$query_total['sponmatchingmtm']+$query_total['pairingmatch']+$query_total['binarymatch']+$query_total['bonusglobal']+$query_total['basecampmtm']+$count_mtm;
+            if($type == 'usdt')
+            {
+                $query_box              = $this->M_user->get_totalbox_usdt_byid($user_id);
+                $box                    = $query_box['usdt'];
+                $query_total            = $this->M_user->get_total_bonus($user_id)->row_array();
+                $limit                  = ($box*300)/100;
+                $total_bonus            = $query_total['sponsorusdt']+$query_total['sponmatchingusdt']+$query_total['pairingmatchusdt']+$query_total['minmatchingusdt']+$query_total['minpairingusdt']+$query_total['binarymatchusdt']+$query_total['bonusglobalusdt']+$query_total['basecampusdt']+$count_coin;
+            }
+            elseif($type == 'krp')
+            {
+                $query_box              = $this->M_user->get_totalbox_krp_byid($user_id);
+                $box                    = $query_box['krp'];
+                $query_total            = $this->M_user->get_total_bonus($user_id)->row_array();
+                $limit                  = ($box*300)/100;
+                $total_bonus            = $query_total['sponsorkrp']+$query_total['sponmatchingkrp']+$query_total['pairingmatchkrp']+$query_total['minmatchingkrp']+$query_total['minpairingkrp']+$query_total['binarymatchkrp']+$query_total['bonusglobalkrp']+$query_total['basecampkrp']+$count_coin;
+            }
             
             if($total_bonus <= $limit)
             {
-                return $count_mtm;
+                return $count_coin;
             }
             else
             {
-                $total_now = $total_bonus - $count_mtm;
+                $total_now = $total_bonus - $count_coin;
     
                 if($total_now < $limit)
                 {
                     $bonus_new = $limit - $total_now;
     
-                    if($bonus_new < $count_mtm)
+                    if($bonus_new < $count_coin)
                     {
                         $result = $bonus_new;
                     }
                     else
                     {
-                        $result = $count_mtm;
+                        $result = $count_coin;
                     }
                 }
                 else

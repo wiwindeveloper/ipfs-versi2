@@ -822,14 +822,15 @@
          });
      }
 
-     function changeMTM() {
-         var balance_mtm = <?= $general_balance_mtm + 0 ?>;
-         var price = <?= $price_mtm ?>;
-         document.getElementById("price").value = price + " MTM";
-         document.getElementById("balance").value = balance_mtm.toFixed(10) + " MTM";
-         document.getElementById("coinType").value = "mtm";
+     function changeUSDT() {
+        var balance_usdt = <?= $general_balance_usdt + 0 ?>;
+        var price = <?= $price_usdt; ?>;
 
-         if (balance_mtm < price) {
+        document.getElementById("price").value = price + " USDT";
+        document.getElementById("balance").value = balance_usdt.toFixed(10) + " USDT";
+        document.getElementById("coinType").value = "usdt";
+
+        if (balance_usdt < price) {
              document.getElementById("lowBalance").innerHTML = "<small class='text-danger pt-1'><?= $this->lang->line('low_balance');?></small>";
              document.getElementById("btnBuy").disabled = true;
          } else {
@@ -853,24 +854,23 @@
              document.getElementById("lowBalance").innerHTML = "";
              document.getElementById("btnBuy").disabled = false;
          }
-
      }
 
-     function changeZENX() {
-         var balance_zenx = <?= $general_balance_zenx + 0 ?>;
-         var price = <?= $price_zenx ?>;
+     function changeKRP() {
+        var balance_krp = <?= $general_balance_krp + 0 ?>;
+        var price = <?= $price_krp ?>;
 
-         document.getElementById("price").value = <?= $price_zenx ?> + " ZENX";
-         document.getElementById("balance").value = balance_zenx.toFixed(10) + " ZENX";
-         document.getElementById("coinType").value = "zenx";
+        document.getElementById("price").value = price + " KRP";
+        document.getElementById("balance").value = balance_krp.toFixed(10) + " KRP";
+        document.getElementById("coinType").value = "krp";
 
-         if (balance_zenx < price) {
+        if (balance_krp < price) {
              document.getElementById("lowBalance").innerHTML = "<small class='text-danger pt-1'><?= $this->lang->line('low_balance');?></small>";
              document.getElementById("btnBuy").disabled = true;
-         } else {
-             document.getElementById("lowBalance").innerHTML = "";
-             document.getElementById("btnBuy").disabled = false;
-         }
+        } else {
+            document.getElementById("lowBalance").innerHTML = "";
+            document.getElementById("btnBuy").disabled = false;
+        }
      }
 
      

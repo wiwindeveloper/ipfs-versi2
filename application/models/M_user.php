@@ -1656,6 +1656,24 @@ class M_user extends CI_Model
                         ->get()->row_array();
     }
 
+    public function get_totalbox_usdt_byid($user_id)
+    {
+        return $this->db->select_sum('package.usdt')
+                        ->from('cart')
+                        ->join('package', 'package.id = cart.package_id')
+                        ->where(['cart.user_id' => $user_id, 'cart.is_payment' => '1'])
+                        ->get()->row_array();
+    }
+
+    public function get_totalbox_krp_byid($user_id)
+    {
+        return $this->db->select_sum('package.krp')
+                        ->from('cart')
+                        ->join('package', 'package.id = cart.package_id')
+                        ->where(['cart.user_id' => $user_id, 'cart.is_payment' => '1'])
+                        ->get()->row_array();
+    }
+
     public function get_withdrawal_byid($id)
     {
         return $this->db->select('withdrawal.*, user.email')
@@ -2279,5 +2297,15 @@ class M_user extends CI_Model
                         ->from($table)
                         ->order_by('id', $order)
                         ->get()->result();
+    }
+
+    public function get_fil_price()
+    {
+        return $this->db->select('*')
+                        ->from('filecoin_price')
+                        ->order_by('id', 'DESC')
+                        ->limit(1, 0)
+                        ->get()
+                        ->row_array();
     }
 }

@@ -29,13 +29,13 @@
                         </button>
                     </div>
                     <div class="col-lg-4 mb-2">
-                        <button class="btn btn-cancel btn-block btn-purchase" onclick="changeMTM()" value="mtm">
-                            MTM
+                        <button class="btn btn-cancel btn-block btn-purchase" onclick="changeUSDT()" value="usdt">
+                            USDT
                         </button>
                     </div>
                     <div class="col-lg-4 mb-2">
-                        <button class="btn btn-cancel btn-block btn-purchase" onclick="changeZENX()" value="zenx">
-                            ZENX
+                        <button class="btn btn-cancel btn-block btn-purchase" onclick="changeKRP()" value="krp">
+                            KRP
                         </button>
                     </div>
                 </div>
@@ -53,7 +53,6 @@
                     <?php
                     if (empty($cart['name'])) {
                     ?>
-
                         <div class="form-group">
                             <label class="text-white mb-1" for="sponsor"><?= $this->lang->line('recommended');?></label>
                             <input type="text" class="form-control" id="sponsor" name="sponsor" value="<?= set_value('sponsor'); ?>" placeholder="<?= $this->lang->line('recommended_id');?>">
