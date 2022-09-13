@@ -2229,11 +2229,11 @@ class User extends CI_Controller
     {
         $this->_unset_payment();
 
-        $query_user         = $this->M_user->get_user_byemail($this->session->userdata('email'));
-        $query_row_notif    = $this->M_user->row_newnotif_byuser($query_user['id']);
-        $query_new_notif    = $this->M_user->show_newnotif_byuser($query_user['id']);
-        $query_total        = $this->M_user->get_total_bonus_sponsor_byid($query_user['id']);
-        $query_total_excess = $this->M_user->get_total_excess_byid($query_user['id'], 'bonus sponsor');
+        $query_user                 = $this->M_user->get_user_byemail($this->session->userdata('email'));
+        $query_row_notif            = $this->M_user->row_newnotif_byuser($query_user['id']);
+        $query_new_notif            = $this->M_user->show_newnotif_byuser($query_user['id']);
+        $query_total                = $this->M_user->get_total_bonus_sponsor_byid($query_user['id']);
+        $query_total_excess         = $this->M_user->get_total_excess_byid($query_user['id'], 'bonus sponsor');
 
         $data['title']              = $this->lang->line('recommended');
         $data['user']               = $query_user;
@@ -2242,9 +2242,10 @@ class User extends CI_Controller
         $data['amount_notif']       = $query_row_notif;
         $data['list_notif']         = $query_new_notif;
         $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
-        $data['total_excess']       = $query_total_excess['mtm'];
-        $data['total_fil']          = $query_total['filecoin'];
-        $data['total_mtm']          = $query_total['mtm'];
+        $data['total_excess_usdt']       = $query_total_excess['usdt'];
+        $data['total_excess_krp']       = $query_total_excess['krp'];
+        $data['total_usdt']         = $query_total['usdt'];
+        $data['total_krp']          = $query_total['krp'];
         $data['userClass']          = $this;
 
         if ($this->session->userdata('email')) {
@@ -2278,9 +2279,10 @@ class User extends CI_Controller
         $data['excess_bonus']       = $this->M_user->get_excess_sponsor_matching($query_user['id']);
         $data['amount_notif']       = $query_row_notif;
         $data['list_notif']         = $query_new_notif;
-        $data['total_excess']       = $query_total_excess['mtm'];
-        $data['total_fil']          = $query_total['filecoin'];
-        $data['total_mtm']          = $query_total['mtm'];
+        $data['total_excess_usdt']       = $query_total_excess['usdt'];
+        $data['total_excess_krp']       = $query_total_excess['krp'];
+        $data['total_usdt']          = $query_total['usdt'];
+        $data['total_krp']          = $query_total['krp'];
         $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
 
         if ($this->session->userdata('email')) {

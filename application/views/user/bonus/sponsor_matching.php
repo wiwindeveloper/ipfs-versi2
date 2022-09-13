@@ -9,7 +9,7 @@
             <?= $this->lang->line('recommended_matching'); ?>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="<?= base_url('user/bonusList'); ?>">Airdrops/<?= $this->lang->line('mining'); ?></a>
+            <a class="dropdown-item" href="<?= base_url('user/bonusList'); ?>"><?= $this->lang->line('mining'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/sponsor'); ?>"><?= $this->lang->line('recommended'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/miningMatching'); ?>"><?= $this->lang->line('recommended_mining'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/miningGenerasi'); ?>"><?= $this->lang->line('mining_generation'); ?></a>
@@ -24,7 +24,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav navbar-menubonus">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('user/bonusList'); ?>">Airdrops/<?= $this->lang->line('mining'); ?></a>
+                    <a class="nav-link" href="<?= base_url('user/bonusList'); ?>"><?= $this->lang->line('mining'); ?></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('user/sponsor'); ?>"><?= $this->lang->line('recommended'); ?></a>
@@ -75,14 +75,14 @@
                 <thead class="text-tb-head">
                     <tr>
                         <th colspan="2" class="text-right"><?= $this->lang->line('total');?>: </th>
-                        <th class="tb-column"><?= $total_fil; ?> FIL</th>
-                        <th class="tb-column"><?= $total_mtm; ?> MTM</th>
+                        <th class="tb-column"><?= round($total_usdt, 10); ?> USDT</th>
+                        <th class="tb-column"><?= round($total_krp, 10); ?> KRP</th>
                     </tr>
                     <tr>
                         <th><?= $this->lang->line('date');?></th>
                         <th>User ID</th>
-                        <th>Filecoin</th>
-                        <th>MTM</th>
+                        <th>USDT</th>
+                        <th>KRP</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,8 +91,8 @@
                         <tr>
                             <td class="tb-column"><?= date('d/m/Y', $row_bonus->datecreate); ?></td>
                             <td class="tb-column"><?= $row_bonus->username; ?></td>
-                            <td class="tb-column"><?= $row_bonus->filecoin; ?> FIL</td>
-                            <td class="tb-column"><?= $row_bonus->mtm; ?> MTM</td>
+                            <td class="tb-column"><?= round($row_bonus->usdt, 10); ?> USDT</td>
+                            <td class="tb-column"><?= round($row_bonus->krp, 10); ?> KRP</td>
                         </tr>
                     <?php
                     }
@@ -105,12 +105,14 @@
                 <thead class="text-tb-head">
                     <tr>
                         <th colspan="2" class="text-right"><?= $this->lang->line('total');?>: </th>
-                        <th class="tb-column"><?= $total_excess; ?> MTM</th>
+                        <th class="tb-column"><?= round($total_excess_usdt, 10); ?> USDT</th>
+                        <th class="tb-column"><?= round($total_excess_krp, 10); ?> KRP</th>
                     </tr>
                     <tr>
                         <th><?= $this->lang->line('date');?></th>
                         <th>User ID</th>
-                        <th>MTM</th>
+                        <th>USDT</th>
+                        <th>KRP</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -120,7 +122,8 @@
                         <tr>
                             <td class="tb-column"><?= date('d/m/Y', $row_excess->datecreate); ?></td>
                             <td class="tb-column"><?= $row_excess->username; ?></td>
-                            <td class="tb-column"><?= $row_excess->mtm; ?> MTM</td>
+                            <td class="tb-column"><?= round($row_excess->usdt, 10); ?> USDT</td>
+                            <td class="tb-column"><?= round($row_excess->krp, 10); ?> KRP</td>
                         </tr>
                     <?php
                     }

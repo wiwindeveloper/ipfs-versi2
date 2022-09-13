@@ -61,6 +61,8 @@ class Autoscript extends CI_Controller {
         {
             // if($dateBalance != $dateNow)
             // {
+                $query_fil_price = $this->M_user->get_fil_price();
+
                 if($smallestPoint >= 4)
                 {
                     $query_poin = $this->M_user->sum_balance($userid);
@@ -117,7 +119,7 @@ class Autoscript extends CI_Controller {
                             $numberSet = $quotient;
                         }
 
-                        $mtmBonus = $numberSet/2;
+                        $usdtBonus = $numberSet/2;
                         $setAmount = $numberSet*4;
                         $leftoverPointMax = $newLargestPoint - ($numberSet*4);
 
@@ -157,9 +159,9 @@ class Autoscript extends CI_Controller {
                             } 
                         }
 
-                        $limit_bonus        = $this->_check_limit_bonus($userid, $mtmBonus);
-                        $excess_bonus       = $mtmBonus - $limit_bonus;
-                        $limit_count_mtm    = $limit_bonus;
+                        $limit_bonus        = $this->_check_limit_bonus($userid, $usdtBonus, 'usdt');
+                        $excess_bonus       = $usdtBonus - $limit_bonus;
+                        $limit_count_usdt    = $limit_bonus;
 
                         $data_leftover_real = [
                             'user_id' => $userid,
@@ -181,7 +183,7 @@ class Autoscript extends CI_Controller {
                         
                         $data_bonus = [
                             'user_id' => $userid,
-                            'mtm' => $limit_count_mtm,
+                            'usdt' => $limit_count_mtm,
                             'set_amount' => $setAmount,
                             'datecreate' => time()
                         ];
@@ -191,7 +193,7 @@ class Autoscript extends CI_Controller {
                         $data_excess = [
                             'user_id' => $userid,
                             'type_bonus' => '1',
-                            'mtm' => $excess_bonus,
+                            'usdt' => $excess_bonus,
                             'cart_id' => '0',
                             'code_bonus' => '0',
                             'user_sponsor' => '0',
@@ -244,7 +246,7 @@ class Autoscript extends CI_Controller {
                     $numberSet = $quotient;
                 }
 
-                $mtmBonus = $numberSet/2;
+                $usdtBonus = $numberSet/2;
                 $setAmount = $numberSet*4;
                 $leftoverPointMax = $largestPoint - ($numberSet*4);
 
@@ -284,9 +286,9 @@ class Autoscript extends CI_Controller {
                     } 
                 }
 
-                $limit_bonus        = $this->_check_limit_bonus($userid, $mtmBonus);
-                $excess_bonus       = $mtmBonus - $limit_bonus;
-                $limit_count_mtm    = $limit_bonus;
+                $limit_bonus        = $this->_check_limit_bonus($userid, $usdtBonus, 'usdt');
+                $excess_bonus       = $usdtBonus - $limit_bonus;
+                $limit_count_usdt    = $limit_bonus;
 
                 $data_leftover_real = [
                     'user_id' => $userid,
@@ -308,7 +310,7 @@ class Autoscript extends CI_Controller {
                 
                 $data_bonus = [
                     'user_id' => $userid,
-                    'mtm' => $limit_count_mtm,
+                    'usdt' => $limit_count_usdt,
                     'set_amount' => $setAmount,
                     'datecreate' => time()
                 ];
@@ -318,7 +320,7 @@ class Autoscript extends CI_Controller {
                 $data_excess = [
                     'user_id' => $userid,
                     'type_bonus' => '1',
-                    'mtm' => $excess_bonus,
+                    'usdt' => $excess_bonus,
                     'cart_id' => '0',
                     'code_bonus' => '0',
                     'user_sponsor' => '0',
@@ -519,16 +521,12 @@ class Autoscript extends CI_Controller {
     {
         $dateNow = date('Y-m-d');
 
-        //$query_global = $this->M_user->get_data_bydate('mining', 'datecreate', $dateNow)->row_array();
         $query_global   = $this->M_user->get_data_bydate_user('mining', 'datecreate', 'type', $dateNow, '1')->row_array();
-        $query_mtm      = $this->M_user->get_data_bydate_user('mining', 'datecreate', 'type', $dateNow, '2')->row_array();
         $user           = $this->M_user->get_alluser_mining($dateNow)->result();
 
         $global_mining          = $query_global['amount'];
-        $global_airdrop_mtm     = $query_mtm['amount'];
         $date_mining            = $query_global['datecreate'];
         
-
         foreach($user as $row_user)
         {
             $user_id    = $row_user->user_id;
@@ -543,7 +541,6 @@ class Autoscript extends CI_Controller {
             $mining_result  =  $global_mining * $row_user->point;
 
             $start_mining = date('Y-m-d', strtotime("+45 day", strtotime($datepay)));
-            $aidrop_mtm =  $global_airdrop_mtm * $row_user->point;
 
             if($dateNow >= $start_mining)
             {
@@ -610,53 +607,6 @@ class Autoscript extends CI_Controller {
     
                     // }
                 }
-            }
-
-            $start_mining_mtm   = date('Y-m-d', strtotime("+1 day", strtotime($datepay)));
-            $all_use_mining_mtm = (strtotime($dateNow) - strtotime($start_mining)) / (60 * 60 * 24);
-
-            $limit_bonus        = $this->_check_limit_bonus($user_id, $aidrop_mtm);
-
-            $excess_bonus       = $aidrop_mtm - $limit_bonus;
-            $limit_count_mtm    = $limit_bonus;
-
-            if($dateNow >= $start_mining_mtm)
-            {
-                if($global_airdrop_mtm > 0 )
-                {
-                    if($all_use_mining_mtm <= 540)
-                    {
-                        $data_airdrop = [
-                            'user_id' => $user_id,
-                            'amount' => $limit_count_mtm,
-                            'box'  => $box,
-                            'cart_id' => $cart_id,
-                            'datecreate' => $date_mining
-                        ];
-    
-                        $check_airdrop = $this->M_user->row_data_bydate_user('airdrop_mtm', 'datecreate', 'cart_id', $dateNow, $cart_id);
-    
-                        if($check_airdrop < 1)
-                        {
-                            $this->M_user->insert_data('airdrop_mtm', $data_airdrop);
-
-                            $data_excess = [
-                                'user_id' => $user_id,
-                                'type_bonus' => '1',
-                                'mtm' => $excess_bonus,
-                                'cart_id' => $cart_id,
-                                'code_bonus' => '0',
-                                'user_sponsor' => '0',
-                                'generation' => '0',
-                                'box' => $box,
-                                'note' => 'airdrop mtm',
-                                'datecreate' => $date_mining
-                            ];
-
-                            $this->M_user->insert_data('excess_bonus', $data_excess);
-                        }
-                    }
-                } 
             }
         }
     }
@@ -1446,52 +1396,60 @@ class Autoscript extends CI_Controller {
         }
     }
 
-    private function _check_limit_bonus($user_id, $count_mtm)
+    private function _check_limit_bonus($user_id, $count_coin, $type)
     {
         $query_top = $this->M_user->get_user_toplevel($user_id);
         $user_top = $query_top['id'] ?? null;
 
         if($user_id == $user_top)
         {
-            return $count_mtm;
+            return $count_coin;
         }
         else
         {
-            $query_box      = $this->M_user->get_totalbox_byid($user_id);
-            $query_total    = $this->M_user->get_total_bonus($user_id)->row_array();
-            $query_airdrop  = $this->M_user->sum_airdrop_byuser($user_id); 
-
-            $box    = $query_box['mtm'];
-            $limit  = ($box*300)/100;
-
-            $total_bonus = $query_airdrop['amount']+$query_total['sponsormtm']+$query_total['sponmatchingmtm']+$query_total['pairingmatch']+$query_total['binarymatch']+$query_total['bonusglobal']+$query_total['basecampmtm']+$count_mtm;
+            if($type == 'usdt')
+            {
+                $query_box              = $this->M_user->get_totalbox_usdt_byid($user_id);
+                $box                    = $query_box['usdt'];
+                $query_total            = $this->M_user->get_total_bonus($user_id)->row_array();
+                $limit                  = ($box*300)/100;
+                $total_bonus            = $query_total['sponsorusdt']+$query_total['sponmatchingusdt']+$query_total['pairingmatchusdt']+$query_total['minmatchingusdt']+$query_total['minpairingusdt']+$query_total['binarymatchusdt']+$query_total['bonusglobalusdt']+$query_total['basecampusdt']+$count_coin;
+            }
+            elseif($type == 'krp')
+            {
+                $query_box              = $this->M_user->get_totalbox_krp_byid($user_id);
+                $box                    = $query_box['krp'];
+                $query_total            = $this->M_user->get_total_bonus($user_id)->row_array();
+                $limit                  = ($box*300)/100;
+                $total_bonus            = $query_total['sponsorkrp']+$query_total['sponmatchingkrp']+$query_total['pairingmatchkrp']+$query_total['minmatchingkrp']+$query_total['minpairingkrp']+$query_total['binarymatchkrp']+$query_total['bonusglobalkrp']+$query_total['basecampkrp']+$count_coin;
+            }
             
             if($total_bonus <= $limit)
             {
-                return $count_mtm;
+                return $count_coin;
             }
             else
             {
-                $total_now = $total_bonus - $count_mtm;
-
+                $total_now = $total_bonus - $count_coin;
+    
                 if($total_now < $limit)
                 {
                     $bonus_new = $limit - $total_now;
-
-                    if($bonus_new < $count_mtm)
+    
+                    if($bonus_new < $count_coin)
                     {
                         $result = $bonus_new;
                     }
                     else
                     {
-                        $result = $count_mtm;
+                        $result = $count_coin;
                     }
                 }
                 else
                 {
                     $result = 0;
                 }
-
+    
                 return $result;
             }
         }

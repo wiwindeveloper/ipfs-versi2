@@ -249,7 +249,7 @@ class M_user extends CI_Model
 
     public function get_bonus_bysponsor($id)
     {
-        return $this->db->select('bonus.datecreate, user.username, bonus.filecoin, bonus.mtm')
+        return $this->db->select('bonus.datecreate, user.username, bonus.filecoin, bonus.mtm, bonus.usdt, bonus.krp')
             ->from('bonus')
             ->join('cart', 'bonus.cart_id = cart.id')
             ->join('user', 'cart.user_id = user.id')
@@ -260,7 +260,7 @@ class M_user extends CI_Model
 
     public function get_bonus_bysponsormatching($id)
     {
-        return $this->db->select('bonus_sm.datecreate, user.username, bonus_sm.filecoin, bonus_sm.mtm')
+        return $this->db->select('bonus_sm.datecreate, user.username, bonus_sm.filecoin, bonus_sm.mtm, bonus_sm.usdt, bonus_sm.krp')
             ->from('bonus_sm')
             ->join('cart', 'bonus_sm.cart_id = cart.id')
             ->join('user', 'cart.user_id = user.id')
@@ -1839,8 +1839,8 @@ class M_user extends CI_Model
     
     public function get_total_bonus_sponsor_byid($userid)
     {
-        return $this->db->select_sum('filecoin')
-                        ->select_sum('mtm')
+        return $this->db->select_sum('usdt')
+                        ->select_sum('krp')
                         ->from('bonus')
                         ->where('user_id', $userid)
                         ->get()->row_array();
@@ -1848,8 +1848,8 @@ class M_user extends CI_Model
     
     public function get_total_bonus_sponsormatch_byid($userid)
     {
-        return $this->db->select_sum('filecoin')
-                        ->select_sum('mtm')
+        return $this->db->select_sum('usdt')
+                        ->select_sum('krp')
                         ->from('bonus_sm')
                         ->where('user_id', $userid)
                         ->get()->row_array();
@@ -2104,7 +2104,7 @@ class M_user extends CI_Model
     
     public function get_excess_sponsor($id)
     {
-        return $this->db->select('excess_bonus.datecreate, user.username, excess_bonus.mtm')
+        return $this->db->select('excess_bonus.datecreate, user.username, excess_bonus.mtm, excess_bonus.usdt, excess_bonus.krp')
             ->from('excess_bonus')
             ->join('cart', 'excess_bonus.cart_id = cart.id')
             ->join('user', 'cart.user_id = user.id')
@@ -2117,7 +2117,7 @@ class M_user extends CI_Model
 
     public function get_excess_sponsor_matching($id)
     {
-        return $this->db->select('excess_bonus.datecreate, user.username, excess_bonus.mtm')
+        return $this->db->select('excess_bonus.datecreate, user.username, excess_bonus.mtm, excess_bonus.usdt, excess_bonus.krp')
             ->from('excess_bonus')
             ->join('cart', 'excess_bonus.cart_id = cart.id')
             ->join('user', 'cart.user_id = user.id')
@@ -2142,7 +2142,8 @@ class M_user extends CI_Model
 
     public function get_total_excess_byid($userid, $note)
     {
-        return $this->db->select_sum('mtm')
+        return $this->db->select_sum('usdt')
+            ->select_sum('krp')
             ->from('excess_bonus')
             ->where('user_id', $userid)
             ->where('note', $note)
