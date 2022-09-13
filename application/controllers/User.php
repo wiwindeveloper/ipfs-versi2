@@ -1325,28 +1325,28 @@ class User extends CI_Controller
         $this->_insertFm($last_cartid);
 
         //Excess Bonus
-        // $this->_insert_Excess($userId);
+        $this->_insert_Excess($userId);
 
-        // $this->session->set_userdata('cart', $last_cartid);
-        // $this->session->set_flashdata('message', '<div class="alert alert-info" role="alert">'.$this->lang->line('success_purchase').'</div>');
-        // redirect('user/history');
+        $this->session->set_userdata('cart', $last_cartid);
+        $this->session->set_flashdata('message', '<div class="alert alert-info" role="alert">'.$this->lang->line('success_purchase').'</div>');
+        redirect('user/history');
     }
     
     private function _insert_Excess($userId)
     {
-        $query_excess = $this->M_user->get_all_excess($userId);
+        $query_excess_usdt = $this->M_user->get_all_excess_usdt($userId);
 
-        if(!empty($query_excess))
+        if(!empty($query_excess_usdt))
         {
-            foreach($query_excess as $row)
+            foreach($query_excess_usdt as $row)
             {
-                $limit_bonus        = $this->_check_limit_bonus($userId, $row->mtm);
+                $limit_bonus        = $this->_check_limit_bonus($userId, $row->usdt, 'usdt');
                 
-                $limit_count_mtm    = $limit_bonus;
-                $excess_bonus       = $row->mtm - $limit_count_mtm;    
+                $limit_count_usdt    = $limit_bonus;
+                $excess_bonus        = $row->usdt - $limit_count_usdt;    
                 
                 //ketika limit 0 tidak jalan lagi
-                if($limit_count_mtm == 0)
+                if($limit_count_usdt == 0)
                 {
                     break;
                 }
@@ -1360,7 +1360,7 @@ class User extends CI_Controller
                             'cart_id' => $row->cart_id,
                             'code_bonus' => $row->code_bonus,
                             'filecoin' => 0,
-                            'mtm' => $limit_count_mtm,
+                            'usdt' => $limit_count_usdt,
                             'datecreate' => $row->datecreate
                         ];
 
@@ -1376,7 +1376,7 @@ class User extends CI_Controller
                             'cart_id' => $row->cart_id,
                             'code_bonus' => $row->code_bonus,
                             'filecoin' => 0,
-                            'mtm' => $limit_count_mtm,
+                            'usdt' => $limit_count_usdt,
                             'datecreate' => $row->datecreate
                         ];
 
@@ -1389,7 +1389,7 @@ class User extends CI_Controller
                     {
                         $data = [
                             'user_id' => $row->user_id,
-                            'mtm' => $limit_count_mtm,
+                            'usdt' => $limit_count_usdt,
                             'set_amount' => '0',
                             'datecreate' => $row->datecreate
                         ];
@@ -1399,27 +1399,12 @@ class User extends CI_Controller
                         
                         $this->_update_excess($excess_bonus, $row->id);
                     }
-                    elseif($row->note == 'airdrop mtm')
-                    {
-                        $data = [
-                            'user_id' => $row->user_id,
-                            'cart_id' => $row->cart_id,
-                            'amount' => $limit_count_mtm,
-                            'box' => $row->box,
-                            'datecreate' => $row->datecreate
-                        ];
-
-                        $this->M_user->insert_data('airdrop_mtm', $data);
-
-                        //update excess bonus
-                        $this->_update_excess($excess_bonus, $row->id);
-                    }
                     elseif($row->note == 'bonus pairing matching')
                     {
                         $data = [
                             'user_id' => $row->user_id,
                             'user_sponsor' => $row->user_sponsor,
-                            'mtm' => $limit_count_mtm,
+                            'usdt' => $limit_count_usdt,
                             'generation' => $row->generation,
                             'datecreate' => $row->datecreate
                         ];
@@ -1433,7 +1418,7 @@ class User extends CI_Controller
                     {
                         $data = [
                             'user_id' => $row->user_id,
-                            'mtm' => $limit_count_mtm,
+                            'usdt' => $limit_count_usdt,
                             'level_fm' => $row->level_fm,
                             'note_level' => $row->note_level,
                             'datecreate' => $row->datecreate
@@ -1450,7 +1435,7 @@ class User extends CI_Controller
                             'user_id' => $row->user_id,
                             'id_bs' => $row->id_bs,
                             'cart_id' => $row->cart_id,
-                            'mtm' => $limit_count_mtm,
+                            'usdt' => $limit_count_usdt,
                             'code_bonus' => $row->code_bonus,
                             'filecoin' => '0',
                             'type' => '1',

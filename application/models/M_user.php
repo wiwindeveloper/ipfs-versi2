@@ -1827,6 +1827,15 @@ class M_user extends CI_Model
                         ->order_by('id', 'ASC')
                         ->get()->result();
     }
+
+    public function get_all_excess_usdt($user_id)
+    {
+        return $this->db->select('*')
+                        ->from('excess_bonus')
+                        ->where(['user_id' => $user_id, 'usdt != ' => '0'])
+                        ->order_by('id', 'ASC')
+                        ->get()->result();
+    }
     
     public function get_total_bonus_sponsor_byid($userid)
     {
