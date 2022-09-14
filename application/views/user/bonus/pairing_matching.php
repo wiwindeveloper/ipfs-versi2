@@ -89,7 +89,7 @@
                         <tr>
                             <td class="tb-column"><?= date('d/m/Y', $row_bonus->datecreate); ?></td>
                             <td class="tb-column"><?= $row_bonus->username; ?></td>
-                            <td class="tb-column"><?= $row_bonus->mtm * 2; ?> <?= $this->lang->line('set');?></td>
+                            <td class="tb-column"><?= $row_bonus->set_amount / 2; ?> <?= $this->lang->line('set');?></td>
                             <td class="tb-column"><?= $row_bonus->mtm; ?> MTM</td>
                         </tr>
                     <?php

@@ -2318,4 +2318,22 @@ class M_user extends CI_Model
                         ->get()
                         ->row_array();
     }
+
+    public function get_set_amount_bydate($userid, $date)
+    {
+        return $this->db->select_sum('set_amount')
+                        ->from('bonus_maxmatching')
+                        ->where(['user_id' => $userid, 'from_unixtime(datecreate, "%Y-%m-%d") = ' => $date])
+                        ->get()->row_array();
+    }
+
+    public function get_last_reset_pairing($user_id)
+    {
+        return $this->db->select('*')
+                        ->from('bonus_maxmatching')
+                        ->where(['user_id' => $user_id, 'reset_date != ' => '0'])
+                        ->order_by('id', 'DESC')
+                        ->limit(1,0)
+                        ->get()->row_array();
+    }
 }

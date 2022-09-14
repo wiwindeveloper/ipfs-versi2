@@ -15,7 +15,7 @@ class Autoscript extends CI_Controller {
     private $arrTodayL = array();
     private $arrTodayR = array();
 
-    /**bonus*/
+    /**bonus pairing*/
     public function pairingMatching()
     {
         $dateNow = date('Y-m-d');
@@ -35,10 +35,6 @@ class Autoscript extends CI_Controller {
 
     private function _omset($countPointL, $countPointR, $userid, $date)
     {
-        //check whether the user has received a bonus
-        //$checkBonusSet = $this->M_user->get_last_balance($userid);
-        //$checkBonusSet = $this->M_user->balance_now($userid)->row_array();
-
         $checkBonusSet = $this->M_user->balance_now_nol($userid)->row_array();
             
         if($countPointL < $countPointR)
@@ -53,181 +49,177 @@ class Autoscript extends CI_Controller {
             $largestPoint  = $countPointL;
             $largestPosition = 'L';
         } 
-
-        // $dateNow = $date;
-        // $dateBalance = date('Y-m-d', $checkBonusSet['datecreate']);
         
         if($checkBonusSet)
         {
-            // if($dateBalance != $dateNow)
-            // {
-                $query_fil_price = $this->M_user->get_fil_price();
+            $query_fil_price = $this->M_user->get_fil_price();
 
-                if($smallestPoint >= 4)
+            if($smallestPoint >= 4)
+            {
+                $query_poin = $this->M_user->sum_balance($userid);
+                $getAmount = $query_poin['set_amount'];
+                $query_balance_now = $this->M_user->balance_now($userid)->row_array();
+                $balance_now_left = $query_balance_now['amount_left'];
+                $balance_now_right = $query_balance_now['amount_right'];
+
+                $query_cutPoint = $this->M_user->sum_leftover($userid);
+
+                //get amount today
+                $query_set_amount_today = $this->M_user->get_set_amount_bydate($userid, $date);
+                $amount_set_today = $query_set_amount_today['set_amount'] ?? null;
+
+                $increasePointLeft      = $this->_countPointTodayL($userid) - $amount_set_today;
+                $increasePointRight     = $this->_countPointTodayR($userid) - $amount_set_today;
+                
+                $newTotalPointL = $checkBonusSet['balance_a'] + $increasePointLeft;
+                $newTotalPointR = $checkBonusSet['balance_b'] + $increasePointRight;
+                
+                if($newTotalPointL < $newTotalPointR)
                 {
-                    $query_poin = $this->M_user->sum_balance($userid);
-                    $getAmount = $query_poin['set_amount'];
-                    $query_balance_now = $this->M_user->balance_now($userid)->row_array();
-                    $balance_now_left = $query_balance_now['amount_left'];
-                    $balance_now_right = $query_balance_now['amount_right'];
-
-                    $query_cutPoint = $this->M_user->sum_leftover($userid);
-                    // $cutPointLeft = $query_cutPoint['amount_left'];
-                    // $cutPointRight = $query_cutPoint['amount_right'];
-
-                    //$increasePointLeft = $countPointL - ($checkBonusSet['amount_left']+$getAmount);
-                    // $increasePointRight = $countPointR - ($checkBonusSet['amount_right']+$getAmount);
-
-                    //$newTotalPointL = $checkBonusSet['amount_left'] + $increasePointLeft;
-                    // $newTotalPointR = $checkBonusSet['amount_right'] + $increasePointRight;
-                    
-                    // $increasePointLeft  = $countPointL - ($balance_now_left+$getAmount);
-                    // $increasePointRight = $countPointR - ($balance_now_right+$getAmount);
-
-                    $increasePointLeft  = $this->_countPointTodayL($userid);
-                    $increasePointRight = $this->_countPointTodayR($userid);
-                    
-                    $newTotalPointL = $checkBonusSet['balance_a'] + $increasePointLeft;
-                    $newTotalPointR = $checkBonusSet['balance_b'] + $increasePointRight;
-                    
-                    if($newTotalPointL < $newTotalPointR)
-                    {
-                        $newSmallestPoint = $newTotalPointL;
-                        $newLargestPoint  = $newTotalPointR;
-                        $newLargestPosition  = 'R';
-                    }
-                    else
-                    {
-                        $newSmallestPoint = $newTotalPointR;
-                        $newLargestPoint  = $newTotalPointL;
-                        $newLargestPosition = 'L';
-                    }
-
-                    if($newSmallestPoint >= 4)
-                    { 
-                        $leftoverPoint = $newSmallestPoint % 4; //sisa bagi 4
-                        $quotient = ($newSmallestPoint - $leftoverPoint)/4;  //number of sets obtained
-
-                        $check_level = $this->_level_check($userid);
-
-                        if($quotient >= $check_level)
-                        {
-                            $numberSet = $check_level;
-                        }
-                        else
-                        {
-                            $numberSet = $quotient;
-                        }
-
-                        $usdtBonus = $numberSet/2;
-                        $setAmount = $numberSet*4;
-                        $leftoverPointMax = $newLargestPoint - ($numberSet*4);
-
-                        // // $leftoverPoint      = $newSmallestPoint - 4; //sisa bagi 4
-                        // // $leftoverPointMax   = $newLargestPoint - 4;
-
-                        if($newLargestPosition == 'L')
-                        {
-                            $leftoverA = $leftoverPointMax;
-                            $leftoverB = $leftoverPoint;
-                            
-                            if($leftoverA < $leftoverB)
-                            {
-                                $balance_a = 0;
-                                $balance_b = $leftoverPoint;
-                            }
-                            else
-                            {
-                                $balance_a = $leftoverPointMax;
-                                $balance_b = 0;
-                            }
-                        }
-                        else
-                        {
-                            $leftoverA = $leftoverPoint;
-                            $leftoverB = $leftoverPointMax;
-
-                            if($leftoverA < $leftoverB)
-                            {
-                                $balance_a = 0;
-                                $balance_b = $leftoverPointMax;
-                            }
-                            else
-                            {
-                                $balance_a = $leftoverPoint;
-                                $balance_b = 0;
-                            } 
-                        }
-
-                        $limit_bonus        = $this->_check_limit_bonus($userid, $usdtBonus, 'usdt');
-                        $excess_bonus       = $usdtBonus - $limit_bonus;
-                        $limit_count_usdt    = $limit_bonus;
-
-                        $data_leftover_real = [
-                            'user_id' => $userid,
-                            'amount_left' => $leftoverA,
-                            'amount_right' => $leftoverB,
-                            'datecreate' => time()
-                        ];
-
-                        $insert_leftover_real = $this->M_user->insert_data('leftovers_real', $data_leftover_real);
-
-                        $data_balance = [
-                            'user_id' => $userid,
-                            'balance_a' => $balance_a,
-                            'balance_b' => $balance_b,
-                            'datecreate' => time()
-                        ];
-    
-                        $insert_balance = $this->M_user->insert_data('balance_point', $data_balance);
-                        
-                        $data_bonus = [
-                            'user_id' => $userid,
-                            'usdt' => $limit_count_mtm,
-                            'set_amount' => $setAmount,
-                            'datecreate' => time()
-                        ];
-                        
-                        $insert_maxmatching = $this->M_user->insert_data('bonus_maxmatching', $data_bonus);
-
-                        $data_excess = [
-                            'user_id' => $userid,
-                            'type_bonus' => '1',
-                            'usdt' => $excess_bonus,
-                            'cart_id' => '0',
-                            'code_bonus' => '0',
-                            'user_sponsor' => '0',
-                            'generation' => '0',
-                            'note' => 'bonus pairing',
-                            'datecreate' => time()
-                        ];
-
-                        $insert = $this->M_user->insert_data('excess_bonus', $data_excess);
-                    }
-                    else
-                    {
-                        if($newLargestPosition == 'L')
-                        {
-                            $leftoverA = $newLargestPoint;
-                            $leftoverB = $newSmallestPoint;
-                        }
-                        else
-                        {
-                            $leftoverA = $newSmallestPoint;
-                            $leftoverB = $newLargestPoint;
-                        }
-
-                        $data_balance = [
-                            'user_id' => $userid,
-                            'balance_a' => $leftoverA,
-                            'balance_b' => $leftoverB,
-                            'datecreate' => time()
-                        ];
-
-                        $insert_balance = $this->M_user->insert_data('balance_point', $data_balance);
-                    }
+                    $newSmallestPoint = $newTotalPointL;
+                    $newLargestPoint  = $newTotalPointR;
+                    $newLargestPosition  = 'R';
                 }
-            //}
+                else
+                {
+                    $newSmallestPoint = $newTotalPointR;
+                    $newLargestPoint  = $newTotalPointL;
+                    $newLargestPosition = 'L';
+                }
+
+                if($newSmallestPoint >= 4)
+                { 
+                    $leftoverPoint = $newSmallestPoint % 4; //sisa bagi 4
+                    $quotient = ($newSmallestPoint - $leftoverPoint)/4;  //number of sets obtained
+
+                    $check_level = $this->_level_check($userid);
+
+                    //berapa set yang sudah didapatkan (cari reset date terakhir lalu sum data yang tanggalnya lebih besar dari reset date terakhir)
+                    $query_last_reset = $this->M_user->get_last_reset_pairing($userid);
+                    $date_last_reset = $query_last_reset['reset_date'];
+                    
+
+                    //set yang harus didapatkan = limit - set yang sudah didapatkan
+
+                    //jika quotient >= set yang harus didapatkan, maka number set = set yang harus didapatkan, 
+                    //jika tidak maka number set = quotient
+                    if($quotient >= $check_level)
+                    {
+                        $numberSet = $check_level;
+                    }
+                    else
+                    {
+                        $numberSet = $quotient;
+                    }
+                    
+                    $usdtBonus = $numberSet/2;
+                    $setAmount = $numberSet*4;
+                    $leftoverPointMax = $newLargestPoint - ($numberSet*4);
+                    
+                    //jika limit == number set + set yang sudah didapatkan, maka reset balance terkecil
+                    //jika tidak maka balance tidak reset
+                    if($newLargestPosition == 'L')
+                    {
+                        $leftoverA = $leftoverPointMax;
+                        $leftoverB = $leftoverPoint;
+                        
+                        if($leftoverA < $leftoverB)
+                        {
+                            $balance_a = 0;
+                            $balance_b = $leftoverPoint;
+                        }
+                        else
+                        {
+                            $balance_a = $leftoverPointMax;
+                            $balance_b = 0;
+                        }
+                    }
+                    else
+                    {
+                        $leftoverA = $leftoverPoint;
+                        $leftoverB = $leftoverPointMax;
+
+                        if($leftoverA < $leftoverB)
+                        {
+                            $balance_a = 0;
+                            $balance_b = $leftoverPointMax;
+                        }
+                        else
+                        {
+                            $balance_a = $leftoverPoint;
+                            $balance_b = 0;
+                        } 
+                    }
+
+                    $limit_bonus        = $this->_check_limit_bonus($userid, $usdtBonus, 'usdt');
+                    $excess_bonus       = $usdtBonus - $limit_bonus;
+                    $limit_count_usdt    = $limit_bonus;
+
+                    $data_leftover_real = [
+                        'user_id' => $userid,
+                        'amount_left' => $leftoverA,
+                        'amount_right' => $leftoverB,
+                        'datecreate' => time()
+                    ];
+
+                    $insert_leftover_real = $this->M_user->insert_data('leftovers_real', $data_leftover_real);
+
+                    $data_balance = [
+                        'user_id' => $userid,
+                        'balance_a' => $balance_a,
+                        'balance_b' => $balance_b,
+                        'datecreate' => time()
+                    ];
+
+                    $insert_balance = $this->M_user->insert_data('balance_point', $data_balance);
+                    
+                    
+                    $data_bonus = [
+                        'user_id' => $userid,
+                        'usdt' => $limit_count_usdt,
+                        'set_amount' => $setAmount,
+                        'datecreate' => time()
+                    ];
+                    
+                    $insert_maxmatching = $this->M_user->insert_data('bonus_maxmatching', $data_bonus);
+                    
+                    $data_excess = [
+                        'user_id' => $userid,
+                        'type_bonus' => '1',
+                        'usdt' => $excess_bonus,
+                        'cart_id' => '0',
+                        'code_bonus' => '0',
+                        'user_sponsor' => '0',
+                        'generation' => '0',
+                        'note' => 'bonus pairing',
+                        'datecreate' => time()
+                    ];
+
+                    $insert = $this->M_user->insert_data('excess_bonus', $data_excess);
+                }
+                else
+                {
+                    if($newLargestPosition == 'L')
+                    {
+                        $leftoverA = $newLargestPoint;
+                        $leftoverB = $newSmallestPoint;
+                    }
+                    else
+                    {
+                        $leftoverA = $newSmallestPoint;
+                        $leftoverB = $newLargestPoint;
+                    }
+
+                    $data_balance = [
+                        'user_id' => $userid,
+                        'balance_a' => $leftoverA,
+                        'balance_b' => $leftoverB,
+                        'datecreate' => time()
+                    ];
+
+                    $insert_balance = $this->M_user->insert_data('balance_point', $data_balance);
+                }
+            }
         }
         else
         {
@@ -249,9 +241,6 @@ class Autoscript extends CI_Controller {
                 $usdtBonus = $numberSet/2;
                 $setAmount = $numberSet*4;
                 $leftoverPointMax = $largestPoint - ($numberSet*4);
-
-                // $leftoverPoint      = $smallestPoint - 4; //sisa bagi 4
-                // $leftoverPointMax   = $largestPoint - 4;
                 
                 if($largestPosition == 'L')
                 {
