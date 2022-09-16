@@ -45,7 +45,7 @@
                                             <td><?= $row_list->name; ?></td>
                                             <td><?= $row_list->member; ?></td>
                                             <td><?= $row_list->purchase; ?></td>
-                                            <td><?= $row_list->mtm.' MTM'; ?></td>
+                                            <td><?= $row_list->usdt.' USDT'; ?></td>
                                         </tr>
                                     <?php
                                 }
@@ -83,7 +83,7 @@
                                             <td><?= $row_gather->name; ?></td>
                                             <td><?= $row_gather->member; ?></td>
                                             <td><?= $row_gather->purchase; ?></td>
-                                            <td><?= $row_gather->mtm.' MTM'; ?></td>
+                                            <td><?= $row_gather->usdt.' USDT'; ?></td>
                                         </tr>
                                     <?php
                                 }
@@ -121,7 +121,7 @@
                                             <td><?= $row_excess->name; ?></td>
                                             <td><?= $row_excess->member; ?></td>
                                             <td><?= $row_excess->purchase; ?></td>
-                                            <td><?= $row_excess->mtm.' MTM'; ?></td>
+                                            <td><?= $row_excess->usdt.' USDT'; ?></td>
                                         </tr>
                                     <?php
                                 }

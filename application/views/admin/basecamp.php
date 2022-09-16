@@ -80,7 +80,7 @@
                                 </td>
                                 <td>
                                     <a href="<?= base_url('admin/detailBasecampOmset/').$row_basecamp->id.'/'.$row_basecamp->userid;?>">
-                                        <?= !empty($bonus) ? $bonus : '0'; ?> MTM
+                                        <?= !empty($bonus) ? $bonus : '0'; ?> USDT
                                     </a>
                                 </td>
                             </tr>

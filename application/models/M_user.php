@@ -140,7 +140,7 @@ class M_user extends CI_Model
 
     public function show_cart_byid($id)
     {
-        return $this->db->select('cart.id, cart.datecreate, cart.update_date, package.name, package.type, cart.fill, cart.usdt, cart.mtm, cart.zenx, cart.is_payment')
+        return $this->db->select('cart.id, cart.datecreate, cart.update_date, package.name, package.type, cart.fill, cart.usdt, cart.mtm, cart.zenx, cart.usdt, cart.krp, cart.is_payment')
             ->from('cart')
             ->join('package', 'cart.package_id = package.id')
             ->where('cart.user_id', $id)
@@ -353,7 +353,7 @@ class M_user extends CI_Model
 
     public function get_bonus_basecamp2($id)
     {
-        return $this->db->select('bonus_basecamp.update_date, user.username, bonus_basecamp.cart_id, bonus_basecamp.team, bonus_basecamp.filecoin, bonus_basecamp.mtm, bonus_basecamp.type')
+        return $this->db->select('bonus_basecamp.update_date, user.username, bonus_basecamp.cart_id, bonus_basecamp.team, bonus_basecamp.filecoin, bonus_basecamp.mtm, bonus_basecamp.usdt, bonus_basecamp.type')
             ->from('bonus_basecamp')
             ->join('cart', 'bonus_basecamp.cart_id = cart.id')
             ->join('user', 'cart.user_id = user.id')
@@ -364,13 +364,13 @@ class M_user extends CI_Model
     
     public function get_bonus_basecamp($id)
     {
-        return $this->db->select('user.username, basecamp_name.name AS bs_name, bonus_basecamp.update_date, bonus_basecamp.cart_id, bonus_basecamp.team, bonus_basecamp.filecoin, bonus_basecamp.mtm, bonus_basecamp.type, package.name')
+        return $this->db->select('user.username, basecamp_name.name AS bs_name, bonus_basecamp.update_date, bonus_basecamp.cart_id, bonus_basecamp.team, bonus_basecamp.usdt, bonus_basecamp.type, package.name')
             ->from('bonus_basecamp')
             ->join('cart', 'bonus_basecamp.cart_id = cart.id')
             ->join('user', 'cart.user_id = user.id')
             ->join('package', 'package.id = cart.package_id')
             ->join('basecamp_name', 'bonus_basecamp.id_bs = basecamp_name.id', 'left')
-            ->where(['bonus_basecamp.user_id' => $id, 'status' => '1', 'bonus_basecamp.mtm !=' => '0'])
+            ->where(['bonus_basecamp.user_id' => $id, 'status' => '1', 'bonus_basecamp.usdt !=' => '0'])
             ->order_by('bonus_basecamp.update_date', 'DESC')
             ->get()->result();
     }
@@ -1955,7 +1955,7 @@ class M_user extends CI_Model
     
     public function get_total_basecamp_byid($userid)
     {
-        return $this->db->select_sum('mtm')
+        return $this->db->select_sum('usdt')
                         ->from('bonus_basecamp')
                         ->where(['user_id' => $userid, 'status' => 1])
                         ->get()->row_array();
@@ -1975,7 +1975,7 @@ class M_user extends CI_Model
     {
         return $this->db->select('basecamp_name.id, basecamp_name.name, user.id as userid, user.username, 
                                 (SELECT sum(package.point) FROM cart JOIN package ON cart.package_id = package.id JOIN user as a ON a.id = cart.user_id WHERE cart.is_payment = 1 AND a.id_basecamp = basecamp_name.id AND cart.user_id != user.id) omset, 
-                                (SELECT sum(bonus_basecamp.mtm) FROM bonus_basecamp WHERE bonus_basecamp.id_bs = basecamp_name.id and bonus_basecamp.user_id = user.id) bonus, (SELECT sum(excess_bonus.mtm) FROM excess_bonus WHERE excess_bonus.user_id = user.id AND excess_bonus.note = "bonus basecamp") excess')
+                                (SELECT sum(bonus_basecamp.usdt) FROM bonus_basecamp WHERE bonus_basecamp.id_bs = basecamp_name.id and bonus_basecamp.user_id = user.id) bonus, (SELECT sum(excess_bonus.usdt) FROM excess_bonus WHERE excess_bonus.user_id = user.id AND excess_bonus.note = "bonus basecamp") excess')
                         ->from('basecamp_name')
                         ->join('basecamp_leader', 'basecamp_leader.id_bs = basecamp_name.id')
                         ->join('user', 'user.id = basecamp_leader.user_id')
@@ -2027,21 +2027,21 @@ class M_user extends CI_Model
     
     public function get_omset_bybasecamp($id_bs, $iduser)
     {
-        return $this->db->select('bonus_basecamp.datecreate, user.username, basecamp_name.name, (SELECT b.username from cart as a JOIN user as b on b.id = a.user_id WHERE a.id = bonus_basecamp.cart_id) member, (SELECT d.name from cart as c JOIN package as d on d.id = c.package_id WHERE c.id = bonus_basecamp.cart_id) purchase, bonus_basecamp.mtm')
+        return $this->db->select('bonus_basecamp.datecreate, user.username, basecamp_name.name, (SELECT b.username from cart as a JOIN user as b on b.id = a.user_id WHERE a.id = bonus_basecamp.cart_id) member, (SELECT d.name from cart as c JOIN package as d on d.id = c.package_id WHERE c.id = bonus_basecamp.cart_id) purchase, bonus_basecamp.usdt')
                         ->from('bonus_basecamp')
                         ->join('user', 'user.id = bonus_basecamp.user_id')
                         ->join('basecamp_name', 'basecamp_name.id = bonus_basecamp.id_bs')
-                        ->where(['bonus_basecamp.id_bs' => $id_bs, 'bonus_basecamp.user_id' => $iduser, 'bonus_basecamp.mtm !=' =>'0', 'bonus_basecamp.status' => '1'])
+                        ->where(['bonus_basecamp.id_bs' => $id_bs, 'bonus_basecamp.user_id' => $iduser, 'bonus_basecamp.usdt !=' =>'0', 'bonus_basecamp.status' => '1'])
                         ->get()->result();
     }
     
     public function get_omset_bybasecamp_gather($id_bs, $iduser)
     {
-        return $this->db->select('bonus_basecamp.datecreate, user.username, basecamp_name.name, (SELECT b.username from cart as a JOIN user as b on b.id = a.user_id WHERE a.id = bonus_basecamp.cart_id) member, (SELECT d.name from cart as c JOIN package as d on d.id = c.package_id WHERE c.id = bonus_basecamp.cart_id) purchase, bonus_basecamp.mtm')
+        return $this->db->select('bonus_basecamp.datecreate, user.username, basecamp_name.name, (SELECT b.username from cart as a JOIN user as b on b.id = a.user_id WHERE a.id = bonus_basecamp.cart_id) member, (SELECT d.name from cart as c JOIN package as d on d.id = c.package_id WHERE c.id = bonus_basecamp.cart_id) purchase, bonus_basecamp.usdt')
                         ->from('bonus_basecamp')
                         ->join('user', 'user.id = bonus_basecamp.user_id')
                         ->join('basecamp_name', 'basecamp_name.id = bonus_basecamp.id_bs')
-                        ->where(['bonus_basecamp.id_bs' => $id_bs, 'bonus_basecamp.user_id' => $iduser, 'bonus_basecamp.mtm !=' =>'0', 'bonus_basecamp.status' => '0'])
+                        ->where(['bonus_basecamp.id_bs' => $id_bs, 'bonus_basecamp.user_id' => $iduser, 'bonus_basecamp.usdt !=' =>'0', 'bonus_basecamp.status' => '0'])
                         ->get()->result();
     }
     
@@ -2114,7 +2114,7 @@ class M_user extends CI_Model
     
     public function get_history_bonus_basecamp()
     {
-        return $this->db->select('sum(bonus_basecamp.mtm) as bonus, basecamp_name.name, user.username, user.first_name, level_fm.fm, user.id, (SELECT SUM(package.point) FROM cart JOIN package ON package.id = cart.package_id WHERE cart.user_id = user.id) purchase')
+        return $this->db->select('sum(bonus_basecamp.usdt) as bonus, basecamp_name.name, user.username, user.first_name, level_fm.fm, user.id, (SELECT SUM(package.point) FROM cart JOIN package ON package.id = cart.package_id WHERE cart.user_id = user.id) purchase')
                         ->from('bonus_basecamp')
                         ->join('user', 'user.id = bonus_basecamp.user_id')
                         ->join('level_fm', 'level_fm.user_id = user.id')
@@ -2126,11 +2126,11 @@ class M_user extends CI_Model
     
     public function get_omset_bybasecamp_excess($id_bs, $iduser)
     {
-        return $this->db->select('excess_bonus.datecreate, user.username, basecamp_name.name, (SELECT b.username from cart as a JOIN user as b on b.id = a.user_id WHERE a.id = excess_bonus.cart_id) member, (SELECT d.name from cart as c JOIN package as d on d.id = c.package_id WHERE c.id = excess_bonus.cart_id) purchase, excess_bonus.mtm')
+        return $this->db->select('excess_bonus.datecreate, user.username, basecamp_name.name, (SELECT b.username from cart as a JOIN user as b on b.id = a.user_id WHERE a.id = excess_bonus.cart_id) member, (SELECT d.name from cart as c JOIN package as d on d.id = c.package_id WHERE c.id = excess_bonus.cart_id) purchase, excess_bonus.usdt')
                         ->from('excess_bonus')
                         ->join('user', 'user.id = excess_bonus.user_id')
                         ->join('basecamp_name', 'basecamp_name.id = excess_bonus.id')
-                        ->where(['excess_bonus.id_bs' => $id_bs, 'excess_bonus.user_id' => $iduser, 'excess_bonus.mtm !=' =>'0', 'excess_bonus.note' => 'bonus basecamp'])
+                        ->where(['excess_bonus.id_bs' => $id_bs, 'excess_bonus.user_id' => $iduser, 'excess_bonus.usdt !=' =>'0', 'excess_bonus.note' => 'bonus basecamp'])
                         ->get()->result();
     }
     
@@ -2264,20 +2264,20 @@ class M_user extends CI_Model
 
     public function get_excess_basecamp($id)
     {
-        return $this->db->select('user.username, excess_bonus.datecreate, excess_bonus.cart_id, excess_bonus.mtm, basecamp_name.name AS bs_name, package.name')
+        return $this->db->select('user.username, excess_bonus.datecreate, excess_bonus.cart_id, excess_bonus.usdt, basecamp_name.name AS bs_name, package.name')
             ->from('excess_bonus')
             ->join('cart', 'excess_bonus.cart_id = cart.id')
             ->join('user', 'cart.user_id = user.id')
             ->join('package', 'package.id = cart.package_id')
             ->join('basecamp_name', 'basecamp_name.id = excess_bonus.id_bs', 'left')
-            ->where(['excess_bonus.user_id' => $id, 'excess_bonus.mtm !=' => '0', 'excess_bonus.note' => 'bonus basecamp'])
+            ->where(['excess_bonus.user_id' => $id, 'excess_bonus.usdt !=' => '0', 'excess_bonus.note' => 'bonus basecamp'])
             ->order_by('excess_bonus.datecreate', 'DESC')
             ->get()->result();
     }
 
     public function get_total_excess_basecamp_byid($userid)
     {
-        return $this->db->select_sum('mtm')
+        return $this->db->select_sum('usdt')
                         ->from('excess_bonus')
                         ->where(['user_id' => $userid, 'note' => 'bonus basecamp'])
                         ->get()->row_array();
@@ -2285,7 +2285,7 @@ class M_user extends CI_Model
     
     public function get_total_collected_basecamp_byid($userid)
     {
-        return $this->db->select_sum('mtm')
+        return $this->db->select_sum('usdt')
             ->from('bonus_basecamp')
             ->where(['user_id' => $userid, 'status' => 0])
             ->get()->row_array();
@@ -2302,11 +2302,11 @@ class M_user extends CI_Model
 
     public function get_collected_basecamp($iduser)
     {
-        return $this->db->select('bonus_basecamp.datecreate, user.username, basecamp_name.name AS bs_name, bonus_basecamp.cart_id, bonus_basecamp.team, (SELECT b.username from cart as a JOIN user as b on b.id = a.user_id WHERE a.id = bonus_basecamp.cart_id) member, (SELECT d.name from cart as c JOIN package as d on d.id = c.package_id WHERE c.id = bonus_basecamp.cart_id) purchase, bonus_basecamp.mtm')
+        return $this->db->select('bonus_basecamp.datecreate, user.username, basecamp_name.name AS bs_name, bonus_basecamp.cart_id, bonus_basecamp.team, (SELECT b.username from cart as a JOIN user as b on b.id = a.user_id WHERE a.id = bonus_basecamp.cart_id) member, (SELECT d.name from cart as c JOIN package as d on d.id = c.package_id WHERE c.id = bonus_basecamp.cart_id) purchase, bonus_basecamp.usdt')
             ->from('bonus_basecamp')
             ->join('user', 'user.id = bonus_basecamp.user_id')
             ->join('basecamp_name', 'basecamp_name.id = bonus_basecamp.id_bs', 'left')
-            ->where(['bonus_basecamp.user_id' => $iduser, 'bonus_basecamp.mtm !=' => '0', 'bonus_basecamp.status' => '0'])
+            ->where(['bonus_basecamp.user_id' => $iduser, 'bonus_basecamp.usdt !=' => '0', 'bonus_basecamp.status' => '0'])
             ->order_by('bonus_basecamp.datecreate', 'DESC')
             ->get()->result();
     }

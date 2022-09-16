@@ -9,7 +9,7 @@
         <?= $this->lang->line('basecamp'); ?>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="<?= base_url('user/bonusList'); ?>">Airdrops/<?= $this->lang->line('mining'); ?></a>
+            <a class="dropdown-item" href="<?= base_url('user/bonusList'); ?>"><?= $this->lang->line('mining'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/sponsor'); ?>"><?= $this->lang->line('recommended'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/sponsorMatching'); ?>"><?= $this->lang->line('recommended_matching'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/miningMatching'); ?>"><?= $this->lang->line('recommended_mining'); ?></a>
@@ -24,7 +24,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav navbar-menubonus">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('user/bonusList'); ?>">Airdrops/<?= $this->lang->line('mining'); ?></a>
+                    <a class="nav-link" href="<?= base_url('user/bonusList'); ?>"><?= $this->lang->line('mining'); ?></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('user/sponsor'); ?>"><?= $this->lang->line('recommended'); ?></a>
@@ -121,14 +121,14 @@
                     <tr>
                         <th colspan="3" class="text-right"><?= $this->lang->line('total');?>: </th>
                         <th class="tb-column"><?= !empty($total_box) ? round($total_box, 10) . ' BOX' : '0'; ?> </th>
-                        <th class="tb-column"><?= !empty($total) ? round($total, 10) . ' MTM' : '0'; ?> </th>
+                        <th class="tb-column"><?= !empty($total) ? round($total, 10) . ' USDT' : '0'; ?> </th>
                     </tr>
                     <tr>
                         <th><?= $this->lang->line('date');?></th>
                         <th><?= $this->lang->line('basecamp');?></th>
                         <th>User ID </th>
                         <th><?= $this->lang->line('package');?></th>
-                        <th>MTM</th>
+                        <th>USDT</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -154,7 +154,7 @@
                             </td>
                             <td class="tb-column"><?= $row_bonus->name; ?></td>
                             <td class="tb-column">
-                                <?= $row_bonus->mtm; ?> MTM
+                                <?= $row_bonus->usdt; ?> USDT
                             </td>
                         </tr>
                     <?php
@@ -169,14 +169,14 @@
                     <tr>
                         <th colspan="3" class="text-right"><?= $this->lang->line('total'); ?>: </th>
                         <th class="tb-column"><?= !empty($total_collected_box) ? round($total_collected_box, 10) . ' '.$this->lang->line('box') : '0'; ?> </th>
-                        <th class="tb-column"><?= !empty($total_collected) ? round($total_collected, 10) . ' MTM' : '0'; ?> </th>
+                        <th class="tb-column"><?= !empty($total_collected) ? round($total_collected, 10) . ' USDT' : '0'; ?> </th>
                     </tr>
                     <tr>
                         <th><?= $this->lang->line('date'); ?></th>
                         <th><?= $this->lang->line('basecamp'); ?></th>
                         <th>User ID</th>
                         <th><?= $this->lang->line('package'); ?></th>
-                        <th>MTM</th>
+                        <th>USDT</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -202,7 +202,7 @@
                             </td>
                             <td class="tb-column"><?= $row_bonus_collected->purchase; ?></td>
                             <td class="tb-column">
-                                <?= $row_bonus_collected->mtm; ?> MTM
+                                <?= $row_bonus_collected->usdt; ?> USDT
                             </td>
                         </tr>
                     <?php
@@ -216,14 +216,14 @@
                 <thead class="text-tb-head">
                     <tr>
                         <th colspan="4" class="text-right"><?= $this->lang->line('total'); ?>: </th>
-                        <th class="tb-column"><?= !empty($total_excess) ? round($total_excess, 10) . " MTM" : "0"; ?></th>
+                        <th class="tb-column"><?= !empty($total_excess) ? round($total_excess, 10) . " USDT" : "0"; ?></th>
                     </tr>
                     <tr>
                         <th><?= $this->lang->line('date'); ?></th>
                         <th><?= $this->lang->line('basecamp'); ?></th>
                         <th>User ID</th>
                         <th><?= $this->lang->line('package'); ?></th>
-                        <th>MTM</th>
+                        <th>USDT</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -249,7 +249,7 @@
                             </td>
                             <td class="tb-column"><?= $row_bonus_excess->name; ?></td>
                             <td class="tb-column">
-                                <?= $row_bonus_excess->mtm; ?> MTM
+                                <?= $row_bonus_excess->usdt; ?> USDT
                             </td>
                         </tr>
                     <?php

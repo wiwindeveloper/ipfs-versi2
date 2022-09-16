@@ -1727,13 +1727,13 @@ class Autoscript extends CI_Controller {
             
             foreach($query_basecamp as $row_basecamp)
             {
-                $limit_basecamp         = $this->_check_limit_bonus($row_user->id, $row_basecamp->mtm);
-                $excess_bonus_basecamp  = $row_basecamp->mtm - $limit_basecamp;
+                $limit_basecamp         = $this->_check_limit_bonus($row_user->id, $row_basecamp->usdt, 'usdt');
+                $excess_bonus_basecamp  = $row_basecamp->usdt - $limit_basecamp;
                 $limit_count_basecamp   = $limit_basecamp;
                 
                 $data_update = [
                     'status' => '1',
-                    'mtm' => $limit_count_basecamp,
+                    'usdt' => $limit_count_basecamp,
                     'update_date' => time()
                 ];
     
@@ -1742,7 +1742,7 @@ class Autoscript extends CI_Controller {
                 $data_excess_basecamp = [
                     'user_id' => $row_user->id,
                     'type_bonus' => '3',
-                    'mtm' => $excess_bonus_basecamp,
+                    'usdt' => $excess_bonus_basecamp,
                     'cart_id' => $row_basecamp->cart_id,
                     'code_bonus' => $row_basecamp->code_bonus,
                     'user_sponsor' => '0',

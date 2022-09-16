@@ -215,7 +215,7 @@ function confirm_basecamp(a)
     $('#basecampModal').modal("show");
     var agent_id=$(a).attr('id');
 
-    var urlNnetwork = baseUrl + "/confirmBasecamp/" + agent_id;
+    var urlNnetwork = baseUrl + "/admin/confirmBasecamp/" + agent_id;
 
     document.getElementById("basecampModalLabel").innerHTML = "Are you ready to make this user a basecamp?";
     document.getElementById("basecampModalBody").innerHTML = "Select 'OK' below if you are ready to make this user a basecamp";
@@ -232,7 +232,7 @@ function cancel_basecamp(a)
     $('#basecampModal').modal("show");
     var agent_id=$(a).attr('id');
 
-    var urlNnetwork = baseUrl + "/cancelBasecamp/" + agent_id;
+    var urlNnetwork = baseUrl + "/admin/cancelBasecamp/" + agent_id;
 
     document.getElementById("basecampModalLabel").innerHTML = "Are you sure to cancel this basecamp?";
     document.getElementById("basecampModalBody").innerHTML = "Select 'OK' below if you are sure to cancel this basecamp";
@@ -266,7 +266,7 @@ function open_basecamp(a)
     $('#basecampModal').modal("show");
     var agent_id=$(a).attr('id');
 
-    var urlNnetwork = baseUrl + "/showBasecamplist/";
+    var urlNnetwork = baseUrl + "/admin/showBasecamplist/";
 
     document.getElementById("basecampModalLabel").innerHTML = "Select user";
 

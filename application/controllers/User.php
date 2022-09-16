@@ -1578,7 +1578,6 @@ class User extends CI_Controller
                                     'id_bs' => $id_bs_sponsor,
                                     'code_bonus' => $datapayment['code'],
                                     'usdt' => $bonus_basecamp_usdt,
-                                    'krp' => $bonus_basecamp_krp,
                                     'type' => '1',
                                     'status' => '0',
                                     'datecreate' => time()
@@ -1700,7 +1699,6 @@ class User extends CI_Controller
                                         $count_bonus_basecamp = ($datapayment['price'] * $additionalBonus) / 100;
         
                                         $bonus_basecamp_usdt = $count_bonus_basecamp * $query_fil_price['usdt'];
-                                        $bonus_basecamp_krp = $count_bonus_basecamp * $query_fil_price['krp'];
                                         
                                         $data_insert_basecamp = [
                                             'cart_id' => $id,
@@ -1708,7 +1706,6 @@ class User extends CI_Controller
                                             'id_bs' => $id_bs_sponsor,
                                             'code_bonus' => $datapayment['code'],
                                             'usdt' => $bonus_basecamp_usdt,
-                                            'krp' => $bonus_basecamp_krp,
                                             'type' => '1',
                                             'status' => '0',
                                             'datecreate' => time()
@@ -5819,10 +5816,10 @@ class User extends CI_Controller
         $data['total_omset']        = $this->M_user->get_current_purchase_basecamp($date, $basecamp);
         $data['today_omset_box']    = $this->M_user->get_today_purchasebox_basecamp($date, $basecamp);
         $data['total_omset_box']    = $this->M_user->get_current_purchasebox_basecamp($month, $basecamp);
-        $data['total']              = $query_total['mtm'];
+        $data['total']              = $query_total['usdt'];
         $data['total_box']          = $query_total_box['point'];
-        $data['total_excess']       = $query_total_excess['mtm'];
-        $data['total_collected']    = $query_total_collected['mtm'];
+        $data['total_excess']       = $query_total_excess['usdt'];
+        $data['total_collected']    = $query_total_collected['usdt'];
         $data['total_collected_box']= $query_total_collected_box['point'];
 
         if ($this->session->userdata('email') && $this->session->userdata('role_id') == '2') {
