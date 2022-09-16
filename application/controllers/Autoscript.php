@@ -1544,7 +1544,7 @@ class Autoscript extends CI_Controller {
         $query_omset    = $this->M_user->get_global_omset($year_month);
         $query_fil_price = $this->M_user->get_fil_price();
         
-        $global_omset   = $query_omset['fill'] + ($query_omset['mtm']/4) + ($query_omset['zenx']/12) + ($query_omset['usdt']*$query_fil_price['usdt']) + ($query_omset['krp']*$query_fil_price['krp']);
+        $global_omset   = $query_omset['fill'] + ($query_omset['mtm']/4) + ($query_omset['zenx']/12) + ($query_omset['usdt']/$query_fil_price['usdt']) + ($query_omset['krp']/$query_fil_price['krp']);
 
         if(!empty($global_omset))
         {
