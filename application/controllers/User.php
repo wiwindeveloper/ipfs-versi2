@@ -5802,25 +5802,25 @@ class User extends CI_Controller
 
         $basecamp = $query_user['basecamp'] ?? null;
 
-        $data['title']              = $this->lang->line('basecamp');
-        $data['user']               = $query_user;
-        $data['bonus']              = $this->M_user->get_bonus_basecamp($query_user['id']);
-        $data['bonus_excess']       = $this->M_user->get_excess_basecamp($query_user['id']);
-        $data['bonus_collected']    = $this->M_user->get_collected_basecamp($query_user['id']);
-        $data['amount_notif']       = $query_row_notif;
-        $data['list_notif']         = $query_new_notif;
-        $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
-        $data['userClass']          = $this;
-        $data['payment']            = $this->M_user->show_cart_byid($query_user['id']);
-        $data['today_omset']        = $this->M_user->get_today_purchase_basecamp($date, $basecamp);
-        $data['total_omset']        = $this->M_user->get_current_purchase_basecamp($date, $basecamp);
-        $data['today_omset_box']    = $this->M_user->get_today_purchasebox_basecamp($date, $basecamp);
-        $data['total_omset_box']    = $this->M_user->get_current_purchasebox_basecamp($month, $basecamp);
-        $data['total']              = $query_total['usdt'];
-        $data['total_box']          = $query_total_box['point'];
-        $data['total_excess']       = $query_total_excess['usdt'];
-        $data['total_collected']    = $query_total_collected['usdt'];
-        $data['total_collected_box']= $query_total_collected_box['point'];
+        $data['title']                  = $this->lang->line('basecamp');
+        $data['user']                   = $query_user;
+        $data['bonus']                  = $this->M_user->get_bonus_basecamp($query_user['id']);
+        $data['bonus_excess']           = $this->M_user->get_excess_basecamp($query_user['id']);
+        $data['bonus_collected']        = $this->M_user->get_collected_basecamp($query_user['id']);
+        $data['amount_notif']           = $query_row_notif;
+        $data['list_notif']             = $query_new_notif;
+        $data['cart']                   = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
+        $data['userClass']              = $this;
+        $data['payment']                = $this->M_user->show_cart_byid($query_user['id']);
+        $data['today_omset']            = $this->M_user->get_today_purchase_basecamp($date, $basecamp);
+        $data['total_omset']            = $this->M_user->get_current_purchase_basecamp($date, $basecamp);
+        $data['today_omset_box']        = $this->M_user->get_today_purchasebox_basecamp($date, $basecamp);
+        $data['total_omset_box']        = $this->M_user->get_current_purchasebox_basecamp($month, $basecamp);
+        $data['total']                  = $query_total['usdt'];
+        $data['total_box']              = $query_total_box['point'];
+        $data['total_excess']           = $query_total_excess['usdt'];
+        $data['total_collected']        = $query_total_collected['usdt'];
+        $data['total_collected_box']    = $query_total_collected_box['point'];
 
         if ($this->session->userdata('email') && $this->session->userdata('role_id') == '2') {
             $this->load->view('templates/user_header', $data);
