@@ -9,7 +9,7 @@
             <?= $this->lang->line('pairing_matching'); ?>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="<?= base_url('user/bonusList'); ?>">Airdrops/<?= $this->lang->line('mining'); ?></a>
+            <a class="dropdown-item" href="<?= base_url('user/bonusList'); ?>"><?= $this->lang->line('mining'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/sponsor'); ?>"><?= $this->lang->line('recommended'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/sponsorMatching'); ?>"><?= $this->lang->line('recommended_matching'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/miningMatching'); ?>"><?= $this->lang->line('recommended_mining'); ?></a>
@@ -24,7 +24,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav navbar-menubonus">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('user/bonusList'); ?>">Airdrops/<?= $this->lang->line('mining'); ?></a>
+                    <a class="nav-link" href="<?= base_url('user/bonusList'); ?>"><?= $this->lang->line('mining'); ?></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('user/sponsor'); ?>"><?= $this->lang->line('recommended'); ?></a>
@@ -73,13 +73,13 @@
                 <thead class="text-tb-head">
                     <tr>
                         <th colspan="3" class="text-right"><?= $this->lang->line('total');?>: </th>
-                        <th class="tb-column"><?= !empty($total) ? $total.' MTM' : '0'; ?> </th>
+                        <th class="tb-column"><?= !empty($total) ? $total.' USDT' : '0'; ?> </th>
                     </tr>
                     <tr>
                         <th><?= $this->lang->line('date');?></th>
                         <th>User ID</th>
                         <th><?= $this->lang->line('generation');?></th>
-                        <th>MTM</th>
+                        <th>USDT</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -97,7 +97,7 @@
                                 <?= $row_bonus->generation; ?>
                             </td>
                             <td class="tb-column">
-                                <?= $row_bonus->mtm; ?> MTM
+                                <?= $row_bonus->usdt; ?> USDT
                             </td>
                         </tr>
                     <?php
@@ -111,13 +111,13 @@
                 <thead class="text-tb-head">
                     <tr>
                         <th colspan="3" class="text-right"><?= $this->lang->line('total');?>: </th>
-                        <th class="tb-column"><?= !empty($total_excess) ? $total_excess.' MTM' : '0'; ?></th>
+                        <th class="tb-column"><?= !empty($total_excess) ? $total_excess.' USDT' : '0'; ?></th>
                     </tr>
                     <tr>
                         <th><?= $this->lang->line('date');?></th>
                         <th>User ID</th>
                         <th><?= $this->lang->line('generation');?></th>
-                        <th>MTM</th>
+                        <th>USDT</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -135,7 +135,7 @@
                                 <?= $row_bonus_excess->generation; ?>
                             </td>
                             <td class="tb-column">
-                                <?= $row_bonus_excess->mtm; ?> MTM
+                                <?= $row_bonus_excess->usdt; ?> USDT
                             </td>
                         </tr>
                     <?php

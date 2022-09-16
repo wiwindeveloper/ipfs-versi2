@@ -271,7 +271,7 @@ class M_user extends CI_Model
 
     public function get_bonus_pairingmatching($id)
     {
-        return $this->db->select('bonus_maxmatching.id, user.username, bonus_maxmatching.mtm, bonus_maxmatching.set_amount, bonus_maxmatching.datecreate')
+        return $this->db->select('bonus_maxmatching.id, user.username, bonus_maxmatching.mtm, bonus_maxmatching.usdt, bonus_maxmatching.set_amount, bonus_maxmatching.datecreate')
             ->from('bonus_maxmatching')
             ->join('user', 'user.id = bonus_maxmatching.user_id')
             ->where('bonus_maxmatching.user_id', $id)
@@ -300,7 +300,7 @@ class M_user extends CI_Model
 
     public function get_bonus_binarymatch($id)
     {
-        return $this->db->select('bonus_binarymatch.id, user.username, bonus_binarymatch.generation, bonus_binarymatch.mtm, bonus_binarymatch.datecreate')
+        return $this->db->select('bonus_binarymatch.id, user.username, bonus_binarymatch.generation, bonus_binarymatch.mtm, bonus_binarymatch.usdt, bonus_binarymatch.datecreate')
             ->from('bonus_binarymatch')
             ->join('user', 'bonus_binarymatch.user_sponsor = user.id')
             ->where('bonus_binarymatch.user_id', $id)
@@ -332,9 +332,20 @@ class M_user extends CI_Model
             ->get()->result();
     }
 
+    public function get_bonus_global_usdt($id)
+    {
+        return $this->db->select('bonus_global.id, user.username, bonus_global.mtm, bonus_global.usdt, bonus_global.note_level, bonus_global.level_fm, bonus_global.datecreate')
+            ->from('bonus_global')
+            ->join('user', 'bonus_global.user_id = user.id')
+            ->where('bonus_global.user_id', $id)
+            ->where('usdt !=', 0)
+            ->order_by('bonus_global.datecreate', 'DESC')
+            ->get()->result();
+    }
+
     public function get_omset_global($date)
     {
-        return $this->db->select('SUM(cart.fill) AS total_fil, SUM(cart.mtm) AS total_mtm, SUM(cart.zenx) AS total_zenx')
+        return $this->db->select('SUM(cart.fill) AS total_fil, SUM(cart.usdt) AS total_usdt, SUM(cart.krp) AS total_krp')
             ->from('cart')
             ->where('from_unixtime(cart.datecreate, "%Y-%m") = "'.$date.'"')
             ->get()->row_array();
@@ -1019,6 +1030,8 @@ class M_user extends CI_Model
         return $this->db->select_sum('cart.fill')
                         ->select_sum('cart.mtm')
                         ->select_sum('cart.zenx')
+                        ->select_sum('cart.usdt')
+                        ->select_sum('cart.krp')
                         ->from('cart')
                         ->where(['cart.is_payment' => '1', 'from_unixtime(cart.datecreate, "%Y-%m") =' => $date])
                         ->get()
@@ -1188,7 +1201,7 @@ class M_user extends CI_Model
     
     public function get_listpurchase_admin($date)
     {
-        return $this->db->select('cart.update_date, user.username, package.name, cart.fill, cart.mtm, cart.zenx')
+        return $this->db->select('cart.update_date, user.username, package.name, cart.fill, cart.mtm, cart.zenx, cart.usdt, cart.krp')
             ->from('cart')
             ->join('user', 'user.id = cart.user_id')
             ->join('package', 'package.id = cart.package_id')
@@ -1220,6 +1233,16 @@ class M_user extends CI_Model
             ->get();
     }
     
+    public function get_level_month_usdt($level, $date)
+    {
+        return $this->db->select('user_id, usdt, COUNT(level_fm) AS total')
+            ->from('bonus_global')
+            ->where('level_fm', $level)
+            ->where('usdt !=', 0)
+            ->where('from_unixtime(datecreate, "%Y-%m") = "' . $date . '"')
+            ->get()->row_array();
+    }
+
     public function get_level_month($level, $date)
     {
         return $this->db->select('user_id, mtm, COUNT(level_fm) AS total')
@@ -1241,9 +1264,20 @@ class M_user extends CI_Model
             ->get()->row_array();
     }
 
+    public function get_level_month2_usdt($level, $date)
+    {
+        return $this->db->select('user_id, usdt, COUNT(level_fm) AS total')
+            ->from('excess_bonus')
+            ->where('level_fm', $level)
+            ->where('note', 'bonus global')
+            ->where('usdt !=', 0)
+            ->where('from_unixtime(datecreate, "%Y-%m") = "' . $date . '"')
+            ->get()->row_array();
+    }
+
     public function get_today_purchase($date)
     {
-        return $this->db->select('SUM(cart.fill) as fill, SUM(cart.mtm) as mtm, SUM(cart.zenx) as zenx')
+        return $this->db->select('SUM(cart.fill) as fill, SUM(cart.mtm) as mtm, SUM(cart.zenx) as zenx, SUM(cart.usdt) as usdt, SUM(cart.krp) as krp')
                         ->from('cart')
                         ->where(["cart.is_payment" => "1", "FROM_UNIXTIME(cart.datecreate, '%Y-%m-%d') = " => $date])
                         ->get()->row_array();
@@ -1251,7 +1285,7 @@ class M_user extends CI_Model
 
     public function get_currentmonth_purchase($monthNow)
     {
-        return $this->db->select('SUM(cart.fill) as fill, SUM(cart.mtm) as mtm, SUM(cart.zenx) as zenx')
+        return $this->db->select('SUM(cart.fill) as fill, SUM(cart.mtm) as mtm, SUM(cart.zenx) as zenx, SUM(cart.usdt) as usdt, SUM(cart.krp) as krp')
                         ->from('cart')
                         ->where(['cart.is_payment' => '1', 'FROM_UNIXTIME(cart.datecreate, "%Y-%m") = ' => $monthNow])
                         ->get()->row_array();
@@ -1878,6 +1912,14 @@ class M_user extends CI_Model
                         ->where('user_id', $userid)
                         ->get()->row_array();
     }
+
+    public function get_total_bonus_pairing_byid_usdt($userid)
+    {
+        return $this->db->select_sum('usdt')
+                        ->from('bonus_maxmatching')
+                        ->where('user_id', $userid)
+                        ->get()->row_array();
+    }
     
     public function get_total_bonus_pairingmatch_byid($userid)
     {
@@ -1886,10 +1928,26 @@ class M_user extends CI_Model
                         ->where('user_id', $userid)
                         ->get()->row_array();
     }
+
+    public function get_total_bonus_pairingmatch_byid_usdt($userid)
+    {
+        return $this->db->select_sum('usdt')
+                        ->from('bonus_binarymatch')
+                        ->where('user_id', $userid)
+                        ->get()->row_array();
+    }
     
     public function get_total_bonus_global_byid($userid)
     {
         return $this->db->select_sum('mtm')
+                        ->from('bonus_global')
+                        ->where('user_id', $userid)
+                        ->get()->row_array();
+    }
+
+    public function get_total_bonus_global_byid_usdt($userid)
+    {
+        return $this->db->select_sum('usdt')
                         ->from('bonus_global')
                         ->where('user_id', $userid)
                         ->get()->row_array();
@@ -2094,7 +2152,7 @@ class M_user extends CI_Model
     
     public function get_purchase_admin_bymonth($date)
     {
-        return $this->db->select('SUM(cart.fill) AS total_fil, SUM(cart.mtm) AS total_mtm, SUM(cart.zenx) AS total_zenx, SUM(package.point) AS total_box')
+        return $this->db->select('SUM(cart.fill) AS total_fil, SUM(cart.mtm) AS total_mtm, SUM(cart.zenx) AS total_zenx, SUM(cart.usdt) AS total_usdt, SUM(cart.krp) AS total_krp, SUM(package.point) AS total_box')
                         ->from('cart')
                         ->join('user', 'user.id = cart.user_id')
                         ->join('package', 'package.id = cart.package_id')
@@ -2140,6 +2198,18 @@ class M_user extends CI_Model
             ->get()->result();
     }
 
+    public function get_excess_global_usdt($id)
+    {
+        return $this->db->select('excess_bonus.id, user.username, excess_bonus.usdt, excess_bonus.level_fm, excess_bonus.datecreate, excess_bonus.note_level')
+            ->from('excess_bonus')
+            ->join('user', 'excess_bonus.user_id = user.id')
+            ->where('excess_bonus.user_id', $id)
+            ->where('excess_bonus.note', 'bonus global')
+            ->where('excess_bonus.usdt !=', 0)
+            ->order_by('excess_bonus.datecreate', 'DESC')
+            ->get()->result();
+    }
+
     public function get_total_excess_byid($userid, $note)
     {
         return $this->db->select_sum('usdt')
@@ -2158,9 +2228,17 @@ class M_user extends CI_Model
                         ->get()->row_array();
     }
 
+    public function get_total_excess_pairing_byid_usdt($userid)
+    {
+        return $this->db->select_sum('usdt')
+                        ->from('excess_bonus')
+                        ->where(['user_id' => $userid, 'note' => 'bonus pairing'])
+                        ->get()->row_array();
+    }
+
     public function get_excess_binarymatch($id)
     {
-        return $this->db->select('excess_bonus.id, user.username, excess_bonus.generation, excess_bonus.mtm, excess_bonus.datecreate')
+        return $this->db->select('excess_bonus.id, user.username, excess_bonus.generation, excess_bonus.mtm, excess_bonus.usdt, excess_bonus.datecreate')
                         ->from('excess_bonus')
                         ->join('user', 'user.id = excess_bonus.user_id')
                         ->where(['excess_bonus.user_id' => $id, 'excess_bonus.note' => 'bonus pairing matching'])
@@ -2171,6 +2249,14 @@ class M_user extends CI_Model
     public function get_total_excess_pairingmatch_byid($userid)
     {
         return $this->db->select_sum('mtm')
+                        ->from('excess_bonus')
+                        ->where(['user_id' => $userid, 'note' => 'bonus pairing matching'])
+                        ->get()->row_array();
+    }
+
+    public function get_total_excess_pairingmatch_byid_usdt($userid)
+    {
+        return $this->db->select_sum('usdt')
                         ->from('excess_bonus')
                         ->where(['user_id' => $userid, 'note' => 'bonus pairing matching'])
                         ->get()->row_array();
@@ -2227,7 +2313,7 @@ class M_user extends CI_Model
     
     public function get_excess_pairing($id)
     {
-        return $this->db->select('excess_bonus.id, user.username, excess_bonus.mtm, excess_bonus.datecreate')
+        return $this->db->select('excess_bonus.id, user.username, excess_bonus.mtm, excess_bonus.usdt, excess_bonus.datecreate')
                         ->from('excess_bonus')
                         ->join('user', 'user.id = excess_bonus.user_id')
                         ->where(['excess_bonus.note' => 'bonus pairing', 'excess_bonus.user_id' => $id, 'excess_bonus.mtm !=' => '0'])
@@ -2334,6 +2420,22 @@ class M_user extends CI_Model
                         ->where(['user_id' => $user_id, 'reset_date != ' => '0'])
                         ->order_by('id', 'DESC')
                         ->limit(1,0)
+                        ->get()->row_array();
+    }
+
+    public function sum_user_set_amount_get($date, $user)
+    {
+        return $this->db->select_sum('set_amount')
+                        ->from('bonus_maxmatching')
+                        ->where(['reset_date > ' => $date, 'user_id' => $user])
+                        ->get()->row_array();
+    }
+
+    public function sum_user_set_amount_nol($user)
+    {
+        return $this->db->select_sum('set_amount')
+                        ->from('bonus_maxmatching')
+                        ->where(['user_id' => $user])
                         ->get()->row_array();
     }
 }

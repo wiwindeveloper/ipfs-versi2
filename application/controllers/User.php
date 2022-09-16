@@ -3214,8 +3214,8 @@ class User extends CI_Controller
         $query_user         = $this->M_user->get_user_byemail($this->session->userdata('email'));
         $query_row_notif    = $this->M_user->row_newnotif_byuser($query_user['id']);
         $query_new_notif    = $this->M_user->show_newnotif_byuser($query_user['id']);
-        $query_total        = $this->M_user->get_total_bonus_pairing_byid($query_user['id']);
-        $query_total_excess = $this->M_user->get_total_excess_pairing_byid($query_user['id']);
+        $query_total        = $this->M_user->get_total_bonus_pairing_byid_usdt($query_user['id']);
+        $query_total_excess = $this->M_user->get_total_excess_pairing_byid_usdt($query_user['id']);
 
         $data['title']              = $this->lang->line('pairing');
         $data['user']               = $query_user;
@@ -3223,8 +3223,8 @@ class User extends CI_Controller
         $data['bonus_excess']       = $this->M_user->get_excess_pairing($query_user['id']);
         $data['amount_notif']       = $query_row_notif;
         $data['list_notif']         = $query_new_notif;
-        $data['total_mtm']          = $query_total['mtm'];
-        $data['total_mtm_excess']   = $query_total_excess['mtm'];
+        $data['total_usdt']         = $query_total['usdt'];
+        $data['total_usdt_excess']  = $query_total_excess['usdt'];
 
         $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
 
@@ -3801,8 +3801,8 @@ class User extends CI_Controller
         $query_user         = $this->M_user->get_user_byemail($this->session->userdata('email'));
         $query_row_notif    = $this->M_user->row_newnotif_byuser($query_user['id']);
         $query_new_notif    = $this->M_user->show_newnotif_byuser($query_user['id']);
-        $query_total        = $this->M_user->get_total_bonus_pairingmatch_byid($query_user['id']);
-        $query_total_excess = $this->M_user->get_total_excess_pairingmatch_byid($query_user['id']);
+        $query_total        = $this->M_user->get_total_bonus_pairingmatch_byid_usdt($query_user['id']);
+        $query_total_excess = $this->M_user->get_total_excess_pairingmatch_byid_usdt($query_user['id']);
 
         $data['title']              = $this->lang->line('pairing_matching');
         $data['user']               = $query_user;
@@ -3811,8 +3811,8 @@ class User extends CI_Controller
         $data['amount_notif']       = $query_row_notif;
         $data['list_notif']         = $query_new_notif;
         $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
-        $data['total']              = $query_total['mtm'];
-        $data['total_excess']       = $query_total_excess['mtm'];
+        $data['total']              = $query_total['usdt'];
+        $data['total_excess']       = $query_total_excess['usdt'];
 
         if ($this->session->userdata('email') && $this->session->userdata('role_id') == '2') {
             $this->load->view('templates/user_header', $data);
@@ -3835,18 +3835,18 @@ class User extends CI_Controller
         $query_user         = $this->M_user->get_user_byemail($this->session->userdata('email'));
         $query_row_notif    = $this->M_user->row_newnotif_byuser($query_user['id']);
         $query_new_notif    = $this->M_user->show_newnotif_byuser($query_user['id']);
-        $query_total        = $this->M_user->get_total_bonus_global_byid($query_user['id']);
+        $query_total        = $this->M_user->get_total_bonus_global_byid_usdt($query_user['id']);
         $query_total_excess = $this->M_user->get_total_excess_byid($query_user['id'], 'bonus global');
 
         $data['title']              = $this->lang->line('global');
         $data['user']               = $query_user;
-        $data['bonus']              = $this->M_user->get_bonus_global($query_user['id']);
-        $data['excess_bonus']       = $this->M_user->get_excess_global($query_user['id']);
+        $data['bonus']              = $this->M_user->get_bonus_global_usdt($query_user['id']);
+        $data['excess_bonus']       = $this->M_user->get_excess_global_usdt($query_user['id']);
         $data['amount_notif']       = $query_row_notif;
         $data['list_notif']         = $query_new_notif;
         $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
-        $data['total_excess']       = $query_total_excess['mtm'];
-        $data['total']              = $query_total['mtm'];
+        $data['total_excess']       = $query_total_excess['usdt'];
+        $data['total']              = $query_total['usdt'];
 
         $fm = $data['cart']['fm'] ?? null;
 
@@ -3855,17 +3855,21 @@ class User extends CI_Controller
         $query_today_omset      = $this->M_user->get_today_purchase($dateNow);
         $query_current_omset    = $this->M_user->get_currentmonth_purchase($monthNow);
 
-        $today_omset_fill       = $query_today_omset['fill'] + ($query_today_omset['mtm'] / 4) + ($query_today_omset['zenx'] / 12); 
-        $today_omset_mtm        = $today_omset_fill * 4;
+        $query_fil_price        = $this->M_user->get_fil_price();
 
-        $current_omset_fill     = $query_current_omset['fill'] + ($query_current_omset['mtm'] / 4) + ($query_current_omset['zenx'] / 12);
-        $current_omset_mtm      =  $current_omset_fill * 4;
+        $today_omset_fill       = $query_today_omset['fill'] + ($query_today_omset['mtm'] / 4) + ($query_today_omset['zenx'] / 12) + ($query_today_omset['usdt'] / $query_fil_price['usdt']) + ($query_today_omset['krp'] / $query_fil_price['krp']); 
+        $today_omset_usdt        = $today_omset_fill*$query_fil_price['usdt'];
+
+        $current_omset_fill     = $query_current_omset['fill'] + ($query_current_omset['mtm'] / 4) + ($query_current_omset['zenx'] / 12) + ($query_current_omset['usdt'] / $query_fil_price['usdt'] ) + ($query_current_omset['krp'] / $query_fil_price['krp'] );
+        $current_omset_usdt      =  $current_omset_fill * $query_fil_price['usdt'];
 
         $data['today_fm']        = $query_fm_today;
         $data['all_fm']          = $query_all_fm;
-        $data['today_omset']     = $today_omset_mtm;
-        $data['current_omset']   = $current_omset_mtm;
-        $data['omset_fil']      = $current_omset_fill;
+        $data['today_omset']     = $today_omset_usdt;
+        $data['current_omset']   = $current_omset_usdt;
+        $data['omset_fil']       = $current_omset_fill;
+        $data['price_usdt']      = $query_fil_price['usdt'];
+        $data['price_krp']       = $query_fil_price['krp'];
 
         $dateLimit = $monthNow.'-15';
 

@@ -66,14 +66,29 @@ class Autoscript extends CI_Controller {
 
                 //get amount today
                 $query_set_amount_today = $this->M_user->get_set_amount_bydate($userid, $date);
-                $amount_set_today = $query_set_amount_today['set_amount'] ?? null;
+                $amount_set_today       = $query_set_amount_today['set_amount'] ?? null;
 
-                $increasePointLeft      = $this->_countPointTodayL($userid) - $amount_set_today;
-                $increasePointRight     = $this->_countPointTodayR($userid) - $amount_set_today;
-                
+                if($this->_countPointTodayL($userid) > $amount_set_today)
+                {
+                    $increasePointLeft      = $this->_countPointTodayL($userid) - $amount_set_today;
+                }
+                else
+                {
+                    $increasePointLeft      = 0;
+                }
+
+                if($this->_countPointTodayR($userid) > $amount_set_today)
+                {
+                    $increasePointRight     = $this->_countPointTodayR($userid) - $amount_set_today;
+                }
+                else
+                {
+                    $increasePointRight      = 0;
+                }
+
                 $newTotalPointL = $checkBonusSet['balance_a'] + $increasePointLeft;
                 $newTotalPointR = $checkBonusSet['balance_b'] + $increasePointRight;
-                
+
                 if($newTotalPointL < $newTotalPointR)
                 {
                     $newSmallestPoint = $newTotalPointL;
@@ -91,21 +106,34 @@ class Autoscript extends CI_Controller {
                 { 
                     $leftoverPoint = $newSmallestPoint % 4; //sisa bagi 4
                     $quotient = ($newSmallestPoint - $leftoverPoint)/4;  //number of sets obtained
-
+                    
                     $check_level = $this->_level_check($userid);
-
+                    
                     //berapa set yang sudah didapatkan (cari reset date terakhir lalu sum data yang tanggalnya lebih besar dari reset date terakhir)
                     $query_last_reset = $this->M_user->get_last_reset_pairing($userid);
-                    $date_last_reset = $query_last_reset['reset_date'];
+                    $date_last_reset  = $query_last_reset['reset_date'];
+
                     
+                    if(!empty($date_last_reset))
+                    {
+                        $query_set_receive = $this->M_user->sum_user_set_amount_get($date, $userid);
+                    }
+                    else
+                    {
+                        $query_set_receive = $this->M_user->sum_user_set_amount_nol($userid);
+                    }
 
+                    $set_receive = $query_set_receive['set_amount']/4;
+                    
                     //set yang harus didapatkan = limit - set yang sudah didapatkan
-
+                    $set_must_receive = $check_level - $set_receive;
+                    
                     //jika quotient >= set yang harus didapatkan, maka number set = set yang harus didapatkan, 
                     //jika tidak maka number set = quotient
-                    if($quotient >= $check_level)
+                    if($quotient >= $set_must_receive)
                     {
-                        $numberSet = $check_level;
+                        $numberSet = $set_must_receive;
+                        //sisa quotion???
                     }
                     else
                     {
@@ -117,21 +145,32 @@ class Autoscript extends CI_Controller {
                     $leftoverPointMax = $newLargestPoint - ($numberSet*4);
                     
                     //jika limit == number set + set yang sudah didapatkan, maka reset balance terkecil
-                    //jika tidak maka balance tidak reset
+                    //jika tidak maka balance tidak reset 
                     if($newLargestPosition == 'L')
                     {
                         $leftoverA = $leftoverPointMax;
                         $leftoverB = $leftoverPoint;
                         
-                        if($leftoverA < $leftoverB)
+                        if($check_level == ($numberSet + $set_receive) )
                         {
-                            $balance_a = 0;
-                            $balance_b = $leftoverPoint;
+                            if($leftoverA < $leftoverB)
+                            {
+                                $balance_a = 0;
+                                $balance_b = $leftoverPoint;
+                            }
+                            else
+                            {
+                                $balance_a = $leftoverPointMax;
+                                $balance_b = 0;
+                            }
+
+                            $resetDate = time();
                         }
                         else
                         {
-                            $balance_a = $leftoverPointMax;
-                            $balance_b = 0;
+                            $balance_a = $leftoverA;
+                            $balance_b = $leftoverB;
+                            $resetDate = 0;
                         }
                     }
                     else
@@ -139,21 +178,32 @@ class Autoscript extends CI_Controller {
                         $leftoverA = $leftoverPoint;
                         $leftoverB = $leftoverPointMax;
 
-                        if($leftoverA < $leftoverB)
+                        if($check_level == ($numberSet + $set_receive) )
                         {
-                            $balance_a = 0;
-                            $balance_b = $leftoverPointMax;
+                            if($leftoverA < $leftoverB)
+                            {
+                                $balance_a = 0;
+                                $balance_b = $leftoverPointMax;
+                            }
+                            else
+                            {
+                                $balance_a = $leftoverPoint;
+                                $balance_b = 0;
+                            } 
+
+                            $resetDate = time();
                         }
                         else
                         {
-                            $balance_a = $leftoverPoint;
-                            $balance_b = 0;
-                        } 
+                            $balance_a = $leftoverA;
+                            $balance_b = $leftoverB;
+                            $resetDate = 0;
+                        }
                     }
 
                     $limit_bonus        = $this->_check_limit_bonus($userid, $usdtBonus, 'usdt');
                     $excess_bonus       = $usdtBonus - $limit_bonus;
-                    $limit_count_usdt    = $limit_bonus;
+                    $limit_count_usdt   = $limit_bonus;
 
                     $data_leftover_real = [
                         'user_id' => $userid,
@@ -173,12 +223,12 @@ class Autoscript extends CI_Controller {
 
                     $insert_balance = $this->M_user->insert_data('balance_point', $data_balance);
                     
-                    
                     $data_bonus = [
                         'user_id' => $userid,
                         'usdt' => $limit_count_usdt,
                         'set_amount' => $setAmount,
-                        'datecreate' => time()
+                        'datecreate' => time(),
+                        'reset_date' => $resetDate
                     ];
                     
                     $insert_maxmatching = $this->M_user->insert_data('bonus_maxmatching', $data_bonus);
@@ -229,6 +279,21 @@ class Autoscript extends CI_Controller {
                 $quotient = ($smallestPoint - $leftoverPoint)/4;  //number of sets obtained
                 $check_level = $this->_level_check($userid);
 
+                //berapa set yang sudah didapatkan (cari reset date terakhir lalu sum data yang tanggalnya lebih besar dari reset date terakhir)
+                $query_last_reset = $this->M_user->get_last_reset_pairing($userid);
+                $date_last_reset  = $query_last_reset['reset_date'];
+                
+                if(!empty($date_last_reset))
+                {
+                    $query_set_receive = $this->M_user->sum_user_set_amount_get($date, $userid);
+                }
+                else
+                {
+                    $query_set_receive = $this->M_user->sum_user_set_amount_nol($userid);
+                }
+                
+                $set_receive = $query_set_receive['set_amount']/4;
+                
                 if($quotient >= $check_level)
                 {
                     $numberSet = $check_level;
@@ -247,37 +312,60 @@ class Autoscript extends CI_Controller {
                     $leftoverA = $leftoverPointMax;
                     $leftoverB = $leftoverPoint;
                     
-                    if($leftoverA < $leftoverB)
+                    if($check_level == ($numberSet + $set_receive) )
                     {
-                        $balance_a = 0;
-                        $balance_b = $leftoverPoint;
+                        if($leftoverA < $leftoverB)
+                        {
+                            $balance_a = 0;
+                            $balance_b = $leftoverPoint;
+                        }
+                        else
+                        {
+                            $balance_a = $leftoverPointMax;
+                            $balance_b = 0;
+                        }
+
+                        $resetDate = time();
                     }
                     else
                     {
-                        $balance_a = $leftoverPointMax;
-                        $balance_b = 0;
+                        $balance_a = $leftoverA;
+                        $balance_b = $leftoverB;
+                        $resetDate = 0;
                     }
+
                 }
                 else
                 {
                     $leftoverA = $leftoverPoint;
                     $leftoverB = $leftoverPointMax;
 
-                    if($leftoverA < $leftoverB)
+                    if($check_level == ($numberSet + $set_receive) )
                     {
-                        $balance_a = 0;
-                        $balance_b = $leftoverPointMax;
+                        if($leftoverA < $leftoverB)
+                        {
+                            $balance_a = 0;
+                            $balance_b = $leftoverPointMax;
+                        }
+                        else
+                        {
+                            $balance_a = $leftoverPoint;
+                            $balance_b = 0;
+                        } 
+
+                        $resetDate = time();
                     }
                     else
                     {
-                        $balance_a = $leftoverPoint;
-                        $balance_b = 0;
-                    } 
+                        $balance_a = $leftoverA;
+                        $balance_b = $leftoverB;
+                        $resetDate = 0;
+                    }
                 }
 
                 $limit_bonus        = $this->_check_limit_bonus($userid, $usdtBonus, 'usdt');
                 $excess_bonus       = $usdtBonus - $limit_bonus;
-                $limit_count_usdt    = $limit_bonus;
+                $limit_count_usdt   = $limit_bonus;
 
                 $data_leftover_real = [
                     'user_id' => $userid,
@@ -301,7 +389,8 @@ class Autoscript extends CI_Controller {
                     'user_id' => $userid,
                     'usdt' => $limit_count_usdt,
                     'set_amount' => $setAmount,
-                    'datecreate' => time()
+                    'datecreate' => time(),
+                    'reset_date' => $resetDate
                 ];
 
                 $insert_maxmatching = $this->M_user->insert_data('bonus_maxmatching', $data_bonus); 
@@ -1342,21 +1431,21 @@ class Autoscript extends CI_Controller {
             $percent = 1;
         }
 
-        $omset = $this->M_user->get_total_bydata_date('bonus_maxmatching', 'mtm', 'user_id', $user_id, $date);
+        $omset = $this->M_user->get_total_bydata_date('bonus_maxmatching', 'usdt', 'user_id', $user_id, $date);
                 
-        if(!empty($omset['mtm']))
+        if(!empty($omset['usdt']))
         {
-            $bonus = (20*$omset['mtm'])/100;
+            $bonus = (20*$omset['usdt'])/100;
 
-            $limit_bonus        = $this->_check_limit_bonus($user_id, $bonus);
+            $limit_bonus        = $this->_check_limit_bonus($user_id, $bonus, 'usdt');
             $excess_bonus       = $bonus - $limit_bonus;
-            $limit_count_mtm    = $limit_bonus;
+            $limit_count_usdt   = $limit_bonus;
 
             $data = [
                 'user_id' => $id,
                 'user_sponsor' => $user_id,
                 'generation' => 'G'.$generation,
-                'mtm' => $limit_count_mtm,
+                'usdt' => $limit_count_usdt,
                 'datecreate' => $d
             ];
 
@@ -1369,7 +1458,7 @@ class Autoscript extends CI_Controller {
                 $data_excess_bonus = [
                     'user_id' => $user_id,
                     'type_bonus' => '4',
-                    'mtm' => $excess_bonus,
+                    'usdt' => $excess_bonus,
                     'cart_id' => '0',
                     'code_bonus' => '0',
                     'user_sponsor' => $user_id,
@@ -1444,7 +1533,7 @@ class Autoscript extends CI_Controller {
         }
     }
 
-    /**Bonus Global Every moth*/
+    /**Bonus Global Every month*/
     public function bonusGlobal()
     {
         $year_month   = date('Y-m', strtotime("-1 month"));
@@ -1453,7 +1542,9 @@ class Autoscript extends CI_Controller {
         
         /**Global omset*/
         $query_omset    = $this->M_user->get_global_omset($year_month);
-        $global_omset   = $query_omset['fill'] + ($query_omset['mtm']/4) + ($query_omset['zenx']/12);
+        $query_fil_price = $this->M_user->get_fil_price();
+        
+        $global_omset   = $query_omset['fill'] + ($query_omset['mtm']/4) + ($query_omset['zenx']/12) + ($query_omset['usdt']*$query_fil_price['usdt']) + ($query_omset['krp']*$query_fil_price['krp']);
 
         if(!empty($global_omset))
         {
@@ -1480,37 +1571,37 @@ class Autoscript extends CI_Controller {
             /**Count bonus */
             if(!empty($amount_fm4))
             {
-                $bonus_fm4  = ((($global_omset * 2)/100)*4)/$amount_fm4;
+                $bonus_fm4  = ((($global_omset * 2)/100)*$query_fil_price['usdt'])/$amount_fm4;
             }
     
             if(!empty($amount_fm5))
             {
-                $bonus_fm5  = ((($global_omset * 1)/100)*4)/$amount_fm5;
+                $bonus_fm5  = ((($global_omset * 1)/100)*$query_fil_price['usdt'])/$amount_fm5;
             }
     
             if(!empty($amount_fm6))
             {
-                $bonus_fm6  = ((($global_omset * 0.5)/100)*4)/$amount_fm6;
+                $bonus_fm6  = ((($global_omset * 0.5)/100)*$query_fil_price['usdt'])/$amount_fm6;
             }
     
             if(!empty($amount_fm7))
             {
-                $bonus_fm7  = ((($global_omset * 0.4)/100)*4)/$amount_fm7;
+                $bonus_fm7  = ((($global_omset * 0.4)/100)*$query_fil_price['usdt'])/$amount_fm7;
             }
     
             if(!empty($amount_fm8))
             {
-                $bonus_fm8  = ((($global_omset * 0.3)/100)*4)/$amount_fm8;
+                $bonus_fm8  = ((($global_omset * 0.3)/100)*$query_fil_price['usdt'])/$amount_fm8;
             }
             
             if(!empty($amount_fm9))
             {
-                $bonus_fm9  = ((($global_omset * 0.2)/100)*4)/$amount_fm9;
+                $bonus_fm9  = ((($global_omset * 0.2)/100)*$query_fil_price['usdt'])/$amount_fm9;
             }
             
             if(!empty($amount_fm10))
             {
-                $bonus_fm10 = ((($global_omset * 0.1)/100)*4)/$amount_fm10;
+                $bonus_fm10 = ((($global_omset * 0.1)/100)*$query_fil_price['usdt'])/$amount_fm10;
             }
             
             $query_user = $this->M_user->get_user_global_limitdate($dateLimit);
@@ -1577,10 +1668,10 @@ class Autoscript extends CI_Controller {
         $month      = date('m', strtotime($date));
         $year       = date('Y', strtotime($date));  
          
-        $limit_bonus   = $this->_check_limit_bonus($user_id, $bonus);
+        $limit_bonus   = $this->_check_limit_bonus($user_id, $bonus, 'usdt');
         $excess_bonus  = $bonus - $limit_bonus;
 
-        $limit_count_mtm    = $limit_bonus;
+        $limit_count_usdt    = $limit_bonus;
 
         $check_data = $this->M_user->row_check_global($user_id, $year.'-'.$month, $fm);
 
@@ -1588,7 +1679,7 @@ class Autoscript extends CI_Controller {
         {
             $data = [
                 'user_id' => $user_id,
-                'mtm' => $limit_count_mtm,
+                'usdt' => $limit_count_usdt,
                 'level_fm' => $fm,
                 'datecreate' => $d
             ];
@@ -1596,7 +1687,7 @@ class Autoscript extends CI_Controller {
             $this->M_user->insert_data('bonus_global', $data);
         }
 
-        if($limit_count_mtm == 0)
+        if($limit_count_usdt == 0)
         {
             $level_excess = $fm;
         }
@@ -1608,7 +1699,7 @@ class Autoscript extends CI_Controller {
         $data_excess_bonus = [
             'user_id' => $user_id,
             'type_bonus' => '5',
-            'mtm' => $excess_bonus,
+            'usdt' => $excess_bonus,
             'cart_id' => '0',
             'code_bonus' => '',
             'user_sponsor' => '0',

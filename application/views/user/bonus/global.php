@@ -9,7 +9,7 @@
             <?= $this->lang->line('global'); ?>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="<?= base_url('user/bonusList'); ?>">Airdrops/<?= $this->lang->line('mining'); ?></a>
+            <a class="dropdown-item" href="<?= base_url('user/bonusList'); ?>"><?= $this->lang->line('mining'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/sponsor'); ?>"><?= $this->lang->line('recommended'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/sponsorMatching'); ?>"><?= $this->lang->line('recommended_matching'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/miningMatching'); ?>"><?= $this->lang->line('recommended_mining'); ?></a>
@@ -24,7 +24,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav navbar-menubonus">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('user/bonusList'); ?>">Airdrops/<?= $this->lang->line('mining'); ?></a>
+                    <a class="nav-link" href="<?= base_url('user/bonusList'); ?>"><?= $this->lang->line('mining'); ?></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('user/sponsor'); ?>"><?= $this->lang->line('recommended'); ?></a>
@@ -135,7 +135,7 @@
                 <?= $this->lang->line('today_omset');?> :
                 </div>
                 <div class="p-2 small">
-                    <?= empty($today_omset) ? '0' : $today_omset; ?> MTM 
+                    <?= empty($today_omset) ? '0' : $today_omset; ?> USDT 
                 </div>
             </div>
         </div>
@@ -145,7 +145,7 @@
                 <?= $this->lang->line('today_omset_month');?> :
                 </div>
                 <div class="p-2 small">
-                    <?= empty($current_omset) ? '0' : $current_omset; ?> MTM
+                    <?= empty($current_omset) ? '0' : $current_omset; ?> USDT
                 </div>
             </div>
         </div>
@@ -171,7 +171,7 @@
                                 <?= $fm4 ?? 0; ?>
                             </a>
                         </td>
-                        <td class="tb-column"><?= !empty($bonus_fm4) ? $bonus_fm4." MTM" : '0'; ?></td>
+                        <td class="tb-column"><?= !empty($bonus_fm4) ? $bonus_fm4." USDT" : '0'; ?></td>
                     </tr>
                     <?php
                         }
@@ -186,7 +186,7 @@
                                 <?= $fm5 ?? 0; ?>
                             </a>
                         </td>
-                        <td class="tb-column"><?= !empty($bonus_fm5) ? $bonus_fm5. " MTM" : '0'; ?></td>
+                        <td class="tb-column"><?= !empty($bonus_fm5) ? $bonus_fm5. " USDT" : '0'; ?></td>
                     </tr>
                     <?php
                         }
@@ -201,7 +201,7 @@
                                 <?= $fm6 ?? 0; ?>
                             </a>
                         </td>
-                        <td class="tb-column"><?= !empty($bonus_fm6) ? $bonus_fm6. " MTM" : '0'; ?></td>
+                        <td class="tb-column"><?= !empty($bonus_fm6) ? $bonus_fm6. " USDT" : '0'; ?></td>
                     </tr>
                     <?php
                         }
@@ -216,7 +216,7 @@
                                 <?= $fm7 ?? 0; ?>
                             </a>
                         </td>
-                        <td class="tb-column"><?= !empty($bonus_fm7) ? $bonus_fm7. " MTM" : '0'; ?></td>
+                        <td class="tb-column"><?= !empty($bonus_fm7) ? $bonus_fm7. " USDT" : '0'; ?></td>
                     </tr>
                     <?php
                         }
@@ -231,7 +231,7 @@
                                 <?= $fm8 ?? 0; ?>
                             </a>
                         </td>
-                        <td class="tb-column"><?= !empty($bonus_fm8) ? $bonus_fm8. " MTM" : '0'; ?></td>
+                        <td class="tb-column"><?= !empty($bonus_fm8) ? $bonus_fm8. " USDT" : '0'; ?></td>
                     </tr>
                     <?php
                         }
@@ -246,7 +246,7 @@
                                 <?= $fm9 ?? 0; ?>
                             </a>
                         </td>
-                        <td class="tb-column"><?= !empty($bonus_fm9) ? $bonus_fm9. " MTM" : '0'; ?></td>
+                        <td class="tb-column"><?= !empty($bonus_fm9) ? $bonus_fm9. " USDT" : '0'; ?></td>
                     </tr>
                     <?php
                         }
@@ -261,7 +261,7 @@
                                 <?= $fm10 ?? 0; ?>
                             </a>
                         </td>
-                        <td class="tb-column"><?= !empty($bonus_fm10) ? $bonus_fm10." MTM" : '0'; ?></td>
+                        <td class="tb-column"><?= !empty($bonus_fm10) ? $bonus_fm10." USDT" : '0'; ?></td>
                     </tr>
                     <?php
                         }
@@ -284,14 +284,14 @@
                 <thead class="text-tb-head">
                     <tr>
                         <th colspan="4" class="text-right"><?= $this->lang->line('total');?>: </th>
-                        <th class="tb-column"><?= round($total, 10); ?> MTM</th>
+                        <th class="tb-column"><?= round($total, 10); ?> USDT</th>
                     </tr>
                     <tr>
                         <th><?= $this->lang->line('date');?></th>
                         <th><?= $this->lang->line('omset');?></th>
                         <th><?= $this->lang->line('level');?></th>
                         <th><?= $this->lang->line('accumulation');?></th>
-                        <th>MTM</th>
+                        <th>USDT</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -303,17 +303,20 @@
                         $date_omset->modify('-1 days');
                         $dateNow = $date_omset->format('Y-m');
                         $level_fm = empty($row_bonus->level_fm) ? $row_bonus->note_level : $row_bonus->level_fm;
+
+                        $total_omset_fil = $this->M_user->get_omset_global($dateNow)['total_fil'] + $this->M_user->get_omset_global($dateNow)['total_usdt'] / $price_usdt + $this->M_user->get_omset_global($dateNow)['total_krp'] / $price_krp;
+                        $total_omset_usdt = $total_omset_fil*$price_usdt;
                     ?>
 
                         <tr>
                             <td class="tb-column">
                                 <?= date('d/m/Y', $row_bonus->datecreate); ?>
                             </td>
-                            <td class="tb-column"><?= $this->M_user->get_omset_global($dateNow)['total_fil'] * 4 + $this->M_user->get_omset_global($dateNow)['total_mtm'] + $this->M_user->get_omset_global($dateNow)['total_zenx'] / 3; ?> MTM</td>
-                            <td class="tb-column"><?= empty($row_bonus->level_fm) ? $row_bonus->note_level : $row_bonus->level_fm ?></td>
-                            <td class="tb-column"><?= $this->M_user->get_level_month($level_fm, $dateNow)['total'] + $this->M_user->get_level_month2($level_fm, $dateNow)['total'] ?></td>
+                            <td class="tb-column"><?= $total_omset_usdt; ?> USDT</td>
+                            <td class="tb-column"><?= empty($row_bonus->level_fm) ? $row_bonus->note_level : $row_bonus->level_fm; ?></td>
+                            <td class="tb-column"><?= $this->M_user->get_level_month_usdt($level_fm, $dateNow)['total'] + $this->M_user->get_level_month2_usdt($level_fm, $dateNow)['total'] ?></td>
                             <td class="tb-column">
-                                <?= round($row_bonus->mtm, 10); ?> MTM
+                                <?= round($row_bonus->usdt, 10); ?> USDT
                             </td>
                         </tr>
                     <?php
@@ -327,14 +330,14 @@
                 <thead class="text-tb-head">
                     <tr>
                         <th colspan="4" class="text-right"><?= $this->lang->line('total');?>: </th>
-                        <th class="tb-column"><?= $total_excess; ?> MTM</th>
+                        <th class="tb-column"><?= $total_excess; ?> USDT</th>
                     </tr>
                     <tr>
                         <th><?= $this->lang->line('date');?></th>
                         <th><?= $this->lang->line('omset');?></th>
                         <th><?= $this->lang->line('level');?></th>
                         <th><?= $this->lang->line('accumulation');?></th>
-                        <th>MTM</th>
+                        <th>USDT</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -345,17 +348,20 @@
                         $date_omset->modify('-1 days');
                         $dateNow = $date_omset->format('Y-m');
                         $level_fm = empty($row_excess->level_fm) ? $row_excess->note_level : $row_excess->level_fm;
+
+                        $total_omset_fil = $this->M_user->get_omset_global($dateNow)['total_fil'] + $this->M_user->get_omset_global($dateNow)['total_usdt'] / $price_usdt + $this->M_user->get_omset_global($dateNow)['total_krp'] / $price_krp;
+                        $total_omset_usdt = $total_omset_fil*$price_usdt;
                     ?>
 
                         <tr>
                             <td class="tb-column">
                                 <?= date('d/m/Y', $row_excess->datecreate); ?>
                             </td>
-                            <td class="tb-column"><?= $this->M_user->get_omset_global($dateNow)['total_fil'] * 4 + $this->M_user->get_omset_global($dateNow)['total_mtm'] + $this->M_user->get_omset_global($dateNow)['total_zenx'] / 3; ?> MTM</td>
+                            <td class="tb-column"><?= $total_omset_usdt; ?> USDT</td>
                             <td class="tb-column"><?= empty($row_excess->level_fm) ? $row_excess->note_level : $row_excess->level_fm; ?></td>
-                            <td class="tb-column"><?= $this->M_user->get_level_month($level_fm, $dateNow)['total'] + $this->M_user->get_level_month2($level_fm, $dateNow)['total'] ?></td>
+                            <td class="tb-column"><?= $this->M_user->get_level_month_usdt($level_fm, $dateNow)['total'] + $this->M_user->get_level_month2_usdt($level_fm, $dateNow)['total'] ?></td>
                             <td class="tb-column">
-                                <?= $row_excess->mtm; ?> MTM
+                                <?= $row_excess->usdt; ?> USDT
                             </td>
                         </tr>
                     <?php

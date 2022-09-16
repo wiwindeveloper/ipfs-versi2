@@ -10,11 +10,11 @@
         $year = $explodeDate[0];
 
         $query_total = $controller->omsetGlobalPerMonth($date);
-        $omset_fil = $query_total['total_fil'] + ($query_total['total_mtm'] / 4) + ($query_total['total_zenx'] / 12); 
+        $omset_fil = $query_total['total_fil'] + ($query_total['total_mtm'] / 4) + ($query_total['total_zenx'] / 12) + ($query_total['total_usdt'] / $price_usdt) + ($query_total['total_krp'] / $price_krp); 
         
         if($fm4 != 0)
         {
-            $bonus_fm4  = ((($omset_fil * 2)/100)*4)/$fm4;
+            $bonus_fm4  = ((($omset_fil * 2)/100)*$price_usdt)/$fm4;
         }
         else
         {
@@ -23,7 +23,7 @@
         
         if($fm5 != 0)
         {
-            $bonus_fm5  = ((($omset_fil * 1)/100)*4)/$fm5;
+            $bonus_fm5  = ((($omset_fil * 1)/100)*$price_usdt)/$fm5;
         }
         else
         {
@@ -32,7 +32,7 @@
         
         if($fm6 != 0)
         {
-            $bonus_fm6  = ((($omset_fil * 0.5)/100)*4)/$fm6;
+            $bonus_fm6  = ((($omset_fil * 0.5)/100)*$price_usdt)/$fm6;
         }
         else
         {
@@ -41,7 +41,7 @@
         
         if($fm7 != 0)
         {
-            $bonus_fm7  = ((($omset_fil * 0.4)/100)*4)/$fm7;
+            $bonus_fm7  = ((($omset_fil * 0.4)/100)*$price_usdt)/$fm7;
         }
         else
         {
@@ -50,7 +50,7 @@
         
         if($fm8 != 0)
         {
-            $bonus_fm8  = ((($omset_fil * 0.3)/100)*4)/$fm8;
+            $bonus_fm8  = ((($omset_fil * 0.3)/100)*$price_usdt)/$fm8;
 
         }
         else
@@ -60,7 +60,7 @@
         
         if($fm9 != 0)
         {
-            $bonus_fm9  = ((($omset_fil * 0.2)/100)*4)/$fm9;
+            $bonus_fm9  = ((($omset_fil * 0.2)/100)*$price_usdt)/$fm9;
         }
         else
         {
@@ -69,7 +69,7 @@
 
         if($fm10 != 0)
         {
-            $bonus_fm10 = ((($omset_fil * 0.1)/100)*4)/$fm10;
+            $bonus_fm10 = ((($omset_fil * 0.1)/100)*$price_usdt)/$fm10;
         }
         else
         {
@@ -89,8 +89,8 @@
                         <tr>
                             <th colspan="2" class="text-right head">Total omset:</th>
                             <th class="text-right head"><?= $query_total['total_box'] . ' BOX'; ?></th>
-                            <th class="text-right head"><?= ($omset_fil) . ' FIL'; ?></th>
-                            <th class="text-right head"><?= ($omset_fil * 4) . ' MTM'; ?></th>
+                            <th class="text-right head"><?= round($omset_fil, 10) . ' FIL'; ?></th>
+                            <th class="text-right head"><?= round($omset_fil * $price_usdt, 10) . ' USDT'; ?></th>
                         </tr>
                         <tr>
                             <th colspan="5"></th>
@@ -202,6 +202,10 @@
                                         echo $row->mtm . " MTM";
                                     } elseif ($row->zenx != 0) {
                                         echo $row->zenx . " ZENX";
+                                    } elseif ($row->usdt != 0) {
+                                        echo $row->usdt . " USDT";
+                                    } elseif ($row->krp != 0) {
+                                        echo $row->krp . " KRP";
                                     }
                                     ?>
                                 </td>

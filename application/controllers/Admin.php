@@ -1031,6 +1031,10 @@ class Admin extends CI_Controller
         $data['date']          = $date;
         $data['controller']    = $this;
 
+        $query_fil_price        = $this->M_user->get_fil_price();
+        $data['price_usdt']      = $query_fil_price['usdt'];
+        $data['price_krp']       = $query_fil_price['krp'];
+
         if ($this->session->userdata('email') && $this->session->userdata('role_id') == '1') {
             $this->load->view('templates/user_header', $data);
             $this->load->view('templates/admin_sidebar', $data);

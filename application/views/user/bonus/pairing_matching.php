@@ -9,7 +9,7 @@
             <?= $this->lang->line('pairing'); ?>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="<?= base_url('user/bonusList'); ?>">Airdrops/<?= $this->lang->line('mining'); ?></a>
+            <a class="dropdown-item" href="<?= base_url('user/bonusList'); ?>"><?= $this->lang->line('mining'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/sponsor'); ?>"><?= $this->lang->line('recommended'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/sponsorMatching'); ?>"><?= $this->lang->line('recommended_matching'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/miningMatching'); ?>"><?= $this->lang->line('recommended_mining'); ?></a>
@@ -24,7 +24,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav navbar-menubonus">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('user/bonusList'); ?>">Airdrops/<?= $this->lang->line('mining'); ?></a>
+                    <a class="nav-link" href="<?= base_url('user/bonusList'); ?>"><?= $this->lang->line('mining'); ?></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('user/sponsor'); ?>"><?= $this->lang->line('recommended'); ?></a>
@@ -73,13 +73,13 @@
                 <thead class="text-tb-head">
                     <tr>
                         <th colspan="3" class="text-right"><?= $this->lang->line('total');?>: </th>
-                        <th class="tb-column"><?= $total_mtm; ?> MTM</th>
+                        <th class="tb-column"><?= $total_usdt; ?> USDT</th>
                     </tr>
                     <tr>
                         <th><?= $this->lang->line('date');?></th>
                         <th>User ID</th>
                         <th><?= $this->lang->line('set');?></th>
-                        <th>MTM</th>
+                        <th>USDT</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -89,8 +89,8 @@
                         <tr>
                             <td class="tb-column"><?= date('d/m/Y', $row_bonus->datecreate); ?></td>
                             <td class="tb-column"><?= $row_bonus->username; ?></td>
-                            <td class="tb-column"><?= $row_bonus->set_amount / 2; ?> <?= $this->lang->line('set');?></td>
-                            <td class="tb-column"><?= $row_bonus->mtm; ?> MTM</td>
+                            <td class="tb-column"><?= $row_bonus->set_amount / 4; ?> <?= $this->lang->line('set');?></td>
+                            <td class="tb-column"><?= $row_bonus->usdt; ?> USDT</td>
                         </tr>
                     <?php
                     }
@@ -103,13 +103,13 @@
                 <thead class="text-tb-head">
                     <tr>
                         <th colspan="3" class="text-right"><?= $this->lang->line('total');?>: </th>
-                        <th class="tb-column"><?= !empty($total_mtm_excess) ? $total_mtm_excess.' MTM' : '0'; ?> </th>
+                        <th class="tb-column"><?= !empty($total_usdt_excess) ? $total_usdt_excess.' USDT' : '0'; ?> </th>
                     </tr>
                     <tr>
                         <th><?= $this->lang->line('date');?></th>
                         <th>User ID</th>
                         <th><?= $this->lang->line('set');?></th>
-                        <th>MTM</th>
+                        <th>USDT</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -119,8 +119,8 @@
                         <tr>
                             <td class="tb-column"><?= date('d/m/Y', $row_bonus_excess->datecreate); ?></td>
                             <td class="tb-column"><?= $row_bonus_excess->username; ?></td>
-                            <td class="tb-column"><?= $row_bonus_excess->mtm * 2; ?> <?= $this->lang->line('set');?></td>
-                            <td class="tb-column"><?= $row_bonus_excess->mtm; ?> MTM</td>
+                            <td class="tb-column"><?= $row_bonus_excess->usdt * 2; ?> <?= $this->lang->line('set');?></td>
+                            <td class="tb-column"><?= $row_bonus_excess->usdt; ?> USDT</td>
                         </tr>
                     <?php
                     }
