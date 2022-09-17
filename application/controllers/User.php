@@ -5149,6 +5149,165 @@ class User extends CI_Controller
             redirect('auth');
         }
     }
+
+    public function withdrawal_usdt()
+    {
+        if (!empty($this->uri->segment(4))) {
+            $id_notif = $this->uri->segment(4);
+        }
+
+        $query_user                 = $this->M_user->get_user_byemail($this->session->userdata('email'));
+        $query_row_notif            = $this->M_user->row_newnotif_byuser($query_user['id']);
+        $query_new_notif            = $this->M_user->show_newnotif_byuser($query_user['id']);
+        $query_transfer_bonus_usdt  = $this->M_user->get_transfer_bonus($query_user['id'], 'usdt');
+        $query_total_withdrawal     = $this->M_user->get_total_withdrawal($query_user['id'], 'usdt');
+        $query_sum_deposit          = $this->M_user->get_sum_deposit($query_user['id'], '4');
+        $query_total_purchase       = $this->M_user->sum_cart_byid($query_user['id']);
+        $query_minimum_withdrawal   = $this->M_user->minimum_withdrawal();
+
+        $data['title']              = $this->lang->line('withdrawal');
+        $data['user']               = $query_user;
+        $data['amount_notif']       = $query_row_notif;
+        $data['list_notif']         = $query_new_notif;
+        $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
+        $data['general_balance_usdt'] = ($query_transfer_bonus_usdt['amount']) - $query_total_withdrawal['amount'] + $query_sum_deposit['coin'] - $query_total_purchase['usdt'];
+        $data['fee_withdrawal']     = $query_minimum_withdrawal;
+
+        if ($this->session->userdata('email') && $this->session->userdata('role_id') == '2') {
+            $this->form_validation->set_rules('wallet_address', 'Wallet Address', 'trim|required', [
+                'required' => $this->lang->line('require_wallet_address')
+            ]);
+            $this->form_validation->set_rules('amount', 'Amount', 'trim|required', [
+                'required' => $this->lang->line('require_amount')
+            ]);
+            $this->form_validation->set_rules('fee', 'Fee', 'trim|required', [
+                'required' => $this->lang->line('require_fee')
+            ]);
+            $this->form_validation->set_rules('total', 'Total', 'trim|required', [
+                'required' => $this->lang->line('require_total')
+            ]);
+            $this->form_validation->set_rules('email_code', 'Email Code', 'trim|required', [
+                'required' => $this->lang->line('require_email_code')
+            ]);
+            $this->form_validation->set_rules('otp_code', 'OTP Code', 'trim|required', [
+                'required' => $this->lang->line('require_otp_code')
+            ]);
+
+            if ($this->form_validation->run() == false) {
+                $this->load->view('templates/user_header', $data);
+                $this->load->view('templates/user_sidebar', $data);
+                $this->load->view('templates/user_topbar', $data);
+                $this->load->view('user/wallet/usdt/withdrawal_usdt', $data);
+                $this->load->view('templates/user_footer');
+
+                if (isset($_POST['check'])) {
+                    $email = $data['user']['email'];
+
+                    $permitted_chars = '0123456789';
+                    $code = substr(str_shuffle($permitted_chars), 0, 6);
+                    $this->db->set('email_code', $code);
+                    $this->db->where('email', $email);
+                    $this->db->update('user');
+
+                    $subject = "=?UTF-8?B?".base64_encode($this->lang->line('checking_email'))."?=";
+                    $message  = $this->lang->line('message_copy_code').": <br/><br/> $code";
+                    $sendmail = array(
+                        'recipient_email' => $email,
+                        'subject' => $subject,
+                        'content' => $message
+                    );
+                    $this->mailer->send($sendmail); // Panggil fungsi send yang ada di librari Mailer
+                    echo "<script>
+                            alert('".$this->lang->line('alert_check_email')."')
+                        </script>";
+                }
+            } else {
+                if ($data['user']['is_otp'] == '0') {
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('message_register_otp').' > Goggle OTP</div>');
+                    redirect('user/withdrawal_usdt');
+                } else {
+                    $ga = new GoogleAuthenticator();
+                    $secret = $data['user']['secret_otp'];
+
+                    $wallet = $this->input->post('wallet_address');
+                    $amount = $this->input->post('amount');
+                    $total = $this->input->post('total');
+                    $email_code = $this->input->post('email_code');
+                    $otp_code = $this->input->post('otp_code');
+                    $user_id = $data['user']['id'];
+
+                    if ($data['user']['email_code'] != $email_code) {
+                        $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('wrong_email_code').'</div>');
+                        redirect('user/withdrawal_usdt');
+                    } else {
+                        if ($amount > $data['general_balance_usdt']) {
+                            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('not_enough').' USDT</div>');
+                            redirect('user/withdrawal_usdt');
+                        } else {
+                            if ($amount < $query_minimum_withdrawal['usdt']) {
+                                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('minimum_amount_wd').' ' . $query_minimum_withdrawal['mtm'] . ' MTM</div>');
+                                redirect('user/withdrawal_usdt');
+                            } else {
+                                $checkResult = $ga->verifyCode($secret, $otp_code);
+                                if (!$checkResult) {
+                                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('otp_code_wrong').'</div>');
+                                    redirect('user/withdrawal_usdt');
+                                } else {
+                                     if (!empty($this->uri->segment(4))) {
+                                        $id_wd = $this->uri->segment(3);
+                                        $data_update = [
+                                            'wallet_address' => $wallet,
+                                            'amount' => $amount,
+                                            'total' => $total,
+                                            'note' => ''
+                                        ];
+
+                                        $update_cart = $this->M_user->update_data_byid('withdrawal', $data_update, 'id', $id_wd);
+
+
+                                        $data_notif = [
+                                            'is_show' => 1
+                                        ];
+                                        $id_notif = $this->uri->segment(4);
+                                        $update_notif = $this->M_user->update_data_byid('notifi', $data_notif, 'id', $id_notif);
+
+                                        if ($update_notif == true) {
+                                            //update notification
+                                            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">'.$this->lang->line('request_wd_success').'</div>');
+                                            redirect('user/mywalletusdt');
+                                        } else {
+                                            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('request_wd_failed').'</div>');
+                                            redirect('user/withdrawal_usdt');
+                                        }
+                                    } else {
+                                        $withdrawal = [
+                                            'user_id' => $user_id,
+                                            'coin_type' => 'usdt',
+                                            'wallet_address' => $wallet,
+                                            'amount' => $amount,
+                                            'total' => $total,
+                                            'datecreate' => time(),
+                                        ];
+                                        $insert = $this->M_user->insert_data('withdrawal', $withdrawal);
+                                        if ($insert == true) {
+                                            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">'.$this->lang->line('request_wd_success').'</div>');
+                                            redirect('user/mywalletusdt');
+                                        } else {
+                                            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('request_wd_failed').'</div>');
+                                            redirect('user/withdrawal_usdt');
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            redirect('auth');
+        }
+    }
+
     public function withdrawal_zenx()
     {
         if (!empty($this->uri->segment(3))) {
@@ -5750,6 +5909,112 @@ class User extends CI_Controller
                                 } else {
                                     $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('failed_trf_general').'</div>');
                                     redirect('user/transfer_bonus_mtm');
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            redirect('auth');
+        }
+    }
+
+    public function transfer_bonus_usdt()
+    {
+        $query_user                 = $this->M_user->get_user_byemail($this->session->userdata('email'));
+        $query_row_notif            = $this->M_user->row_newnotif_byuser($query_user['id']);
+        $query_new_notif            = $this->M_user->show_newnotif_byuser($query_user['id']);
+        $query_total                = $this->M_user->get_total_bonus($query_user['id'])->row_array();
+        $query_transfer_bonus_usdt   = $this->M_user->get_transfer_bonus($query_user['id'], 'usdt');
+
+        $data['title']              = $this->lang->line('trf_to_general');
+        $data['user']               = $query_user;
+        $data['bonus']              = $this->M_user->get_bonus_bysponsor($query_user['id']);
+        $data['amount_notif']       = $query_row_notif;
+        $data['list_notif']         = $query_new_notif;
+        $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
+        $data['total_usdt']          = $query_total['sponsorusdt'] + $query_total['sponmatchingusdt'] + $query_total['pairingmatchusdt'] + $query_total['minmatchingusdt'] + $query_total['minpairingusdt'] + $query_total['binarymatchusdt'] + $query_total['bonusglobalusdt'] + $query_total['basecampusdt'];
+        $data['balance']            = $data['total_usdt'] - $query_transfer_bonus_usdt['amount'];
+
+        if ($this->session->userdata('email') && $this->session->userdata('role_id') == '2') {
+            $this->form_validation->set_rules('amount', 'Amount', 'trim|required', [
+                'required' => $this->lang->line('require_amount')
+            ]);
+            $this->form_validation->set_rules('email_code', 'Email Code', 'trim|required', [
+                'required' => $this->lang->line('require_email_code')
+            ]);
+            $this->form_validation->set_rules('otp_code', 'OTP Code', 'trim|required', [
+                'required' => $this->lang->line('require_otp_code')
+            ]);
+
+            if ($this->form_validation->run() == false) {
+                $this->load->view('templates/user_header', $data);
+                $this->load->view('templates/user_sidebar', $data);
+                $this->load->view('templates/user_topbar', $data);
+                $this->load->view('user/wallet/usdt/transfer_bonus_general', $data);
+                $this->load->view('templates/user_footer');
+
+                if (isset($_POST['check'])) {
+                    $email = $data['user']['email'];
+
+                    $permitted_chars = '0123456789';
+                    $code = substr(str_shuffle($permitted_chars), 0, 6);
+                    $this->db->set('email_code', $code);
+                    $this->db->where('email', $email);
+                    $this->db->update('user');
+
+                    $subject = "=?UTF-8?B?".base64_encode($this->lang->line('checking_email'))."?=";
+                    $message  = $this->lang->line('message_copy_code').": <br/><br/> $code";
+                    $sendmail = array(
+                        'recipient_email' => $email,
+                        'subject' => $subject,
+                        'content' => $message
+                    );
+                    $this->mailer->send($sendmail); // Panggil fungsi send yang ada di librari Mailer
+                    echo "<script>
+                            alert('".$this->lang->line('alert_check_email')."')
+                        </script>";
+                }
+            } else {
+                if ($data['user']['is_otp'] == '0') {
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('message_register_otp').' > Goggle OTP</div>');
+                    redirect('user/transfer_bonus_usdt');
+                } else {
+                    $ga = new GoogleAuthenticator();
+                    $secret = $data['user']['secret_otp'];
+
+                    $amount = $this->input->post('amount');
+                    $email_code = $this->input->post('email_code');
+                    $otp_code = $this->input->post('otp_code');
+                    $user_id = $data['user']['id'];
+
+                    if ($data['user']['email_code'] != $email_code) {
+                        $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('wrong_email_code').'</div>');
+                        redirect('user/transfer_bonus_usdt');
+                    } else {
+                        if ($amount > $data['balance']) {
+                            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('not_enough').' MTM</div>');
+                            redirect('user/transfer_bonus_usdt');
+                        } else {
+                            $checkResult = $ga->verifyCode($secret, $otp_code);
+                            if (!$checkResult) {
+                                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('otp_code_wrong').'</div>');
+                                redirect('user/transfer_bonus_usdt');
+                            } else {
+                                $data = [
+                                    'user_id' => $user_id,
+                                    'amount' => $amount,
+                                    'coin_type' => 'usdt',
+                                    'datecreate' => time(),
+                                ];
+                                $insert = $this->M_user->insert_data('bonus_transfer_general', $data);
+                                if ($insert == true) {
+                                    $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">'.$this->lang->line('success_trf_general').'</div>');
+                                    redirect('user/mywalletusdt/bonus');
+                                } else {
+                                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('failed_trf_general').'</div>');
+                                    redirect('user/transfer_bonus_usdt');
                                 }
                             }
                         }

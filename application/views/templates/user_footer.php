@@ -796,11 +796,11 @@
              if (document.getElementById("coinType").value == 'filecoin') {
                  var fee = parseFloat(amount) * <?= $fee_withdrawal['fee_filecoin'] / 100 ?>;
                  $("#fee").val(fee.toFixed(10));
-             } else if (document.getElementById("coinType").value == 'mtm') {
-                 var fee = parseFloat(amount) * <?= $fee_withdrawal['fee_mtm'] / 100 ?>;
+             } else if (document.getElementById("coinType").value == 'usdt') {
+                 var fee = parseFloat(amount) * <?= $fee_withdrawal['fee_usdt'] / 100 ?>;
                  $("#fee").val(fee.toFixed(10));
-             } else if (document.getElementById("coinType").value == 'zenx') {
-                 var fee = parseFloat(amount) * <?= $fee_withdrawal['fee_zenx'] / 100 ?>;
+             } else if (document.getElementById("coinType").value == 'krp') {
+                 var fee = parseFloat(amount) * <?= $fee_withdrawal['fee_krp'] / 100 ?>;
                  $("#fee").val(fee.toFixed(10));
              }
              var total = parseFloat(amount) - parseFloat(fee);

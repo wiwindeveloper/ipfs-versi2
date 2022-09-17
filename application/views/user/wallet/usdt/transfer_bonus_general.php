@@ -15,7 +15,7 @@
                 <h4 class="text-white text-center mb-3"><?= $this->lang->line('bonus_balance');?></h4>
                 <form method="post" action="<?php base_url('user/transfer_bonus_fil') ?>">
                     <div class="form-group btn border-withdrawal text-white" style="width: 100%; text-align:left !important; cursor:default">
-                        <span><img src="<?= base_url('assets/img/mtm_logo.png') ?>" width="25px">&nbsp; <b>MTM <?= $this->lang->line('wallet');?></b></span> <span class="float-right"><b><?= str_replace('.', ',', number_format($balance, 10)); ?> MTM</b></span>
+                        <span><img src="<?= base_url('assets/img/icon-usdt.png') ?>" width="25px">&nbsp; <b>USDT <?= $this->lang->line('wallet');?></b></span> <span class="float-right"><b><?= str_replace('.', ',', number_format($balance, 10)); ?> USDT</b></span>
                     </div>
                     <div class="form-group">
                         <input type="text" class="form-control" id="amount" name="amount" value="<?= set_value('amount'); ?>" placeholder="<?= $this->lang->line('amount');?>" onkeypress="return (event.charCode == 46 || event.charCode < 31 || (event.charCode > 47 && event.charCode < 58))">
@@ -44,7 +44,7 @@
                             </button>
                         </div>
                         <div class="col-md-6">
-                            <a href="<?= base_url('user/mywalletmtm/bonus'); ?>" class="btn btn-cancel btn-user btn-block text-uppercase">
+                            <a href="<?= base_url('user/mywalletusdt/bonus'); ?>" class="btn btn-cancel btn-user btn-block text-uppercase">
                             <?= $this->lang->line('cancel');?>
                             </a>
                         </div>

@@ -74,7 +74,7 @@
                 </div>
 
                 <div class="col-xl-12 col-md-12 mb-4">
-                    <a href="<?= base_url('user/withdrawal_mtm'); ?>" class="btn btn-ok btn-block text-capitalize">
+                    <a href="<?= base_url('user/withdrawal_usdt'); ?>" class="btn btn-ok btn-block text-capitalize">
                     <?= $this->lang->line('withdrawal');?>
                     </a>
                 </div>
@@ -192,7 +192,7 @@
                 </div>
 
                 <div class="col-xl-12 col-md-12 mb-4">
-                    <a href="<?= base_url('user/transfer_bonus_mtm'); ?>" class="btn btn-info btn-block">
+                    <a href="<?= base_url('user/transfer_bonus_usdt'); ?>" class="btn btn-info btn-block">
                     <?= $this->lang->line('trf_to_general');?>
                     </a>
                 </div>
