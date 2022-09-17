@@ -3325,6 +3325,69 @@ class User extends CI_Controller
         }
     }
 
+    public function mywalletkrp()
+    {
+        $this->_unset_payment();
+
+        $query_user                 = $this->M_user->get_user_byemail($this->session->userdata('email'));
+        $query_row_notif            = $this->M_user->row_newnotif_byuser($query_user['id']);
+        $query_new_notif            = $this->M_user->show_newnotif_byuser($query_user['id']);
+        $query_sum_deposit          = $this->M_user->get_sum_deposit($query_user['id'], '5');
+        $query_total_purchase       = $this->M_user->sum_cart_byid($query_user['id']);
+        $query_total_withdrawal     = $this->M_user->get_total_withdrawal($query_user['id'], 'krp');
+        $query_transfer_bonus_krp   = $this->M_user->get_transfer_bonus($query_user['id'], 'krp');
+        $query_transfer_bonus_list  = $this->M_user->get_transfer_bonus_list($query_user['id'], 'krp', 'DESC')->result();
+
+        //total bonus usdt 
+        $query_total                    = $this->M_user->get_total_bonus($query_user['id'])->row_array();
+        $total_sponsorkrp              = $query_total['sponsorkrp'] ?? null;
+        $total_sponmatchingkrp         = $query_total['sponmatchingkrp'] ?? null;
+        $total_pairingmatch_krp        = $query_total['pairingmatchkrp'] ?? null;
+        $total_minmatchingkrp          = $query_total['minmatchingkrp'] ?? null;
+        $total_minpairingkrp           = $query_total['minpairingkrp'] ?? null;
+        $total_binarymatch_krp         = $query_total['binarymatchkrp'] ?? null;
+        $total_bonusglobal_krp         = $query_total['bonusglobalkrp'] ?? null;
+        $total_basecampkrp             = $query_total['basecampkrp'] ?? null;
+        
+        $data['title']              = 'KRP '.$this->lang->line('wallet');
+        $data['user']               = $query_user;
+        $data['amount_notif']       = $query_row_notif;
+        $data['list_notif']         = $query_new_notif;
+        $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
+        $data['deposit']            = $this->M_user->get_deposit_general($query_user['id'], '5');
+        $data['general']            = $query_sum_deposit['coin'] - $query_total_purchase['krp'] - $query_total_withdrawal['amount'];
+        $data['purchase']           = $this->M_user->get_purchase_usdt_byid($query_user['id']);
+        $data['withdrawal']         = $this->M_user->get_withdrawal_by($query_user['id'], 'krp')->result();
+        $data['market_price']       = $this->M_user->get_price_coin()->row_array();
+        $data['total_krp']          = $total_minmatchingkrp + $total_minpairingkrp + $total_sponsorkrp + $total_sponmatchingkrp + $total_pairingmatch_krp + $total_binarymatch_krp + $total_bonusglobal_krp + $total_basecampkrp;
+        $data['detail']             = $this->M_user->get_detail_user($query_user['id'])->row_array();
+        $data['excess_bonus']       = $this->M_user->get_excess_bonus_krp($query_user['id'])->row_array();
+        $data['general_balance_krp']    = ($query_transfer_bonus_krp['amount']) - $query_total_withdrawal['amount'] + $query_sum_deposit['coin'] - $query_total_purchase['krp'];
+        $data['transfer_list_bonus']    = $query_transfer_bonus_list;
+
+        $data['balance']                    = $data['total_krp'] - $query_transfer_bonus_krp['amount'];
+        $data['bonus_list']                 = $this->M_user->get_bonus_bysponsor($query_user['id']);
+        $data['bonus_sm_list']              = $this->M_user->get_bonus_bysponsormatching($query_user['id']);
+        $data['bonus_pairingmatch_list']    = $this->M_user->get_bonus_pairingmatching($query_user['id']);
+        $data['bonus_minmatching_list']      = $this->M_user->get_bonus_miningmatching_krp($query_user['id']);
+        $data['bonus_minpairing_list']      = $this->M_user->get_bonus_miningpairing_usdt($query_user['id']);
+        $data['bonus_binary_list']          = $this->M_user->get_bonus_binarymatch($query_user['id']);
+        $data['bonus_global_list']          = $this->M_user->get_bonus_global_usdt($query_user['id']);
+        $data['bonus_basecamp_list']        = $this->M_user->get_bonus_basecamp2($query_user['id']);
+        $data['transfer_list']              = $query_transfer_bonus_list;
+        $data['market_price']               = $this->M_user->get_price_coin()->row_array();
+        
+        if ($this->session->userdata('email') && $this->session->userdata('role_id') == '2') {
+            $this->load->view('templates/user_header', $data);
+            $this->load->view('templates/user_sidebar', $data);
+            $this->load->view('templates/user_topbar', $data);
+            $this->load->view('user/my_wallet_krp', $data);
+            $this->load->view('templates/user_footer');
+        } else {
+            redirect('auth');
+        }
+    }
+
     public function mywalletfil()
     {
         $this->_unset_payment();
@@ -5308,6 +5371,164 @@ class User extends CI_Controller
         }
     }
 
+    public function withdrawal_krp()
+    {
+        if (!empty($this->uri->segment(4))) {
+            $id_notif = $this->uri->segment(4);
+        }
+
+        $query_user                 = $this->M_user->get_user_byemail($this->session->userdata('email'));
+        $query_row_notif            = $this->M_user->row_newnotif_byuser($query_user['id']);
+        $query_new_notif            = $this->M_user->show_newnotif_byuser($query_user['id']);
+        $query_transfer_bonus_krp  = $this->M_user->get_transfer_bonus($query_user['id'], 'krp');
+        $query_total_withdrawal     = $this->M_user->get_total_withdrawal($query_user['id'], 'krp');
+        $query_sum_deposit          = $this->M_user->get_sum_deposit($query_user['id'], '5');
+        $query_total_purchase       = $this->M_user->sum_cart_byid($query_user['id']);
+        $query_minimum_withdrawal   = $this->M_user->minimum_withdrawal();
+
+        $data['title']              = $this->lang->line('withdrawal');
+        $data['user']               = $query_user;
+        $data['amount_notif']       = $query_row_notif;
+        $data['list_notif']         = $query_new_notif;
+        $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
+        $data['general_balance_krp'] = ($query_transfer_bonus_krp['amount']) - $query_total_withdrawal['amount'] + $query_sum_deposit['coin'] - $query_total_purchase['krp'];
+        $data['fee_withdrawal']     = $query_minimum_withdrawal;
+
+        if ($this->session->userdata('email') && $this->session->userdata('role_id') == '2') {
+            $this->form_validation->set_rules('wallet_address', 'Wallet Address', 'trim|required', [
+                'required' => $this->lang->line('require_wallet_address')
+            ]);
+            $this->form_validation->set_rules('amount', 'Amount', 'trim|required', [
+                'required' => $this->lang->line('require_amount')
+            ]);
+            $this->form_validation->set_rules('fee', 'Fee', 'trim|required', [
+                'required' => $this->lang->line('require_fee')
+            ]);
+            $this->form_validation->set_rules('total', 'Total', 'trim|required', [
+                'required' => $this->lang->line('require_total')
+            ]);
+            $this->form_validation->set_rules('email_code', 'Email Code', 'trim|required', [
+                'required' => $this->lang->line('require_email_code')
+            ]);
+            $this->form_validation->set_rules('otp_code', 'OTP Code', 'trim|required', [
+                'required' => $this->lang->line('require_otp_code')
+            ]);
+
+            if ($this->form_validation->run() == false) {
+                $this->load->view('templates/user_header', $data);
+                $this->load->view('templates/user_sidebar', $data);
+                $this->load->view('templates/user_topbar', $data);
+                $this->load->view('user/wallet/krp/withdrawal_krp', $data);
+                $this->load->view('templates/user_footer');
+
+                if (isset($_POST['check'])) {
+                    $email = $data['user']['email'];
+
+                    $permitted_chars = '0123456789';
+                    $code = substr(str_shuffle($permitted_chars), 0, 6);
+                    $this->db->set('email_code', $code);
+                    $this->db->where('email', $email);
+                    $this->db->update('user');
+
+                    $subject = "=?UTF-8?B?".base64_encode($this->lang->line('checking_email'))."?=";
+                    $message  = $this->lang->line('message_copy_code').": <br/><br/> $code";
+                    $sendmail = array(
+                        'recipient_email' => $email,
+                        'subject' => $subject,
+                        'content' => $message
+                    );
+                    $this->mailer->send($sendmail); // Panggil fungsi send yang ada di librari Mailer
+                    echo "<script>
+                            alert('".$this->lang->line('alert_check_email')."')
+                        </script>";
+                }
+            } else {
+                if ($data['user']['is_otp'] == '0') {
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('message_register_otp').' > Goggle OTP</div>');
+                    redirect('user/withdrawal_krp');
+                } else {
+                    $ga = new GoogleAuthenticator();
+                    $secret = $data['user']['secret_otp'];
+
+                    $wallet = $this->input->post('wallet_address');
+                    $amount = $this->input->post('amount');
+                    $total = $this->input->post('total');
+                    $email_code = $this->input->post('email_code');
+                    $otp_code = $this->input->post('otp_code');
+                    $user_id = $data['user']['id'];
+
+                    if ($data['user']['email_code'] != $email_code) {
+                        $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('wrong_email_code').'</div>');
+                        redirect('user/withdrawal_krp');
+                    } else {
+                        if ($amount > $data['general_balance_krp']) {
+                            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('not_enough').' KRP</div>');
+                            redirect('user/withdrawal_krp');
+                        } else {
+                            if ($amount < $query_minimum_withdrawal['krp']) {
+                                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('minimum_amount_wd').' ' . $query_minimum_withdrawal['krp'] . ' KRP</div>');
+                                redirect('user/withdrawal_krp');
+                            } else {
+                                $checkResult = $ga->verifyCode($secret, $otp_code);
+                                if (!$checkResult) {
+                                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('otp_code_wrong').'</div>');
+                                    redirect('user/withdrawal_krp');
+                                } else {
+                                     if (!empty($this->uri->segment(4))) {
+                                        $id_wd = $this->uri->segment(3);
+                                        $data_update = [
+                                            'wallet_address' => $wallet,
+                                            'amount' => $amount,
+                                            'total' => $total,
+                                            'note' => ''
+                                        ];
+
+                                        $update_cart = $this->M_user->update_data_byid('withdrawal', $data_update, 'id', $id_wd);
+
+
+                                        $data_notif = [
+                                            'is_show' => 1
+                                        ];
+                                        $id_notif = $this->uri->segment(4);
+                                        $update_notif = $this->M_user->update_data_byid('notifi', $data_notif, 'id', $id_notif);
+
+                                        if ($update_notif == true) {
+                                            //update notification
+                                            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">'.$this->lang->line('request_wd_success').'</div>');
+                                            redirect('user/mywalletkrp');
+                                        } else {
+                                            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('request_wd_failed').'</div>');
+                                            redirect('user/withdrawal_krp');
+                                        }
+                                    } else {
+                                        $withdrawal = [
+                                            'user_id' => $user_id,
+                                            'coin_type' => 'krp',
+                                            'wallet_address' => $wallet,
+                                            'amount' => $amount,
+                                            'total' => $total,
+                                            'datecreate' => time(),
+                                        ];
+                                        $insert = $this->M_user->insert_data('withdrawal', $withdrawal);
+                                        if ($insert == true) {
+                                            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">'.$this->lang->line('request_wd_success').'</div>');
+                                            redirect('user/mywalletkrp');
+                                        } else {
+                                            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('request_wd_failed').'</div>');
+                                            redirect('user/withdrawal_krp');
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            redirect('auth');
+        }
+    }
+
     public function withdrawal_zenx()
     {
         if (!empty($this->uri->segment(3))) {
@@ -5994,7 +6215,7 @@ class User extends CI_Controller
                         redirect('user/transfer_bonus_usdt');
                     } else {
                         if ($amount > $data['balance']) {
-                            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('not_enough').' MTM</div>');
+                            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('not_enough').' USDT</div>');
                             redirect('user/transfer_bonus_usdt');
                         } else {
                             $checkResult = $ga->verifyCode($secret, $otp_code);
@@ -6015,6 +6236,112 @@ class User extends CI_Controller
                                 } else {
                                     $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('failed_trf_general').'</div>');
                                     redirect('user/transfer_bonus_usdt');
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            redirect('auth');
+        }
+    }
+
+    public function transfer_bonus_krp()
+    {
+        $query_user                 = $this->M_user->get_user_byemail($this->session->userdata('email'));
+        $query_row_notif            = $this->M_user->row_newnotif_byuser($query_user['id']);
+        $query_new_notif            = $this->M_user->show_newnotif_byuser($query_user['id']);
+        $query_total                = $this->M_user->get_total_bonus($query_user['id'])->row_array();
+        $query_transfer_bonus_krp   = $this->M_user->get_transfer_bonus($query_user['id'], 'krp');
+
+        $data['title']              = $this->lang->line('trf_to_general');
+        $data['user']               = $query_user;
+        $data['bonus']              = $this->M_user->get_bonus_bysponsor($query_user['id']);
+        $data['amount_notif']       = $query_row_notif;
+        $data['list_notif']         = $query_new_notif;
+        $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
+        $data['total_krp']          = $query_total['sponsorkrp'] + $query_total['sponmatchingkrp'] + $query_total['pairingmatchkrp'] + $query_total['minmatchingkrp'] + $query_total['minpairingkrp'] + $query_total['binarymatchkrp'] + $query_total['bonusglobalkrp'] + $query_total['basecampkrp'];
+        $data['balance']            = $data['total_krp'] - $query_transfer_bonus_krp['amount'];
+
+        if ($this->session->userdata('email') && $this->session->userdata('role_id') == '2') {
+            $this->form_validation->set_rules('amount', 'Amount', 'trim|required', [
+                'required' => $this->lang->line('require_amount')
+            ]);
+            $this->form_validation->set_rules('email_code', 'Email Code', 'trim|required', [
+                'required' => $this->lang->line('require_email_code')
+            ]);
+            $this->form_validation->set_rules('otp_code', 'OTP Code', 'trim|required', [
+                'required' => $this->lang->line('require_otp_code')
+            ]);
+
+            if ($this->form_validation->run() == false) {
+                $this->load->view('templates/user_header', $data);
+                $this->load->view('templates/user_sidebar', $data);
+                $this->load->view('templates/user_topbar', $data);
+                $this->load->view('user/wallet/krp/transfer_bonus_general', $data);
+                $this->load->view('templates/user_footer');
+
+                if (isset($_POST['check'])) {
+                    $email = $data['user']['email'];
+
+                    $permitted_chars = '0123456789';
+                    $code = substr(str_shuffle($permitted_chars), 0, 6);
+                    $this->db->set('email_code', $code);
+                    $this->db->where('email', $email);
+                    $this->db->update('user');
+
+                    $subject = "=?UTF-8?B?".base64_encode($this->lang->line('checking_email'))."?=";
+                    $message  = $this->lang->line('message_copy_code').": <br/><br/> $code";
+                    $sendmail = array(
+                        'recipient_email' => $email,
+                        'subject' => $subject,
+                        'content' => $message
+                    );
+                    $this->mailer->send($sendmail); // Panggil fungsi send yang ada di librari Mailer
+                    echo "<script>
+                            alert('".$this->lang->line('alert_check_email')."')
+                        </script>";
+                }
+            } else {
+                if ($data['user']['is_otp'] == '0') {
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('message_register_otp').' > Goggle OTP</div>');
+                    redirect('user/transfer_bonus_krp');
+                } else {
+                    $ga = new GoogleAuthenticator();
+                    $secret = $data['user']['secret_otp'];
+
+                    $amount = $this->input->post('amount');
+                    $email_code = $this->input->post('email_code');
+                    $otp_code = $this->input->post('otp_code');
+                    $user_id = $data['user']['id'];
+
+                    if ($data['user']['email_code'] != $email_code) {
+                        $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('wrong_email_code').'</div>');
+                        redirect('user/transfer_bonus_krp');
+                    } else {
+                        if ($amount > $data['balance']) {
+                            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('not_enough').' KRP</div>');
+                            redirect('user/transfer_bonus_krp');
+                        } else {
+                            $checkResult = $ga->verifyCode($secret, $otp_code);
+                            if (!$checkResult) {
+                                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('otp_code_wrong').'</div>');
+                                redirect('user/transfer_bonus_krp');
+                            } else {
+                                $data = [
+                                    'user_id' => $user_id,
+                                    'amount' => $amount,
+                                    'coin_type' => 'krp',
+                                    'datecreate' => time(),
+                                ];
+                                $insert = $this->M_user->insert_data('bonus_transfer_general', $data);
+                                if ($insert == true) {
+                                    $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">'.$this->lang->line('success_trf_general').'</div>');
+                                    redirect('user/mywalletkrp/bonus');
+                                } else {
+                                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.$this->lang->line('failed_trf_general').'</div>');
+                                    redirect('user/transfer_bonus_krp');
                                 }
                             }
                         }

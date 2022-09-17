@@ -13,9 +13,9 @@
         <div class="col-md-8 mx-auto">
             <div class="term-condition">
                 <h4 class="text-white text-center mb-3"><?= $this->lang->line('bonus_balance');?></h4>
-                <form method="post" action="<?php base_url('user/transfer_bonus_zenx') ?>">
+                <form method="post" action="<?php base_url('user/transfer_bonus_krp') ?>">
                     <div class="form-group btn border-withdrawal text-white" style="width: 100%; text-align:left !important; cursor:default">
-                        <span><img src="<?= base_url('assets/img/zenith_logo.png') ?>" width="25px">&nbsp; <b>ZENX <?= $this->lang->line('wallet');?></b></span> <span class="float-right"><b>0,0000000000 ZENX</b></span>
+                        <span><img src="<?= base_url('assets/img/krp_logo.png') ?>" width="25px">&nbsp; <b>KRP <?= $this->lang->line('wallet');?></b></span> <span class="float-right"><b><?= str_replace('.', ',', number_format($balance, 10)); ?> KRP</b></span>
                     </div>
                     <div class="form-group">
                         <input type="text" class="form-control" id="amount" name="amount" value="<?= set_value('amount'); ?>" placeholder="<?= $this->lang->line('amount');?>" onkeypress="return (event.charCode == 46 || event.charCode < 31 || (event.charCode > 47 && event.charCode < 58))">
@@ -44,7 +44,7 @@
                             </button>
                         </div>
                         <div class="col-md-6">
-                            <a href="<?= base_url('user/mywalletzenx/bonus'); ?>" class="btn btn-cancel btn-user btn-block">
+                            <a href="<?= base_url('user/mywalletkrp/bonus'); ?>" class="btn btn-cancel btn-user btn-block">
                             <?= $this->lang->line('cancel');?>
                             </a>
                         </div>

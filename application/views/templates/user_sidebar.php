@@ -101,7 +101,7 @@
                 <a class="collapse-item <?= uri_string() == 'user/mywalletzenx' || uri_string() == 'user/withdrawal_zenx' || uri_string() == 'user/transfer_bonus_zenx' || uri_string() == 'user/mywalletzenx/bonus' ? 'active' : '';?>" href="<?= base_url('user/mywalletusdt'); ?>">
                     <img class="img-balance" src="<?= base_url('assets/img/icon-usdt.png') ?>" alt="img" style="width: 16px;"> USDT
                 </a>
-                <a class="collapse-item <?= uri_string() == 'user/mywalletmtm' || uri_string() == 'user/withdrawal_mtm' || uri_string() == 'user/transfer_bonus_mtm' || uri_string() == 'user/mywalletmtm/bonus' ? 'active' : '';?>" href="<?= base_url('user/mywalletmtm'); ?>">
+                <a class="collapse-item <?= uri_string() == 'user/mywalletmtm' || uri_string() == 'user/withdrawal_mtm' || uri_string() == 'user/transfer_bonus_mtm' || uri_string() == 'user/mywalletmtm/bonus' ? 'active' : '';?>" href="<?= base_url('user/mywalletkrp'); ?>">
                     <img class="img-balance" src="<?= base_url('assets/img/krp_logo.png') ?>" alt="img" style="width: 16px;"> KRP
                 </a>
             </div>

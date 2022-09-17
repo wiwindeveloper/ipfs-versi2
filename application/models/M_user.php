@@ -280,7 +280,7 @@ class M_user extends CI_Model
 
     public function get_bonus_pairingmatching($id)
     {
-        return $this->db->select('bonus_maxmatching.id, user.username, bonus_maxmatching.mtm, bonus_maxmatching.usdt, bonus_maxmatching.set_amount, bonus_maxmatching.datecreate')
+        return $this->db->select('bonus_maxmatching.id, user.username, bonus_maxmatching.krp, bonus_maxmatching.usdt, bonus_maxmatching.set_amount, bonus_maxmatching.datecreate')
             ->from('bonus_maxmatching')
             ->join('user', 'user.id = bonus_maxmatching.user_id')
             ->where('bonus_maxmatching.user_id', $id)
@@ -308,6 +308,16 @@ class M_user extends CI_Model
             ->get()->result();
     }
 
+    public function get_bonus_miningmatching_krp($id)
+    {
+        return $this->db->select('bonus_minmatching.id, user.username, bonus_minmatching.member_id, bonus_minmatching.team, bonus_minmatching.krp, bonus_minmatching.datecreate')
+            ->from('bonus_minmatching')
+            ->join('user', 'user.id = bonus_minmatching.member_id')
+            ->where(['user_id' => $id, 'bonus_minmatching.krp != ' => 0])
+            ->order_by('datecreate', 'DESC')
+            ->get()->result();
+    }
+
     public function get_bonus_miningpairing($id)
     {
         return $this->db->select('bonus_minpairing.datecreate, user.username, bonus_minpairing.member_sponsor, bonus_minpairing.generation, bonus_minpairing.team, bonus_minpairing.amount')
@@ -319,17 +329,17 @@ class M_user extends CI_Model
 
     public function get_bonus_miningpairing_usdt($id)
     {
-        return $this->db->select('bonus_minpairing.datecreate, user.username, bonus_minpairing.member_sponsor, bonus_minpairing.generation, bonus_minpairing.team, bonus_minpairing.usdt')
+        return $this->db->select('bonus_minpairing.datecreate, user.username, bonus_minpairing.member_sponsor, bonus_minpairing.generation, bonus_minpairing.team, bonus_minpairing.krp')
             ->from('bonus_minpairing')
             ->join('user', 'user.id = bonus_minpairing.user_sponsor')
-            ->where(['bonus_minpairing.user_id' => $id, 'bonus_minpairing.usdt != ' => '0'])
+            ->where(['bonus_minpairing.user_id' => $id, 'bonus_minpairing.krp != ' => '0'])
             ->order_by('bonus_minpairing.datecreate', 'DESC')
             ->get()->result();
     }
 
     public function get_bonus_binarymatch($id)
     {
-        return $this->db->select('bonus_binarymatch.id, user.username, bonus_binarymatch.generation, bonus_binarymatch.mtm, bonus_binarymatch.usdt, bonus_binarymatch.datecreate')
+        return $this->db->select('bonus_binarymatch.id, user.username, bonus_binarymatch.generation, bonus_binarymatch.krp, bonus_binarymatch.usdt, bonus_binarymatch.datecreate')
             ->from('bonus_binarymatch')
             ->join('user', 'bonus_binarymatch.user_sponsor = user.id')
             ->where('bonus_binarymatch.user_id', $id)
@@ -382,7 +392,7 @@ class M_user extends CI_Model
 
     public function get_bonus_basecamp2($id)
     {
-        return $this->db->select('bonus_basecamp.update_date, user.username, bonus_basecamp.cart_id, bonus_basecamp.team, bonus_basecamp.filecoin, bonus_basecamp.mtm, bonus_basecamp.usdt, bonus_basecamp.type')
+        return $this->db->select('bonus_basecamp.update_date, user.username, bonus_basecamp.cart_id, bonus_basecamp.team, bonus_basecamp.filecoin, bonus_basecamp.mtm, bonus_basecamp.usdt, bonus_basecamp.krp, bonus_basecamp.type')
             ->from('bonus_basecamp')
             ->join('cart', 'bonus_basecamp.cart_id = cart.id')
             ->join('user', 'cart.user_id = user.id')
@@ -1683,6 +1693,14 @@ class M_user extends CI_Model
     public function get_excess_bonus_usdt($id)
     {
         return $this->db->select_sum('usdt')
+            ->from('excess_bonus')
+            ->where('user_id', $id)
+            ->get();
+    }
+
+    public function get_excess_bonus_krp($id)
+    {
+        return $this->db->select_sum('krp')
             ->from('excess_bonus')
             ->where('user_id', $id)
             ->get();

@@ -13,10 +13,10 @@
         <div class="col-md-8 mx-auto">
             <div class="term-condition">
                 <h4 class="text-white text-center mb-3 text-uppercase"><?= $this->lang->line('general_balance');?></h4>
-                <form method="post" action="<?php base_url('user/withdrawal_zenx') ?>">
-                    <input type="hidden" value="zenx" id="coinType" name="cointype">
+                <form method="post" action="<?php base_url('user/withdrawal_krp') ?>">
+                    <input type="hidden" value="krp" id="coinType" name="cointype">
                     <div class="form-group border-withdrawal text-white" style="width: 100%; text-align:left !important;">
-                        <span class="text-uppercase"><img src="<?= base_url('assets/img/zenith_logo.png') ?>" width="25px">&nbsp; <b>ZENX <?= $this->lang->line('wallet');?></b></span> <span class="float-right"><b><?= str_replace('.', ',', number_format($general, 10)); ?> ZENX</b></span>
+                        <span class="text-uppercase"><img src="<?= base_url('assets/img/krp_logo.png') ?>" width="25px">&nbsp; <b>KRP <?= $this->lang->line('wallet');?></b></span> <span class="float-right"><b><?= str_replace('.', ',', number_format($general_balance_krp, 10)); ?> KRP</b></span>
                     </div>
                     <div class="form-group">
                         <input type="text" class="form-control" id="wallet_address" name="wallet_address" value="<?= set_value('wallet_address'); ?>" placeholder="<?= $this->lang->line('wallet_address');?>">
@@ -27,7 +27,7 @@
                         <?= form_error('amount', '<p><small class="text-danger pt-1">', '</small></p>'); ?>
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" id="fee" name="fee" value="<?= set_value('fee'); ?>" placeholder="<?= $this->lang->line('fee');?> (<?= $fee_withdrawal['fee_zenx']; ?>%)" readonly>
+                        <input type="text" class="form-control" id="fee" name="fee" value="<?= set_value('fee'); ?>" placeholder="<?= $this->lang->line('fee');?> (<?= $fee_withdrawal['fee_krp']; ?>%)" readonly>
                         <?= form_error('fee', '<p><small class="text-danger pt-1">', '</small></p>'); ?>
                     </div>
                     <div class="form-group">
@@ -57,7 +57,7 @@
                             </button>
                         </div>
                         <div class="col-md-6 text-uppercase">
-                            <a href="<?= base_url('user/mywalletzenx'); ?>" class="btn btn-cancel btn-user btn-block">
+                            <a href="<?= base_url('user/mywalletkrp'); ?>" class="btn btn-cancel btn-user btn-block">
                             <?= $this->lang->line('cancel');?>
                             </a>
                         </div>
