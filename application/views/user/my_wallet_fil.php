@@ -8,19 +8,6 @@
         $uriSegment = $this->uri->segment(3);
     ?>
 
-    <ul class="nav nav-tabs mb-5" id="myTab" role="tablist">
-        <li class="nav-item " role="presentation">
-            <a class="nav-link <?= empty($uriSegment) ? 'active' : ''; ?>" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
-                General <?= $this->lang->line('balance');?>
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link <?= $uriSegment == 'bonus' ? 'active' : ''; ?>" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">
-                Bonus <?= $this->lang->line('balance');?>
-            </a>
-        </li>
-    </ul>
-
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade <?= empty($uriSegment) ? 'show active' : ''; ?>" id="home" role="tabpanel" aria-labelledby="home-tab">
             <div class="row">
@@ -95,15 +82,6 @@
                                                             <td><?= date('Y/m/d H:i', $list_mining->datecreate); ?></td>
                                                             <td><?= $this->lang->line('transfer_from_mining');?></td>
                                                             <td><?= number_format($list_mining->amount, 10, ',', '.'); ?></td>
-                                                        </tr>
-                                                    <?php endforeach ?>
-
-                                                    <!-- list transfer from bonus -->
-                                                    <?php foreach ($transfer_list_bonus as $list_bonus) : ?>
-                                                        <tr>
-                                                            <td><?= date('Y/m/d H:i', $list_bonus->datecreate); ?></td>
-                                                            <td><?= $this->lang->line('transfer_from_bonus');?></td>
-                                                            <td><?= number_format($list_bonus->amount, 10, ',', '.'); ?></td>
                                                         </tr>
                                                     <?php endforeach ?>
 

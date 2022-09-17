@@ -185,6 +185,15 @@ class M_user extends CI_Model
             ->get()->result();
     }
 
+    public function get_purchase_usdt_byid($user_id)
+    {
+        return $this->db->select('cart.id, cart.usdt, cart.datecreate, package.name')
+            ->from('cart')
+            ->join('package', 'package.id =  cart.package_id')
+            ->where(['cart.user_id' => $user_id, 'cart.usdt !=' => 0])
+            ->get()->result();
+    }
+
     public function show_data_home($id)
     {
         return $this->db->select('cart.datecreate, cart.update_date, package.name, level_fm.fm, (SELECT user.username FROM user WHERE user.id = cart.sponsor_id) sponsor')
@@ -289,6 +298,16 @@ class M_user extends CI_Model
             ->get()->result();
     }
 
+    public function get_bonus_miningmatching_usdt($id)
+    {
+        return $this->db->select('bonus_minmatching.id, user.username, bonus_minmatching.member_id, bonus_minmatching.team, bonus_minmatching.usdt, bonus_minmatching.datecreate')
+            ->from('bonus_minmatching')
+            ->join('user', 'user.id = bonus_minmatching.member_id')
+            ->where(['user_id' => $id, 'bonus_minmatching.usdt != ' => 0])
+            ->order_by('datecreate', 'DESC')
+            ->get()->result();
+    }
+
     public function get_bonus_miningpairing($id)
     {
         return $this->db->select('bonus_minpairing.datecreate, user.username, bonus_minpairing.member_sponsor, bonus_minpairing.generation, bonus_minpairing.team, bonus_minpairing.amount')
@@ -296,6 +315,16 @@ class M_user extends CI_Model
             ->join('user', 'user.id = bonus_minpairing.user_sponsor')
             ->where('bonus_minpairing.user_id ', $id)
             ->order_by('bonus_minpairing.datecreate', 'DESC');
+    }
+
+    public function get_bonus_miningpairing_usdt($id)
+    {
+        return $this->db->select('bonus_minpairing.datecreate, user.username, bonus_minpairing.member_sponsor, bonus_minpairing.generation, bonus_minpairing.team, bonus_minpairing.usdt')
+            ->from('bonus_minpairing')
+            ->join('user', 'user.id = bonus_minpairing.user_sponsor')
+            ->where(['bonus_minpairing.user_id' => $id, 'bonus_minpairing.usdt != ' => '0'])
+            ->order_by('bonus_minpairing.datecreate', 'DESC')
+            ->get()->result();
     }
 
     public function get_bonus_binarymatch($id)
@@ -334,7 +363,7 @@ class M_user extends CI_Model
 
     public function get_bonus_global_usdt($id)
     {
-        return $this->db->select('bonus_global.id, user.username, bonus_global.mtm, bonus_global.usdt, bonus_global.note_level, bonus_global.level_fm, bonus_global.datecreate')
+        return $this->db->select('bonus_global.id, user.username, bonus_global.usdt, bonus_global.note_level, bonus_global.level_fm, bonus_global.datecreate')
             ->from('bonus_global')
             ->join('user', 'bonus_global.user_id = user.id')
             ->where('bonus_global.user_id', $id)
@@ -1484,7 +1513,7 @@ class M_user extends CI_Model
     }
     public function get_detail_user($id)
     {
-        return $this->db->select('user.*, level_fm.fm, cart.user_id, cart.sponsor_id, cart.position_id, cart.update_date, SUM(package.point) AS name, SUM(package.mtm) AS total_mtm')
+        return $this->db->select('user.*, level_fm.fm, cart.user_id, cart.sponsor_id, cart.position_id, cart.update_date, SUM(package.point) AS name, SUM(package.usdt) AS total_usdt, SUM(package.krp) AS total_krp')
             ->from('user')
             ->join('level_fm', 'level_fm.user_id = user.id', 'left outer')
             ->join('cart', 'cart.user_id = user.id', 'left outer')
@@ -1646,6 +1675,14 @@ class M_user extends CI_Model
     public function get_excess_bonus($id)
     {
         return $this->db->select_sum('mtm')
+            ->from('excess_bonus')
+            ->where('user_id', $id)
+            ->get();
+    }
+
+    public function get_excess_bonus_usdt($id)
+    {
+        return $this->db->select_sum('usdt')
             ->from('excess_bonus')
             ->where('user_id', $id)
             ->get();

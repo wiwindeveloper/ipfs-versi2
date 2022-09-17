@@ -3262,34 +3262,63 @@ class User extends CI_Controller
         }
     }
 
-    public function mywalletzenx()
+    public function mywalletusdt()
     {
         $this->_unset_payment();
 
         $query_user                 = $this->M_user->get_user_byemail($this->session->userdata('email'));
         $query_row_notif            = $this->M_user->row_newnotif_byuser($query_user['id']);
         $query_new_notif            = $this->M_user->show_newnotif_byuser($query_user['id']);
-        $query_sum_deposit          = $this->M_user->get_sum_deposit($query_user['id'], '3');
+        $query_sum_deposit          = $this->M_user->get_sum_deposit($query_user['id'], '4');
         $query_total_purchase       = $this->M_user->sum_cart_byid($query_user['id']);
-        $query_total_withdrawal     = $this->M_user->get_total_withdrawal($query_user['id'], 'zenx');
+        $query_total_withdrawal     = $this->M_user->get_total_withdrawal($query_user['id'], 'usdt');
+        $query_transfer_bonus_usdt   = $this->M_user->get_transfer_bonus($query_user['id'], 'usdt');
+        $query_transfer_bonus_list  = $this->M_user->get_transfer_bonus_list($query_user['id'], 'usdt', 'DESC')->result();
 
+        //total bonus usdt 
+        $query_total                    = $this->M_user->get_total_bonus($query_user['id'])->row_array();
+        $total_sponsorusdt              = $query_total['sponsorusdt'] ?? null;
+        $total_sponmatchingusdt         = $query_total['sponmatchingusdt'] ?? null;
+        $total_pairingmatch_usdt        = $query_total['pairingmatchusdt'] ?? null;
+        $total_minmatchingusdt          = $query_total['minmatchingusdt'] ?? null;
+        $total_minpairingusdt           = $query_total['minpairingusdt'] ?? null;
+        $total_binarymatch_usdt         = $query_total['binarymatchusdt'] ?? null;
+        $total_bonusglobal_usdt         = $query_total['bonusglobalusdt'] ?? null;
+        $total_basecampusdt             = $query_total['basecampusdt'] ?? null;
         
-        $data['title']              = 'ZENX '.$this->lang->line('wallet');
+        $data['title']              = 'USDT '.$this->lang->line('wallet');
         $data['user']               = $query_user;
         $data['amount_notif']       = $query_row_notif;
         $data['list_notif']         = $query_new_notif;
         $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
-        $data['deposit']            = $this->M_user->get_deposit_general($query_user['id'], '3');
-        $data['general']            = $query_sum_deposit['coin'] - $query_total_purchase['zenx'] - $query_total_withdrawal['amount'];
-        $data['purchase']           = $this->M_user->get_purchase_zenx_byid($query_user['id']);
-        $data['withdrawal']         = $this->M_user->get_withdrawal_by($query_user['id'], 'zenx')->result();
+        $data['deposit']            = $this->M_user->get_deposit_general($query_user['id'], '4');
+        $data['general']            = $query_sum_deposit['coin'] - $query_total_purchase['usdt'] - $query_total_withdrawal['amount'];
+        $data['purchase']           = $this->M_user->get_purchase_usdt_byid($query_user['id']);
+        $data['withdrawal']         = $this->M_user->get_withdrawal_by($query_user['id'], 'usdt')->result();
         $data['market_price']       = $this->M_user->get_price_coin()->row_array();
+        $data['total_usdt']         = $total_minmatchingusdt + $total_minpairingusdt + $total_sponsorusdt + $total_sponmatchingusdt + $total_pairingmatch_usdt + $total_binarymatch_usdt + $total_bonusglobal_usdt + $total_basecampusdt;
+        $data['detail']             = $this->M_user->get_detail_user($query_user['id'])->row_array();
+        $data['excess_bonus']       = $this->M_user->get_excess_bonus_usdt($query_user['id'])->row_array();
+        $data['general_balance_usdt']    = ($query_transfer_bonus_usdt['amount']) - $query_total_withdrawal['amount'] + $query_sum_deposit['coin'] - $query_total_purchase['usdt'];
+        $data['transfer_list_bonus']    = $query_transfer_bonus_list;
+
+        $data['balance']                    = $data['total_usdt'] - $query_transfer_bonus_usdt['amount'];
+        $data['bonus_list']                 = $this->M_user->get_bonus_bysponsor($query_user['id']);
+        $data['bonus_sm_list']              = $this->M_user->get_bonus_bysponsormatching($query_user['id']);
+        $data['bonus_pairingmatch_list']    = $this->M_user->get_bonus_pairingmatching($query_user['id']);
+        $data['bonus_minmatching_list']      = $this->M_user->get_bonus_miningmatching_usdt($query_user['id']);
+        $data['bonus_minpairing_list']      = $this->M_user->get_bonus_miningpairing_usdt($query_user['id']);
+        $data['bonus_binary_list']          = $this->M_user->get_bonus_binarymatch($query_user['id']);
+        $data['bonus_global_list']          = $this->M_user->get_bonus_global_usdt($query_user['id']);
+        $data['bonus_basecamp_list']        = $this->M_user->get_bonus_basecamp2($query_user['id']);
+        $data['transfer_list']              = $query_transfer_bonus_list;
+        $data['market_price']               = $this->M_user->get_price_coin()->row_array();
         
         if ($this->session->userdata('email') && $this->session->userdata('role_id') == '2') {
             $this->load->view('templates/user_header', $data);
             $this->load->view('templates/user_sidebar', $data);
             $this->load->view('templates/user_topbar', $data);
-            $this->load->view('user/my_wallet_zenx', $data);
+            $this->load->view('user/my_wallet_usdt', $data);
             $this->load->view('templates/user_footer');
         } else {
             redirect('auth');
@@ -3304,14 +3333,10 @@ class User extends CI_Controller
         $query_row_notif            = $this->M_user->row_newnotif_byuser($query_user['id']);
         $query_new_notif            = $this->M_user->show_newnotif_byuser($query_user['id']);
         $query_transfer_fill        = $this->M_user->get_total_byuser('mining_user_transfer', 'amount', 'user_id', $query_user['id']);
-        $query_transfer_bonus_fill  = $this->M_user->get_transfer_bonus($query_user['id'], 'filecoin');
         $query_transfer_list        = $this->M_user->get_transfer_list('mining_user_transfer', 'datecreate', $query_user['id'], 'DESC')->result();
-        $query_transfer_bonus_list  = $this->M_user->get_transfer_bonus_list($query_user['id'], 'filecoin', 'DESC')->result();
         $query_total_withdrawal     = $this->M_user->get_total_withdrawal($query_user['id'], 'filecoin');
         $query_sum_deposit          = $this->M_user->get_sum_deposit($query_user['id'], '1');
         $query_total_purchase       = $this->M_user->sum_cart_byid($query_user['id']);
-
-        $query_total               = $this->M_user->get_total_bonus($query_user['id'])->row_array();
 
         
         $data['title']                  = 'Fill '.$this->lang->line('wallet');
@@ -3319,21 +3344,12 @@ class User extends CI_Controller
         $data['amount_notif']           = $query_row_notif;
         $data['list_notif']             = $query_new_notif;
         $data['transfer_list_mining']   = $query_transfer_list;
-        $data['transfer_list_bonus']    = $query_transfer_bonus_list;
         $data['cart']                   = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
-        $data['general_balance_fil']    = ($query_transfer_fill['amount'] + $query_transfer_bonus_fill['amount']) - $query_total_withdrawal['amount'] + $query_sum_deposit['coin'] - $query_total_purchase['fill'];
+        $data['general_balance_fil']    = $query_transfer_fill['amount'] - $query_total_withdrawal['amount'] + $query_sum_deposit['coin'] - $query_total_purchase['fill'];
         $data['withdrawal']             = $this->M_user->get_withdrawal_by($query_user['id'], 'filecoin')->result();
         $data['deposit']                = $this->M_user->get_deposit_general($query_user['id'], '1');
         $data['purchase']               = $this->M_user->get_purchase_fill_byid($query_user['id']);
         $data['market_price']           = $this->M_user->get_price_coin()->row_array();
-        
-        $data['total_fil']          = $query_total['sponsorfil'] + $query_total['sponmatchingfil'] + $query_total['minmatching'] + $query_total['minpairing'];
-        $data['balance']            = $data['total_fil'] - $query_transfer_bonus_fill['amount'];
-        $data['bonus_list']         = $this->M_user->get_bonus_bysponsor($query_user['id']);
-        $data['bonus_sm_list']      = $this->M_user->get_bonus_bysponsormatching($query_user['id']);
-        $data['bonus_minmatching_list'] = $this->M_user->get_bonus_miningmatching($query_user['id']);
-        $data['bonus_minpairing_list'] = $this->M_user->get_bonus_miningpairing($query_user['id'])->get()->result();
-        $data['transfer_list']      = $query_transfer_bonus_list;
 
         if ($this->session->userdata('email') && $this->session->userdata('role_id') == '2') {
             $this->load->view('templates/user_header', $data);
