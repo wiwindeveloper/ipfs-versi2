@@ -87,21 +87,21 @@
     </li> -->
 
     <li class="nav-item">
-        <a class="nav-link <?= uri_string() == 'user/mywalletzenx' ||  uri_string() == 'user/mywalletfil' || uri_string() == 'user/mywalletmtm' || uri_string() == 'user/withdrawal_zenx' || uri_string() == 'user/transfer_bonus_zenx' || uri_string() == 'user/mywalletzenx/bonus' || uri_string() == 'user/mywalletfil/bonus' || uri_string() == 'user/withdrawal_fil' || uri_string() == 'user/transfer_bonus_fil' || uri_string() == 'user/withdrawal_mtm' || uri_string() == 'user/transfer_bonus_mtm' || uri_string() == 'user/mywalletmtm/bonus' ? '' : 'collapsed';?>" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+        <a class="nav-link <?= uri_string() == 'user/mywalletusdt' ||  uri_string() == 'user/mywalletfil' || uri_string() == 'user/mywalletkrp' || uri_string() == 'user/withdrawal_usdt' || uri_string() == 'user/transfer_bonus_usdt' || uri_string() == 'user/mywalletusdt/bonus' || uri_string() == 'user/mywalletfil/bonus' || uri_string() == 'user/withdrawal_fil' || uri_string() == 'user/transfer_bonus_fil' || uri_string() == 'user/withdrawal_krp' || uri_string() == 'user/transfer_bonus_krp' || uri_string() == 'user/mywalletkrp/bonus' ? '' : 'collapsed';?>" href="#" data-toggle="collapse" data-target="#collapseUtilities"
             aria-expanded="true" aria-controls="collapseUtilities">
             <img src="<?= base_url('assets/img/icon-11.png'); ?>" width="15px">&nbsp;
             <span><?= $this->lang->line('my_wallet');?></span>
         </a>
-        <div id="collapseUtilities" class="collapse <?= uri_string() == 'user/mywalletzenx' ||  uri_string() == 'user/mywalletfil' || uri_string() == 'user/mywalletmtm' || uri_string() == 'user/withdrawal_zenx' || uri_string() == 'user/transfer_bonus_zenx' || uri_string() == 'user/mywalletzenx/bonus' || uri_string() == 'user/mywalletfil/bonus' || uri_string() == 'user/withdrawal_fil' || uri_string() == 'user/transfer_bonus_fil' || uri_string() == 'user/withdrawal_mtm' || uri_string() == 'user/transfer_bonus_mtm' || uri_string() == 'user/mywalletmtm/bonus' ? 'show' : '';?>" aria-labelledby="headingUtilities"
+        <div id="collapseUtilities" class="collapse <?= uri_string() == 'user/mywalletusdt' ||  uri_string() == 'user/mywalletfil' || uri_string() == 'user/mywalletkrp' || uri_string() == 'user/withdrawal_usdt' || uri_string() == 'user/transfer_bonus_usdt' || uri_string() == 'user/mywalletusdt/bonus' || uri_string() == 'user/mywalletfil/bonus' || uri_string() == 'user/withdrawal_fil' || uri_string() == 'user/transfer_bonus_fil' || uri_string() == 'user/withdrawal_krp' || uri_string() == 'user/transfer_bonus_krp' || uri_string() == 'user/mywalletkrp/bonus' ? 'show' : '';?>" aria-labelledby="headingUtilities"
             data-parent="#accordionSidebar">
             <div class="py-2 collapse-inner rounded">
                 <a class="collapse-item <?= uri_string() == 'user/mywalletfil' || uri_string() == 'user/mywalletfil/bonus' || uri_string() == 'user/withdrawal_fil' || uri_string() == 'user/transfer_bonus_fil' ? 'active' : '';?>" href="<?= base_url('user/mywalletfil'); ?>">
                     <img class="img-balance" src="<?= base_url('assets/img/filcoin_logo.png') ?>" alt="img" style="width: 16px;"> Filecoin
                 </a>
-                <a class="collapse-item <?= uri_string() == 'user/mywalletzenx' || uri_string() == 'user/withdrawal_zenx' || uri_string() == 'user/transfer_bonus_zenx' || uri_string() == 'user/mywalletzenx/bonus' ? 'active' : '';?>" href="<?= base_url('user/mywalletusdt'); ?>">
+                <a class="collapse-item <?= uri_string() == 'user/mywalletusdt' || uri_string() == 'user/withdrawal_usdt' || uri_string() == 'user/transfer_bonus_usdt' || uri_string() == 'user/mywalletusdt/bonus' ? 'active' : '';?>" href="<?= base_url('user/mywalletusdt'); ?>">
                     <img class="img-balance" src="<?= base_url('assets/img/icon-usdt.png') ?>" alt="img" style="width: 16px;"> USDT
                 </a>
-                <a class="collapse-item <?= uri_string() == 'user/mywalletmtm' || uri_string() == 'user/withdrawal_mtm' || uri_string() == 'user/transfer_bonus_mtm' || uri_string() == 'user/mywalletmtm/bonus' ? 'active' : '';?>" href="<?= base_url('user/mywalletkrp'); ?>">
+                <a class="collapse-item <?= uri_string() == 'user/mywalletkrp' || uri_string() == 'user/withdrawal_krp' || uri_string() == 'user/transfer_bonus_krp' || uri_string() == 'user/mywalletkrp/bonus' ? 'active' : '';?>" href="<?= base_url('user/mywalletkrp'); ?>">
                     <img class="img-balance" src="<?= base_url('assets/img/krp_logo.png') ?>" alt="img" style="width: 16px;"> KRP
                 </a>
             </div>
