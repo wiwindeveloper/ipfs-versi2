@@ -552,13 +552,13 @@ class M_user extends CI_Model
         return $this->db->select_sum('package.point')
             ->from('cart')
             ->join('package', 'cart.package_id = package.id')
-            ->where(["cart.user_id" => $id, "cart.is_payment" => 1, "FROM_UNIXTIME(cart.datecreate, '%Y-%m-%d') =" => $date])
+            ->where(["cart.user_id" => $id, "cart.is_payment" => 1, "cart.datecreate >=" => $date])
             ->get();
     }
 
     public function get_sumtodaypoint_byposition($id, $date)
     {
-        return $this->db->select("cart.user_id, (SELECT SUM(b.point) FROM cart as a JOIN package b ON b.id = a.package_id WHERE a.user_id = cart.user_id AND FROM_UNIXTIME(a.datecreate, '%Y-%m-%d') = '$date') point")
+        return $this->db->select("cart.user_id, (SELECT SUM(b.point) FROM cart as a JOIN package b ON b.id = a.package_id WHERE a.user_id = cart.user_id AND a.datecreate >= '$date') point")
             ->from('cart')
             ->where('cart.position_id', $id)
             ->get();

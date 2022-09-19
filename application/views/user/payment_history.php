@@ -16,8 +16,6 @@
                 <th><?= $this->lang->line('price');?></th>
                 <th><?= $this->lang->line('start');?> mining FIL</th>
                 <th><?= $this->lang->line('end');?> mining FIL</th>
-                <th><?= $this->lang->line('start');?> airdrop MTM</th>
-                <th><?= $this->lang->line('end');?> airdrop MTM</th>
             </tr>
         </thead>
         <tbody>
@@ -37,17 +35,13 @@
                             echo $row_payment->fill . " FIL";
                         } elseif ($row_payment->usdt != 0) {
                             echo $row_payment->usdt . " USDT";
-                        } elseif ($row_payment->mtm != 0) {
-                            echo $row_payment->mtm . " MTM";
-                        } elseif ($row_payment->zenx != 0) {
-                            echo $row_payment->zenx . " ZENX";
-                        }
+                        } elseif ($row_payment->krp != 0) {
+                            echo $row_payment->krp . " KRP";
+                        } 
                         ?>
                     </td>
                     <td class="tb-column"><?= $fil_startpayment; ?></td>
                     <td class="tb-column"><?= $fil_endpayment; ?></td>
-                    <td class="tb-column"><?= $mtm_startpayment; ?></td>
-                    <td class="tb-column"><?= $mtm_endpayment; ?></td>
                 </tr>
             <?php } ?>
         </tbody>

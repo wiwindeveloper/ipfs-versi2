@@ -56,11 +56,12 @@ class Autoscript extends CI_Controller {
 
             if($smallestPoint >= 4)
             {
-                $query_poin = $this->M_user->sum_balance($userid);
-                $getAmount = $query_poin['set_amount'];
-                $query_balance_now = $this->M_user->balance_now($userid)->row_array();
-                $balance_now_left = $query_balance_now['amount_left'];
-                $balance_now_right = $query_balance_now['amount_right'];
+                $query_poin         = $this->M_user->sum_balance($userid);
+                $getAmount          = $query_poin['set_amount'];
+                $query_balance_now  = $this->M_user->balance_now($userid)->row_array();
+                $balance_now_left   = $query_balance_now['amount_left'];
+                $balance_now_right  = $query_balance_now['amount_right'];
+                $dateBalance        = $query_balance_now['datecreate'];
 
                 $query_cutPoint = $this->M_user->sum_leftover($userid);
 
@@ -68,23 +69,26 @@ class Autoscript extends CI_Controller {
                 $query_set_amount_today = $this->M_user->get_set_amount_bydate($userid, $date);
                 $amount_set_today       = $query_set_amount_today['set_amount'] ?? null;
 
-                if($this->_countPointTodayL($userid) > $amount_set_today)
-                {
-                    $increasePointLeft      = $this->_countPointTodayL($userid) - $amount_set_today;
-                }
-                else
-                {
-                    $increasePointLeft      = 0;
-                }
+                // if($this->_countPointTodayL($userid, $dateBalance) > $amount_set_today)
+                // {
+                //     $increasePointLeft      = $this->_countPointTodayL($userid, $dateBalance) - $amount_set_today;
+                // }
+                // else
+                // {
+                //     $increasePointLeft      = 0;
+                // }
 
-                if($this->_countPointTodayR($userid) > $amount_set_today)
-                {
-                    $increasePointRight     = $this->_countPointTodayR($userid) - $amount_set_today;
-                }
-                else
-                {
-                    $increasePointRight      = 0;
-                }
+                // if($this->_countPointTodayR($userid, $dateBalance) > $amount_set_today)
+                // {
+                //     $increasePointRight     = $this->_countPointTodayR($userid, $dateBalance) - $amount_set_today;
+                // }
+                // else
+                // {
+                //     $increasePointRight      = 0;
+                // }
+                
+                $increasePointLeft      = $this->_countPointTodayL($userid, $dateBalance);
+                $increasePointRight     = $this->_countPointTodayR($userid, $dateBalance);
 
                 $newTotalPointL = $checkBonusSet['balance_a'] + $increasePointLeft;
                 $newTotalPointR = $checkBonusSet['balance_b'] + $increasePointRight;
@@ -412,19 +416,26 @@ class Autoscript extends CI_Controller {
         } 
     }
 
-    private function _countPointTodayL($userid)
+    private function _countPointTodayL($userid, $datecreate)
     {
-        $dateNow = date('Y-m-d');
+        if(!empty($datecreate))
+        {
+            $datecreate = $datecreate;
+        }
+        else
+        {
+            $datecreate = 0;
+        }
 
         $query = $this->M_user->check_line($userid, 'A');
         $user_position = $query['user_id'] ?? null;
 
-        $query_package = $this->M_user->get_onepoint_byuser($user_position, $dateNow)->row_array();
+        $query_package = $this->M_user->get_onepoint_byuser($user_position, $datecreate)->row_array();
         $package_datecreate = $query_package['datecreate'] ?? null;
 
         $packagePoint = $query_package['point'] ?? null;
 
-        $countMember = $this->_get_countPointTodayL($user_position, $dateNow);
+        $countMember = $this->_get_countPointTodayL($user_position, $datecreate);
         $sumTotal = array_sum($countMember) + $packagePoint;
         $this->arrTodayL = array();
 
@@ -447,19 +458,26 @@ class Autoscript extends CI_Controller {
         return $this->arrTodayL;
     }
 
-    private function _countPointTodayR($userid)
+    private function _countPointTodayR($userid, $datecreate)
     {
-        $dateNow = date('Y-m-d');
+        if(!empty($datecreate))
+        {
+            $datecreate = $datecreate;
+        }
+        else
+        {
+            $datecreate = 0;
+        }
 
         $query = $this->M_user->check_line($userid, 'B');
         $user_position = $query['user_id'] ?? null;
 
-        $query_package = $this->M_user->get_onepoint_byuser($user_position, $dateNow)->row_array();
+        $query_package = $this->M_user->get_onepoint_byuser($user_position, $datecreate)->row_array();
         $package_datecreate = $query_package['datecreate'] ?? null;
 
         $packagePoint = $query_package['point'] ?? null;
 
-        $countMember = $this->_get_countPointTodayR($user_position, $dateNow);
+        $countMember = $this->_get_countPointTodayR($user_position, $datecreate);
         $sumTotal = array_sum($countMember) + $packagePoint;
         $this->arrTodayR = array();
 

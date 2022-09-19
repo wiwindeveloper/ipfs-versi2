@@ -2386,11 +2386,9 @@ class User extends CI_Controller
         $package        = $this->M_user->get_box_fm($id)->row_array();
         $query_box      = $this->M_user->sumPackage($id);
         $balancePoint   = $this->balance_point($id);
-        // $increaseLeft   = $this->countPositionL($id) - $this->increasePoint($id, 'L');
-        // $increaseRight  = $this->countPositionR($id) - $this->increasePoint($id, 'R');
 
-        $pointTodayL    = $this->countPointTodayL($id);
-        $pointTodayR    = $this->countPointTodayR($id);
+        $pointTodayL    = $this->countPointTodayL($id, $balancePoint['datecreate']);
+        $pointTodayR    = $this->countPointTodayR($id, $balancePoint['datecreate']);
         $idLeft         = $this->countIDL($id);
         $idRight        = $this->countIDR($id);
         $package_fm     = $package['fm'] ?? null;
@@ -2398,8 +2396,6 @@ class User extends CI_Controller
         $package_color  = $this->_color_network($package_name);
 
         if ($balancePoint) {
-            // $balance_a = $balancePoint['amount_left'] + $increaseLeft;
-            // $balance_b = $balancePoint['amount_right'] + $increaseRight;
             $balance_a = $balancePoint['balance_a'] + $pointTodayL;
             $balance_b = $balancePoint['balance_b'] + $pointTodayR;
         } else {
@@ -2462,16 +2458,17 @@ class User extends CI_Controller
 
         $output         = '';
 
-        if (count($query_position) != '') {
+        if (count($query_position) != '') 
+        {
             $output .= '<ul>';
     
             foreach ($query_position as $row_position) 
             {
+                $balancePoint   = $this->balance_point($row_position->user_id);
                 $countLeft      = $this->countPositionL($row_position->user_id);
                 $countRight     = $this->countPositionR($row_position->user_id);
-                $balancePoint   = $this->balance_point($row_position->user_id);
-                $pointTodayL    = $this->countPointTodayL($row_position->user_id);
-                $pointTodayR    = $this->countPointTodayR($row_position->user_id);
+                $pointTodayL    = $this->countPointTodayL($row_position->user_id, $balancePoint['datecreate']);
+                $pointTodayR    = $this->countPointTodayR($row_position->user_id, $balancePoint['datecreate']);
                 $idLeft         = $this->countIDL($row_position->user_id);
                 $idRight        = $this->countIDR($row_position->user_id);
                 $query_box      = $this->M_user->sumPackage($row_position->user_id);
@@ -2564,11 +2561,11 @@ class User extends CI_Controller
 
             foreach ($query_position as $row_position) 
             {
+                $balancePoint   = $this->balance_point($row_position->user_id);
                 $countLeft      = $this->countPositionL($row_position->user_id);
                 $countRight     = $this->countPositionR($row_position->user_id);
-                $balancePoint   = $this->balance_point($row_position->user_id);
-                $pointTodayL    = $this->countPointTodayL($row_position->user_id);
-                $pointTodayR    = $this->countPointTodayR($row_position->user_id);
+                $pointTodayL    = $this->countPointTodayL($row_position->user_id, $balancePoint['datecreate']);
+                $pointTodayR    = $this->countPointTodayR($row_position->user_id, $balancePoint['datecreate']);
                 $idLeft         = $this->countIDL($row_position->user_id);
                 $idRight        = $this->countIDR($row_position->user_id);
                 $query_box      = $this->M_user->sumPackage($row_position->user_id);
@@ -3069,19 +3066,26 @@ class User extends CI_Controller
         return $this->arr2;
     }
 
-    public function countPointTodayL($userid)
+    public function countPointTodayL($userid, $datecreate)
     {
-        $dateNow = date('Y-m-d');
+        if(!empty($datecreate))
+        {
+            $datecreate = $datecreate;
+        }
+        else
+        {
+            $datecreate = 0;
+        }
 
         $query = $this->M_user->check_line($userid, 'A');
         $user_position = $query['user_id'] ?? null;
 
-        $query_package = $this->M_user->get_onepoint_byuser($user_position, $dateNow)->row_array();
-        $package_datecreate = $query_package['datecreate'] ?? null;
+        $query_package = $this->M_user->get_onepoint_byuser($user_position, $datecreate)->row_array();
+        // $package_datecreate = $query_package['datecreate'] ?? null;
 
         $packagePoint = $query_package['point'] ?? null;
 
-        $countMember = $this->get_countPointTodayL($user_position, $dateNow);
+        $countMember = $this->get_countPointTodayL($user_position, $datecreate);
         $sumTotal = array_sum($countMember) + $packagePoint;
         $this->arrTodayL = array();
 
@@ -3106,19 +3110,26 @@ class User extends CI_Controller
         return $this->arrTodayL;
     }
 
-    public function countPointTodayR($userid)
+    public function countPointTodayR($userid, $datecreate)
     {
-        $dateNow = date('Y-m-d');
+        if(!empty($datecreate))
+        {
+            $datecreate = $datecreate;
+        }
+        else
+        {
+            $datecreate = 0;
+        }
 
-        $query = $this->M_user->check_line($userid, 'B');
-        $user_position = $query['user_id'] ?? null;
+        $query          = $this->M_user->check_line($userid, 'B');
+        $user_position  = $query['user_id'] ?? null;
 
-        $query_package = $this->M_user->get_onepoint_byuser($user_position, $dateNow)->row_array();
-        $package_datecreate = $query_package['datecreate'] ?? null;
+        $query_package      = $this->M_user->get_onepoint_byuser($user_position, $datecreate)->row_array();
+        // $package_datecreate = $query_package['datecreate'] ?? null;
 
         $packagePoint = $query_package['point'] ?? null;
 
-        $countMember = $this->get_countPointTodayR($user_position, $dateNow);
+        $countMember = $this->get_countPointTodayR($user_position, $datecreate);
         $sumTotal = array_sum($countMember) + $packagePoint;
         $this->arrTodayR = array();
 
