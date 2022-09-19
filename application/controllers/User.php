@@ -3356,7 +3356,7 @@ class User extends CI_Controller
         $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
         $data['deposit']            = $this->M_user->get_deposit_general($query_user['id'], '5');
         $data['general']            = $query_sum_deposit['coin'] - $query_total_purchase['krp'] - $query_total_withdrawal['amount'];
-        $data['purchase']           = $this->M_user->get_purchase_usdt_byid($query_user['id']);
+        $data['purchase']           = $this->M_user->get_purchase_krp_byid($query_user['id']);
         $data['withdrawal']         = $this->M_user->get_withdrawal_by($query_user['id'], 'krp')->result();
         $data['market_price']       = $this->M_user->get_price_coin()->row_array();
         $data['total_krp']          = $total_minmatchingkrp + $total_minpairingkrp + $total_sponsorkrp + $total_sponmatchingkrp + $total_pairingmatch_krp + $total_binarymatch_krp + $total_bonusglobal_krp + $total_basecampkrp;

@@ -69,8 +69,8 @@
 
     <!-- mtm -->
     <div class="text-center my-2 mt-5 logo-index">
-        <img src="<?= base_url('assets/img/mtm_logo.png'); ?>" width="50px" class="my-1">
-        <span style="font-size:30px;" class="align-middle text-white">&nbsp;MTM</span>
+        <img src="<?= base_url('assets/img/icon-usdt.png'); ?>" width="50px" class="my-1">
+        <span style="font-size:30px;" class="align-middle text-white">&nbsp;USDT</span>
     </div>
     <div class="card shadow mb-4">
         <div class="card-body">
@@ -88,7 +88,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($withdrawal_mtm as $row_withdrawal) : ?>
+                        <?php foreach ($withdrawal_usdt as $row_withdrawal) : ?>
                             <tr>
                                 <td>
                                     <?= date('Y-m-d H:i:s', $row_withdrawal->datecreate); ?>
@@ -131,8 +131,8 @@
 
     <!-- zenx -->
     <div class="text-center my-2 mt-5 logo-index">
-        <img src="<?= base_url('assets/img/zenith_logo.png'); ?>" width="50px" class="my-1">
-        <span style="font-size:30px;" class="align-middle text-white">&nbsp;ZENX</span>
+        <img src="<?= base_url('assets/img/krp_logo.png'); ?>" width="50px" class="my-1">
+        <span style="font-size:30px;" class="align-middle text-white">&nbsp;KRP</span>
     </div>
     <div class="card shadow mb-4">
         <div class="card-body">
@@ -150,7 +150,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($withdrawal_zenx as $row_withdrawal) : ?>
+                        <?php foreach ($withdrawal_krp as $row_withdrawal) : ?>
                             <tr>
                                 <td>
                                     <?= date('Y-m-d H:i:s', $row_withdrawal->datecreate); ?>

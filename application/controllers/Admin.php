@@ -1830,9 +1830,9 @@ class Admin extends CI_Controller
     }
     public function marketPrice()
     {
-        $data['title'] = 'Price Coin';
-        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
-        $data['price_coin'] = $this->M_user->get_price_coin()->result();
+        $data['title']          = 'Price Coin';
+        $data['user']           = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+        $data['price_coin']     = $this->M_user->get_price_coin()->result();
         $data['min_withdrawal'] = $this->M_user->minimum_withdrawal();
 
         if ($this->session->userdata('email') && $this->session->userdata('role_id') == '1') {
@@ -1843,18 +1843,21 @@ class Admin extends CI_Controller
             $this->load->view('templates/user_footer');
 
             // price coin
-            if (isset($_POST['submit'])) {
+            if (isset($_POST['submit'])) 
+            {
                 $filecoin = $this->input->post('filecoin');
-                $mtm = $filecoin / 4;
-                $zenx = $this->input->post('zenx');
+                $usdt = $this->input->post('usdt');
+                $krp = $this->input->post('krp');
 
                 $data = array(
                     'filecoin' => $filecoin,
-                    'mtm' => $mtm,
-                    'zenx' => $zenx,
+                    'usdt' => $usdt,
+                    'krp' => $krp,
                     'time' => time()
                 );
+
                 $insert = $this->db->insert('market_price', $data);
+
                 if ($insert == true) {
                     $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Successfully updated</div>');
                     redirect('admin/marketPrice');
@@ -1876,26 +1879,26 @@ class Admin extends CI_Controller
                     $this->session->set_flashdata('message_min_wd', '<div class="alert alert-danger" role="alert">Update minimum WD FIL failed</div>');
                     redirect('admin/marketPrice');
                 }
-            } elseif (isset($_POST['save_mtm'])) {
-                $min_wd = $this->input->post('mtm_min');
-                $this->db->set('mtm', $min_wd);
+            } elseif (isset($_POST['save_usdt'])) {
+                $min_wd = $this->input->post('usdt_min');
+                $this->db->set('usdt', $min_wd);
                 $update = $this->db->update('minimum_withdrawal');
                 if ($update == true) {
-                    $this->session->set_flashdata('message_min_wd', '<div class="alert alert-success" role="alert">Update minimum WD MTM success</div>');
+                    $this->session->set_flashdata('message_min_wd', '<div class="alert alert-success" role="alert">Update minimum WD USDT success</div>');
                     redirect('admin/marketPrice');
                 } else {
-                    $this->session->set_flashdata('message_min_wd', '<div class="alert alert-danger" role="alert">Update minimum WD MTM failed</div>');
+                    $this->session->set_flashdata('message_min_wd', '<div class="alert alert-danger" role="alert">Update minimum WD USDT failed</div>');
                     redirect('admin/marketPrice');
                 }
-            } elseif (isset($_POST['save_zenx'])) {
-                $min_wd = $this->input->post('zenx_min');
-                $this->db->set('zenx', $min_wd);
+            } elseif (isset($_POST['save_krp'])) {
+                $min_wd = $this->input->post('krp_min');
+                $this->db->set('krp', $min_wd);
                 $update = $this->db->update('minimum_withdrawal');
                 if ($update == true) {
-                    $this->session->set_flashdata('message_min_wd', '<div class="alert alert-success" role="alert">Update minimum WD ZENX success</div>');
+                    $this->session->set_flashdata('message_min_wd', '<div class="alert alert-success" role="alert">Update minimum WD KRP success</div>');
                     redirect('admin/marketPrice');
                 } else {
-                    $this->session->set_flashdata('message_min_wd', '<div class="alert alert-danger" role="alert">Update minimum WD ZENX failed</div>');
+                    $this->session->set_flashdata('message_min_wd', '<div class="alert alert-danger" role="alert">Update minimum WD KRP failed</div>');
                     redirect('admin/marketPrice');
                 }
             }
@@ -1912,26 +1915,26 @@ class Admin extends CI_Controller
                     $this->session->set_flashdata('message_fee_wd', '<div class="alert alert-danger" role="alert">Update fee WD FIL failed</div>');
                     redirect('admin/marketPrice');
                 }
-            } elseif (isset($_POST['save_mtm_fee'])) {
-                $fee_wd = $this->input->post('mtm_fee');
-                $this->db->set('fee_mtm', $fee_wd);
+            } elseif (isset($_POST['save_usdt_fee'])) {
+                $fee_wd = $this->input->post('usdt_fee');
+                $this->db->set('fee_usdt', $fee_wd);
                 $update = $this->db->update('minimum_withdrawal');
                 if ($update == true) {
-                    $this->session->set_flashdata('message_fee_wd', '<div class="alert alert-success" role="alert">Update fee WD MTM success</div>');
+                    $this->session->set_flashdata('message_fee_wd', '<div class="alert alert-success" role="alert">Update fee WD USDT success</div>');
                     redirect('admin/marketPrice');
                 } else {
-                    $this->session->set_flashdata('message_fee_wd', '<div class="alert alert-danger" role="alert">Update fee WD MTM failed</div>');
+                    $this->session->set_flashdata('message_fee_wd', '<div class="alert alert-danger" role="alert">Update fee WD USDT failed</div>');
                     redirect('admin/marketPrice');
                 }
-            } elseif (isset($_POST['save_zenx_fee'])) {
-                $fee_wd = $this->input->post('zenx_fee');
-                $this->db->set('fee_zenx', $fee_wd);
+            } elseif (isset($_POST['save_krp_fee'])) {
+                $fee_wd = $this->input->post('krp_fee');
+                $this->db->set('fee_krp', $fee_wd);
                 $update = $this->db->update('minimum_withdrawal');
                 if ($update == true) {
-                    $this->session->set_flashdata('message_fee_wd', '<div class="alert alert-success" role="alert">Update fee WD ZENX success</div>');
+                    $this->session->set_flashdata('message_fee_wd', '<div class="alert alert-success" role="alert">Update fee WD KRP success</div>');
                     redirect('admin/marketPrice');
                 } else {
-                    $this->session->set_flashdata('message_fee_wd', '<div class="alert alert-danger" role="alert">Update fee WD ZENX failed</div>');
+                    $this->session->set_flashdata('message_fee_wd', '<div class="alert alert-danger" role="alert">Update fee WD KRP failed</div>');
                     redirect('admin/marketPrice');
                 }
             }

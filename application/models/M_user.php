@@ -194,6 +194,15 @@ class M_user extends CI_Model
             ->get()->result();
     }
 
+    public function get_purchase_krp_byid($user_id)
+    {
+        return $this->db->select('cart.id, cart.krp, cart.datecreate, package.name')
+            ->from('cart')
+            ->join('package', 'package.id =  cart.package_id')
+            ->where(['cart.user_id' => $user_id, 'cart.krp !=' => 0])
+            ->get()->result();
+    }
+
     public function show_data_home($id)
     {
         return $this->db->select('cart.datecreate, cart.update_date, package.name, level_fm.fm, (SELECT user.username FROM user WHERE user.id = cart.sponsor_id) sponsor')
@@ -1503,6 +1512,7 @@ class M_user extends CI_Model
             ->order_by('market_price.time', 'DESC')
             ->get();
     }
+    
     public function minimum_withdrawal()
     {
         return $this->db->select('*')

@@ -6,23 +6,6 @@
 
     <?= $this->session->flashdata('message'); ?>
 
-    <!-- <form action="<?= base_url('admin/marketPrice'); ?>" method="post">
-        <div class="row" style="padding-inline:0.50rem;">
-            <div class="input-group px-1 mb-3" style="width: 30%;">
-                <input type=" text" class="form-control" id="filecoin" name="filecoin" placeholder="Price Filecoin" onkeypress="return (event.charCode == 46 || event.charCode < 31 || (event.charCode > 47 && event.charCode < 58))">
-            </div>
-            <div class="input-group px-1 mb-3" style="width: 30%;">
-                <input type=" text" class="form-control" id="mtm" name="mtm" placeholder="Price MTM" readonly>
-            </div>
-            <div class="input-group px-1 mb-3" style="width: 30%;">
-                <input type=" text" class="form-control" id="zenx" name="zenx" placeholder="Price ZENX">
-            </div>
-            <div class="input-group px-1 mb-3" style="width: 10%;">
-                <button class="btn btn-primary w-100" type="submit" name="submit">Save</button>
-            </div>
-        </div>
-    </form> -->
-
     <div class="card shadow mb-4">
         <div class="card-header bg-white">
             <form action="<?= base_url('admin/marketPrice'); ?>" method="post">
@@ -31,12 +14,12 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="input-group my-2">
-                                    <input type="text" class="form-control" id="filecoin" name="filecoin" placeholder="Price Filecoin" onkeypress="return (event.charCode == 46 || event.charCode < 31 || (event.charCode > 47 && event.charCode < 58))">
+                                    <input type="text" class="form-control" id="filecoin" name="filecoin" placeholder="Price Filecoin">
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="input-group my-2">
-                                    <input type="text" class="form-control bg-white" id="mtm" name="mtm" placeholder="Price MTM" readonly>
+                                    <input type="text" class="form-control bg-white" id="usdt" name="usdt" placeholder="Price USDT">
                                 </div>
                             </div>
                         </div>
@@ -45,7 +28,7 @@
                         <div class="row">
                             <div class="col-lg-8">
                                 <div class="input-group my-2">
-                                    <input type="text" class="form-control" id="zenx" name="zenx" placeholder="Price ZENX">
+                                    <input type="text" class="form-control" id="krp" name="krp" placeholder="Price KRP">
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -76,7 +59,7 @@
                                         <?php foreach ($price_coin as $row) : ?>
                                             <tr>
                                                 <td><?= date('Y-m-d H:i:s', $row->time); ?></td>
-                                                <td><?= $row->filecoin ?></td>
+                                                <td><?= $row->filecoin; ?></td>
                                             </tr>
                                         <?php endforeach ?>
                                     </tbody>
@@ -93,14 +76,14 @@
                                     <thead>
                                         <tr>
                                             <th>Date</th>
-                                            <th>Price MTM</th>
+                                            <th>Price USDT</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($price_coin as $row) : ?>
                                             <tr>
                                                 <td><?= date('Y-m-d H:i:s', $row->time); ?></td>
-                                                <td><?= $row->mtm ?></td>
+                                                <td><?= $row->usdt; ?></td>
                                             </tr>
                                         <?php endforeach ?>
                                     </tbody>
@@ -117,14 +100,14 @@
                                     <thead>
                                         <tr>
                                             <th>Date</th>
-                                            <th>Price ZENX</th>
+                                            <th>Price KRP</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($price_coin as $row) : ?>
                                             <tr>
                                                 <td><?= date('Y-m-d H:i:s', $row->time); ?></td>
-                                                <td><?= $row->zenx ?></td>
+                                                <td><?= $row->krp ?></td>
                                             </tr>
                                         <?php endforeach ?>
                                     </tbody>
@@ -155,18 +138,18 @@
                                         <button class="btn btn-primary w-100 mt-2" name="save_fil">Save</button>
                                     </div>
                                     <div class="col-lg-4 mb-2">
-                                        <label style="font-size: 16px;" for="mtm_min">Minimum Withdrawal MTM</label>
+                                        <label style="font-size: 16px;" for="usdt_min">Minimum Withdrawal USDT</label>
                                         <div class="input-group">
-                                            <input type=" text" class="form-control" id="mtm_min" name="mtm_min" value="<?= $min_withdrawal['mtm']; ?>" placeholder="Minimum Withdrawal MTM">
+                                            <input type=" text" class="form-control" id="usdt_min" name="usdt_min" value="<?= $min_withdrawal['usdt']; ?>" placeholder="Minimum Withdrawal USDT">
                                         </div>
-                                        <button class="btn btn-primary w-100 mt-2" name="save_mtm">Save</button>
+                                        <button class="btn btn-primary w-100 mt-2" name="save_usdt">Save</button>
                                     </div>
                                     <div class="col-lg-4 mb-2">
-                                        <label style="font-size: 16px;" for="zenx_min">Minimum Withdrawal ZENX</label>
+                                        <label style="font-size: 16px;" for="krp_min">Minimum Withdrawal KRP</label>
                                         <div class="input-group">
-                                            <input type=" text" class="form-control" id="zenx_min" name="zenx_min" value="<?= $min_withdrawal['zenx']; ?>" placeholder="Minimum Withdrawal ZENX">
+                                            <input type=" text" class="form-control" id="krp_min" name="krp_min" value="<?= $min_withdrawal['krp']; ?>" placeholder="Minimum Withdrawal KRP">
                                         </div>
-                                        <button class="btn btn-primary w-100 mt-2" name="save_zenx">Save</button>
+                                        <button class="btn btn-primary w-100 mt-2" name="save_krp">Save</button>
                                     </div>
                                 </div>
                             </form>
@@ -195,18 +178,18 @@
                                         <button class="btn btn-primary w-100 mt-2" name="save_filecoin_fee">Save</button>
                                     </div>
                                     <div class="col-lg-4 mb-2">
-                                        <label style="font-size: 16px;" for="mtm_fee">Fee Withdrawal MTM (%)</label>
+                                        <label style="font-size: 16px;" for="usdt_fee">Fee Withdrawal USDT (%)</label>
                                         <div class="input-group">
-                                            <input type=" text" class="form-control" id="mtm_fee" name="mtm_fee" value="<?= $min_withdrawal['fee_mtm']; ?>" placeholder="Fee Withdrawal MTM">
+                                            <input type=" text" class="form-control" id="usdt_fee" name="usdt_fee" value="<?= $min_withdrawal['fee_usdt']; ?>" placeholder="Fee Withdrawal USDT">
                                         </div>
-                                        <button class="btn btn-primary w-100 mt-2" name="save_mtm_fee">Save</button>
+                                        <button class="btn btn-primary w-100 mt-2" name="save_usdt_fee">Save</button>
                                     </div>
                                     <div class="col-lg-4 mb-2">
-                                        <label style="font-size: 16px;" for="zenx_fee">Fee Withdrawal ZENX (%)</label>
+                                        <label style="font-size: 16px;" for="krp_fee">Fee Withdrawal KRP (%)</label>
                                         <div class="input-group">
-                                            <input type=" text" class="form-control" id="zenx_fee" name="zenx_fee" value="<?= $min_withdrawal['fee_zenx']; ?>" placeholder="Fee Withdrawal ZENX">
+                                            <input type=" text" class="form-control" id="krp_fee" name="krp_fee" value="<?= $min_withdrawal['fee_krp']; ?>" placeholder="Fee Withdrawal KRP">
                                         </div>
-                                        <button class="btn btn-primary w-100 mt-2" name="save_zenx_fee">Save</button>
+                                        <button class="btn btn-primary w-100 mt-2" name="save_krp_fee">Save</button>
                                     </div>
                                 </div>
                             </form>
