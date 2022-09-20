@@ -61,13 +61,13 @@ class Autoscript extends CI_Controller {
                 $query_balance_now  = $this->M_user->balance_now($userid)->row_array();
                 $balance_now_left   = $query_balance_now['amount_left'];
                 $balance_now_right  = $query_balance_now['amount_right'];
-                $dateBalance        = $query_balance_now['datecreate'];
+                $dateBalance        = $query_balance_now['datecreate'] ;
 
                 $query_cutPoint = $this->M_user->sum_leftover($userid);
 
                 //get amount today
-                $query_set_amount_today = $this->M_user->get_set_amount_bydate($userid, $date);
-                $amount_set_today       = $query_set_amount_today['set_amount'] ?? null;
+                // $query_set_amount_today = $this->M_user->get_set_amount_bydate($userid, $date);
+                // $amount_set_today       = $query_set_amount_today['set_amount'] ?? null;
 
                 // if($this->_countPointTodayL($userid, $dateBalance) > $amount_set_today)
                 // {
@@ -110,17 +110,16 @@ class Autoscript extends CI_Controller {
                 { 
                     $leftoverPoint = $newSmallestPoint % 4; //sisa bagi 4
                     $quotient = ($newSmallestPoint - $leftoverPoint)/4;  //number of sets obtained
-                    
+
                     $check_level = $this->_level_check($userid);
-                    
+
                     //berapa set yang sudah didapatkan (cari reset date terakhir lalu sum data yang tanggalnya lebih besar dari reset date terakhir)
                     $query_last_reset = $this->M_user->get_last_reset_pairing($userid);
                     $date_last_reset  = $query_last_reset['reset_date'];
-
-                    
+                                        
                     if(!empty($date_last_reset))
                     {
-                        $query_set_receive = $this->M_user->sum_user_set_amount_get($date, $userid);
+                        $query_set_receive = $this->M_user->sum_user_set_amount_get($date_last_reset, $userid);
                     }
                     else
                     {
@@ -130,14 +129,13 @@ class Autoscript extends CI_Controller {
                     $set_receive = $query_set_receive['set_amount']/4;
                     
                     //set yang harus didapatkan = limit - set yang sudah didapatkan
-                    $set_must_receive = $check_level - $set_receive;
-                    
+                    $set_must_receive = $check_level - $set_receive;    
+
                     //jika quotient >= set yang harus didapatkan, maka number set = set yang harus didapatkan, 
                     //jika tidak maka number set = quotient
                     if($quotient >= $set_must_receive)
                     {
                         $numberSet = $set_must_receive;
-                        //sisa quotion???
                     }
                     else
                     {
@@ -148,8 +146,8 @@ class Autoscript extends CI_Controller {
                     $setAmount = $numberSet*4;
                     $leftoverPointMax = $newLargestPoint - ($numberSet*4);
                     
-                    //jika limit == number set + set yang sudah didapatkan, maka reset balance terkecil
-                    //jika tidak maka balance tidak reset 
+                    // jika limit == number set + set yang sudah didapatkan, maka reset balance terkecil
+                    // jika tidak maka balance tidak reset 
                     if($newLargestPosition == 'L')
                     {
                         $leftoverA = $leftoverPointMax;
@@ -286,18 +284,19 @@ class Autoscript extends CI_Controller {
                 //berapa set yang sudah didapatkan (cari reset date terakhir lalu sum data yang tanggalnya lebih besar dari reset date terakhir)
                 $query_last_reset = $this->M_user->get_last_reset_pairing($userid);
                 $date_last_reset  = $query_last_reset['reset_date'];
-                
+
                 if(!empty($date_last_reset))
                 {
-                    $query_set_receive = $this->M_user->sum_user_set_amount_get($date, $userid);
+                    $query_set_receive = $this->M_user->sum_user_set_amount_get($date_last_reset, $userid);
                 }
                 else
                 {
                     $query_set_receive = $this->M_user->sum_user_set_amount_nol($userid);
                 }
-                
+
                 $set_receive = $query_set_receive['set_amount']/4;
-                
+                $set_must_receive = $check_level - $set_receive;
+
                 if($quotient >= $check_level)
                 {
                     $numberSet = $check_level;
@@ -366,7 +365,7 @@ class Autoscript extends CI_Controller {
                         $resetDate = 0;
                     }
                 }
-
+                
                 $limit_bonus        = $this->_check_limit_bonus($userid, $usdtBonus, 'usdt');
                 $excess_bonus       = $usdtBonus - $limit_bonus;
                 $limit_count_usdt   = $limit_bonus;
@@ -412,7 +411,7 @@ class Autoscript extends CI_Controller {
                 ];
 
                 $insert = $this->M_user->insert_data('excess_bonus', $data_excess);
-            }  
+            } 
         } 
     }
 

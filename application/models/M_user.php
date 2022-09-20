@@ -2492,7 +2492,7 @@ class M_user extends CI_Model
     {
         return $this->db->select_sum('set_amount')
                         ->from('bonus_maxmatching')
-                        ->where(['reset_date > ' => $date, 'user_id' => $user])
+                        ->where(['datecreate > ' => $date, 'user_id' => $user])
                         ->get()->row_array();
     }
 
