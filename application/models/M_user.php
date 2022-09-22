@@ -2502,5 +2502,43 @@ class M_user extends CI_Model
                         ->from('bonus_maxmatching')
                         ->where(['user_id' => $user])
                         ->get()->row_array();
+    } 
+    
+    public function get_last_pairingmatching_byuser($userid)
+    {
+        return $this->db->select('*')
+                        ->from('bonus_maxmatching')
+                        ->where(['user_id' => $userid])
+                        ->order_by('id', 'DESC')
+                        ->limit(1,0)
+                        ->get()->row_array();
+    }
+
+    public function get_second_resetdate_pairingmatching($user_id)
+    {
+        return $this->db->select('reset_date')
+                        ->from('bonus_maxmatching')
+                        ->where(['user_id' => $user_id, 'reset_date !=' => 0])
+                        ->order_by('id', 'DESC')
+                        ->limit(1,1)
+                        ->get()->row_array();
+    }
+
+    public function get_last_resetdate_pairingmatching($user_id)
+    {
+        return $this->db->select('reset_date')
+                        ->from('bonus_maxmatching')
+                        ->where(['user_id' => $user_id, 'reset_date !=' => 0])
+                        ->order_by('id', 'DESC')
+                        ->limit(1,0)
+                        ->get()->row_array();
+    }
+
+    public function sum_set_receive_network($userid, $date)
+    {
+        return $this->db->select_sum('set_amount')
+                        ->from('bonus_maxmatching')
+                        ->where(['user_id' => $userid, 'datecreate > ' => $date])
+                        ->get()->row_array();
     }
 }

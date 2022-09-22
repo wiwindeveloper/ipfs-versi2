@@ -2403,6 +2403,8 @@ class User extends CI_Controller
             $balance_b = $this->countPositionR($id);
         }
 
+        $set_receive = $this->_get_all_set($id);
+
         $output = '';
 
         $output .= '<ul>';
@@ -2410,7 +2412,7 @@ class User extends CI_Controller
         $output .=    '<div class="item" id="me" style="border: 7px solid ' . $package_color . ';">
                             <img class="flag-network" src="' . base_url('assets/img/') . $this->flag($countryCode) . '" alt="flag">
                             <h1 class="text-uppercase name-network">' . strtolower($username) . '</h1>
-                            <p>' . $package_fm . '</p>
+                            <p>' . $package_fm . ' ('.$set_receive.' set)</p>
                             <div class="d-flex  justify-content-center align-content-center align-items-center position-relative">
                                 <div class="text-right">
                                     <p>(' . $idLeft . ' ID) '.$this->lang->line('left').'</p>
@@ -2440,6 +2442,47 @@ class User extends CI_Controller
 
         return $output;
     }
+
+    private function _get_all_set($id)
+    {
+        $query_last_bonus = $this->M_user->get_last_pairingmatching_byuser($id);
+
+        if($query_last_bonus['reset_date'] != '0')
+        {
+            $query_second_resetdate = $this->M_user->get_second_resetdate_pairingmatching($id);
+            $reset_date = $query_second_resetdate['reset_date'];
+
+            if(!empty($reset_date))
+            {
+                $query_set_receive = $this->M_user->sum_set_receive_network($id, $reset_date);
+    
+                $set_receive = $query_set_receive['set_amount']/4;
+            }
+            else
+            {
+                $set_receive = $query_last_bonus['set_amount']/4;
+            }
+
+        }
+        else
+        {
+            $query_last_resetdate  = $this->M_user->get_last_resetdate_pairingmatching($id);
+            $reset_date = $query_last_resetdate['reset_date'];
+
+            if($reset_date != 0)
+            {
+                $query_set_receive = $this->M_user->sum_set_receive_network($id, $reset_date);
+                $set_receive = $query_set_receive['set_amount']/4;
+            }
+            else
+            {
+                $query_set_receive = $this->M_user->sum_balance($id);
+                $set_receive = $query_set_receive['set_amount']/4;
+            }
+        }
+
+        return $set_receive;
+    }
     
     public function showDownline()
     {
@@ -2464,14 +2507,16 @@ class User extends CI_Controller
     
             foreach ($query_position as $row_position) 
             {
-                $balancePoint   = $this->balance_point($row_position->user_id);
-                $countLeft      = $this->countPositionL($row_position->user_id);
-                $countRight     = $this->countPositionR($row_position->user_id);
-                $pointTodayL    = $this->countPointTodayL($row_position->user_id, $balancePoint['datecreate']);
-                $pointTodayR    = $this->countPointTodayR($row_position->user_id, $balancePoint['datecreate']);
-                $idLeft         = $this->countIDL($row_position->user_id);
-                $idRight        = $this->countIDR($row_position->user_id);
-                $query_box      = $this->M_user->sumPackage($row_position->user_id);
+                $position_userid = $row_position->user_id ?? null;
+
+                $balancePoint   = $this->balance_point($position_userid);
+                $countLeft      = $this->countPositionL($position_userid);
+                $countRight     = $this->countPositionR($position_userid);
+                $pointTodayL    = $this->countPointTodayL($position_userid, $balancePoint['datecreate']);
+                $pointTodayR    = $this->countPointTodayR($position_userid, $balancePoint['datecreate']);
+                $idLeft         = $this->countIDL($position_userid);
+                $idRight        = $this->countIDR($position_userid);
+                $query_box      = $this->M_user->sumPackage($position_userid);
                 $package_name   = $query_box['point'] ?? null;
                 $package_color  = $this->_color_network($package_name);
     
@@ -2482,12 +2527,14 @@ class User extends CI_Controller
                     $balance_a = $countLeft;
                     $balance_b = $countRight;
                 }
+
+                $set_receive = $this->_get_all_set($position_userid);
     
                 $output .=    '<li>';
                 $output .=      '<div class="item" style="border:7px solid ' . $package_color . '">
                                     <img class="flag-network" src="' . base_url('assets/img/') . $this->flag($row_position->country_code) . '" alt="#" width="40px">
                                     <h1 class="text-uppercase name-network" id="'.strtolower($row_position->username).'">' . strtolower($row_position->username) . '</h1>
-                                    <p>' . $row_position->fm . '</p>
+                                    <p>' . $row_position->fm . ' ('.$set_receive.' set)</p>
                                     <div class="d-flex justify-content-center align-content-center align-items-center position-relative">
                                         <div class="text-right">
                                             <p>(' . $idLeft . ' ID) '.$this->lang->line('left').'</p>
@@ -2561,14 +2608,16 @@ class User extends CI_Controller
 
             foreach ($query_position as $row_position) 
             {
-                $balancePoint   = $this->balance_point($row_position->user_id);
-                $countLeft      = $this->countPositionL($row_position->user_id);
-                $countRight     = $this->countPositionR($row_position->user_id);
-                $pointTodayL    = $this->countPointTodayL($row_position->user_id, $balancePoint['datecreate']);
-                $pointTodayR    = $this->countPointTodayR($row_position->user_id, $balancePoint['datecreate']);
-                $idLeft         = $this->countIDL($row_position->user_id);
-                $idRight        = $this->countIDR($row_position->user_id);
-                $query_box      = $this->M_user->sumPackage($row_position->user_id);
+                $position_userid = $row_position->user_id ?? null;
+
+                $balancePoint   = $this->balance_point($position_userid);
+                $countLeft      = $this->countPositionL($position_userid);
+                $countRight     = $this->countPositionR($position_userid);
+                $pointTodayL    = $this->countPointTodayL($position_userid, $balancePoint['datecreate']);
+                $pointTodayR    = $this->countPointTodayR($position_userid, $balancePoint['datecreate']);
+                $idLeft         = $this->countIDL($position_userid);
+                $idRight        = $this->countIDR($position_userid);
+                $query_box      = $this->M_user->sumPackage($position_userid);
                 $package_name   = $query_box['point'] ?? null;
                 $package_color  = $this->_color_network($package_name);
     
@@ -2579,12 +2628,14 @@ class User extends CI_Controller
                     $balance_a = $countLeft;
                     $balance_b = $countRight;
                 }
+
+                $set_receive = $this->_get_all_set($position_userid);
     
                 $output .=    '<li>';
                 $output .=      '<div class="item" style="border:7px solid ' . $package_color . '">
                                     <img class="flag-network" src="' . base_url('assets/img/') . $this->flag($row_position->country_code) . '" alt="#" width="40px">
                                     <h1 class="text-uppercase name-network" id="'.strtolower($row_position->username).'">' . strtolower($row_position->username) . '</h1>
-                                    <p>' . $row_position->fm . '</p>
+                                    <p>' . $row_position->fm . ' ('.$set_receive.' set)</p>
                                     <div class="d-flex justify-content-center align-content-center align-items-center position-relative">
                                         <div class="text-right">
                                             <p>(' . $idLeft . ' ID) '.$this->lang->line('left').'</p>
