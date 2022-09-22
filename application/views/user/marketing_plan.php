@@ -65,9 +65,9 @@
                     <p class="p-mplan"><?= $this->lang->line('bonus_sponsor_1'); ?></p>
                     <p class="space-height p-mplan"><?= $this->lang->line('bonus_calculation_as_follows'); ?></p>
                     <ul style="margin-left:0 !important;">
-                        <li class="li-mplan">1,3,9 <?= $this->lang->line('box'); ?> = 5 % ( 2.5 % FIL & 2.5 MTM )</li>
-                        <li class="li-mplan">15,30,60 <?= $this->lang->line('box'); ?> = 6 % ( 3 % FIL & 3 % MTM )</li>
-                        <li class="li-mplan">120,300,540 <?= $this->lang->line('box'); ?> = 7 % ( 3.5 % FIL & 3.5 % MTM )</li>
+                        <li class="li-mplan">1,3,9 <?= $this->lang->line('box'); ?> = 5 % ( 2.5 % USDT & 2.5 KRP )</li>
+                        <li class="li-mplan">15,30,60 <?= $this->lang->line('box'); ?> = 6 % ( 3 % USDT & 3 % KRP )</li>
+                        <li class="li-mplan">120,300,540 <?= $this->lang->line('box'); ?> = 7 % ( 3.5 % USDT & 3.5 % KRP )</li>
                     </ul>
                     <div class="image-bonus-marketingplan my-4">
                         <img class="bonus_sponsor" src="<?= base_url('assets/img/' . $this->lang->line('img_bonus_sponsor')); ?>">
@@ -83,9 +83,9 @@
                     <p class="p-mplan"><?= $this->lang->line('sponsor_matching_2'); ?></p>
                     <p class="space-height p-mplan"><?= $this->lang->line('bonus_calculation_as_follows'); ?></p>
                     <ul style="margin-left:0 !important;">
-                        <li class="li-mplan">1,3,9 <?= $this->lang->line('box'); ?> = 50 % ( 25 % FIL & 25 % MTM )</li>
-                        <li class="li-mplan">15,30,60 <?= $this->lang->line('box'); ?> = 35 % ( 17.5 % FIL & 17.5 % MTM )</li>
-                        <li class="li-mplan">120,300,540 <?= $this->lang->line('box'); ?> = 20 % ( 10 % FIL & 10 % MTM )</li>
+                        <li class="li-mplan">1,3,9 <?= $this->lang->line('box'); ?> = 50 % ( 25 % USDT & 25 % KRP )</li>
+                        <li class="li-mplan">15,30,60 <?= $this->lang->line('box'); ?> = 35 % ( 17.5 % USDT & 17.5 % KRP )</li>
+                        <li class="li-mplan">120,300,540 <?= $this->lang->line('box'); ?> = 20 % ( 10 % USDT & 10 % KRP )</li>
                     </ul>
                 </div>
                 <div class="marketing-plan mt-5" style="font-size: 17px;">
@@ -133,22 +133,22 @@
                     <p class="p-mplan"><?= $this->lang->line('pairing_mining_1'); ?></p>
                     <p class="space-height p-mplan"><?= $this->lang->line('pairing_mining_2'); ?></p>
                     <ul>
-                        <li class="li-mplan">4:4 = 1 <?= $this->lang->line('set_box'); ?> (0,5 MTM)</li>
-                        <li class="li-mplan">8:8 = 2 <?= $this->lang->line('set_boxes'); ?> (0,5 + 05 MTM)</li>
+                        <li class="li-mplan">4:4 = 1 <?= $this->lang->line('set_box'); ?> (0,5 USDT)</li>
+                        <li class="li-mplan">8:8 = 2 <?= $this->lang->line('set_boxes'); ?> (0,5 + 05 USDT)</li>
                     </ul>
                     <p class="space-height p-mplan"><?= $this->lang->line('pairing_mining_6'); ?></p>
                     <ul>
-                        <li class="li-mplan">FM = 2 Set / 1 MTM</li>
-                        <li class="li-mplan">FM1 = 6 set / 3 MTM</li>
-                        <li class="li-mplan">FM2 = 10 set / 5 MTM</li>
-                        <li class="li-mplan">FM3 = 14 set / 7 MTM</li>
-                        <li class="li-mplan">FM4 = 20 set / 10 MTM</li>
-                        <li class="li-mplan">FM5 = 30 set / 15 MTM</li>
-                        <li class="li-mplan">FM6 = 40 set / 20 MTM</li>
-                        <li class="li-mplan">FM7 = 50 set / 25 MTM</li>
-                        <li class="li-mplan">FM8 = 100 set / 50 MTM</li>
-                        <li class="li-mplan">FM9 = 140 set / 70 MTM</li>
-                        <li class="li-mplan">FM10 = 200 set / 100 MTM</li>
+                        <li class="li-mplan">FM = 2 Set / 1 USDT</li>
+                        <li class="li-mplan">FM1 = 6 set / 3 USDT</li>
+                        <li class="li-mplan">FM2 = 10 set / 5 USDT</li>
+                        <li class="li-mplan">FM3 = 14 set / 7 USDT</li>
+                        <li class="li-mplan">FM4 = 20 set / 10 USDT</li>
+                        <li class="li-mplan">FM5 = 30 set / 15 USDT</li>
+                        <li class="li-mplan">FM6 = 40 set / 20 USDT</li>
+                        <li class="li-mplan">FM7 = 50 set / 25 USDT</li>
+                        <li class="li-mplan">FM8 = 100 set / 50 USDT</li>
+                        <li class="li-mplan">FM9 = 140 set / 70 USDT</li>
+                        <li class="li-mplan">FM10 = 200 set / 100 USDT</li>
                     </ul>
                     <div class="image-bonus-marketingplan my-4">
                         <img src="<?= base_url('assets/img/' . $this->lang->line('img_pairing_mining')); ?>">
@@ -204,10 +204,10 @@
                     <p class="p-mplan"><?= $this->lang->line('bonus_basecamp_1'); ?></p>
                     <p class="space-height p-mplan"><?= $this->lang->line('bonus_calculation_as_follows'); ?></p>
                     <ul>
-                        <li class="li-mplan">FM 5 = 2% BS <?= $this->lang->line('reward'); ?> MTM</li>
-                        <li class="li-mplan">FM 6 = 2.5% BS <?= $this->lang->line('reward'); ?> MTM</li>
-                        <li class="li-mplan">FM 7 = 3% BS <?= $this->lang->line('reward'); ?> MTM</li>
-                        <li class="li-mplan">FM 8 = 3.5% BS <?= $this->lang->line('reward'); ?> MTM</li>
+                        <li class="li-mplan">FM 5 = 2% BS <?= $this->lang->line('reward'); ?> USDT</li>
+                        <li class="li-mplan">FM 6 = 2.5% BS <?= $this->lang->line('reward'); ?> USDT</li>
+                        <li class="li-mplan">FM 7 = 3% BS <?= $this->lang->line('reward'); ?> USDT</li>
+                        <li class="li-mplan">FM 8 = 3.5% BS <?= $this->lang->line('reward'); ?> USDT</li>
                     </ul>
                     <div class="image-bonus-marketingplan my-4">
                         <img src="<?= base_url('assets/img/' . $this->lang->line('img_bonus_basecamp')); ?>">

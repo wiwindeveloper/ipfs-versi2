@@ -2447,10 +2447,10 @@ class User extends CI_Controller
     {
         $query_last_bonus = $this->M_user->get_last_pairingmatching_byuser($id);
 
-        if($query_last_bonus['reset_date'] != '0')
+        if($query_last_bonus['reset_date'] ?? null != '0')
         {
             $query_second_resetdate = $this->M_user->get_second_resetdate_pairingmatching($id);
-            $reset_date = $query_second_resetdate['reset_date'];
+            $reset_date = $query_second_resetdate['reset_date'] ?? null;
 
             if(!empty($reset_date))
             {
@@ -2460,7 +2460,7 @@ class User extends CI_Controller
             }
             else
             {
-                $set_receive = $query_last_bonus['set_amount']/4;
+                $set_receive = $query_last_bonus['set_amount'] ?? null /4;
             }
 
         }
@@ -2512,8 +2512,8 @@ class User extends CI_Controller
                 $balancePoint   = $this->balance_point($position_userid);
                 $countLeft      = $this->countPositionL($position_userid);
                 $countRight     = $this->countPositionR($position_userid);
-                $pointTodayL    = $this->countPointTodayL($position_userid, $balancePoint['datecreate']);
-                $pointTodayR    = $this->countPointTodayR($position_userid, $balancePoint['datecreate']);
+                $pointTodayL    = $this->countPointTodayL($position_userid, $balancePoint['datecreate'] ?? null);
+                $pointTodayR    = $this->countPointTodayR($position_userid, $balancePoint['datecreate'] ?? null);
                 $idLeft         = $this->countIDL($position_userid);
                 $idRight        = $this->countIDR($position_userid);
                 $query_box      = $this->M_user->sumPackage($position_userid);
@@ -2613,8 +2613,8 @@ class User extends CI_Controller
                 $balancePoint   = $this->balance_point($position_userid);
                 $countLeft      = $this->countPositionL($position_userid);
                 $countRight     = $this->countPositionR($position_userid);
-                $pointTodayL    = $this->countPointTodayL($position_userid, $balancePoint['datecreate']);
-                $pointTodayR    = $this->countPointTodayR($position_userid, $balancePoint['datecreate']);
+                $pointTodayL    = $this->countPointTodayL($position_userid, $balancePoint['datecreate'] ?? null);
+                $pointTodayR    = $this->countPointTodayR($position_userid, $balancePoint['datecreate'] ?? null);
                 $idLeft         = $this->countIDL($position_userid);
                 $idRight        = $this->countIDR($position_userid);
                 $query_box      = $this->M_user->sumPackage($position_userid);
