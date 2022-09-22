@@ -2575,19 +2575,26 @@ class Admin extends CI_Controller
         return $countId;
     }
 
-    public function countPointTodayL($userid)
+    public function countPointTodayL($userid, $datecreate)
     {
-        $dateNow            = date('Y-m-d');
+        if(!empty($datecreate))
+        {
+            $datecreate = $datecreate;
+        }
+        else
+        {
+            $datecreate = 0;
+        }
 
         $query              = $this->M_user->check_line($userid, 'A');
         $user_position      = $query['user_id'] ?? null;
 
-        $query_package      = $this->M_user->get_onepoint_byuser($user_position, $dateNow)->row_array();
-        $package_datecreate = $query_package['datecreate'] ?? null;
+        $query_package      = $this->M_user->get_onepoint_byuser($user_position, $datecreate)->row_array();
+        // $package_datecreate = $query_package['datecreate'] ?? null;
 
         $packagePoint       = $query_package['point'] ?? null;
 
-        $countMember        = $this->get_countPointTodayL($user_position, $dateNow);
+        $countMember        = $this->get_countPointTodayL($user_position, $datecreate);
         $sumTotal           = array_sum($countMember) + $packagePoint;
         $this->arrTodayL    = array();
 
@@ -2612,19 +2619,26 @@ class Admin extends CI_Controller
         return $this->arrTodayL;
     }
 
-    public function countPointTodayR($userid)
+    public function countPointTodayR($userid, $datecreate)
     {
-        $dateNow = date('Y-m-d');
+        if(!empty($datecreate))
+        {
+            $datecreate = $datecreate;
+        }
+        else
+        {
+            $datecreate = 0;
+        }
 
         $query = $this->M_user->check_line($userid, 'B');
         $user_position = $query['user_id'] ?? null;
 
-        $query_package = $this->M_user->get_onepoint_byuser($user_position, $dateNow)->row_array();
-        $package_datecreate = $query_package['datecreate'] ?? null;
+        $query_package = $this->M_user->get_onepoint_byuser($user_position, $datecreate)->row_array();
+        // $package_datecreate = $query_package['datecreate'] ?? null;
 
         $packagePoint = $query_package['point'] ?? null;
 
-        $countMember = $this->get_countPointTodayR($user_position, $dateNow);
+        $countMember = $this->get_countPointTodayR($user_position, $datecreate);
         $sumTotal = array_sum($countMember) + $packagePoint;
         $this->arrTodayR = array();
 
@@ -2842,8 +2856,8 @@ class Admin extends CI_Controller
         $query_box      = $this->M_user->sumPackage($id);
         $balancePoint   = $this->balance_point($id);
 
-        $pointTodayL    = $this->countPointTodayL($id);
-        $pointTodayR    = $this->countPointTodayR($id);
+        $pointTodayL    = $this->countPointTodayL($id, $balancePoint['datecreate']);
+        $pointTodayR    = $this->countPointTodayR($id, $balancePoint['datecreate']);
         $idLeft         = $this->countIDL($id);
         $idRight        = $this->countIDR($id);
         $package_fm     = $package['fm'] ?? null;
@@ -2897,7 +2911,7 @@ class Admin extends CI_Controller
             
             $output .= '<div id="result'.$id.'" class="hideNetwork"></div>';
         $output .=    '</li>';
-        $output .=  '</ul>';
+        // $output .=  '</ul>';
 
         return $output;
     }
@@ -2918,11 +2932,11 @@ class Admin extends CI_Controller
 
             foreach ($query_position as $row_position) 
             {
+                $balancePoint   = $this->balance_point($row_position->user_id);
                 $countLeft      = $this->countPositionL($row_position->user_id);
                 $countRight     = $this->countPositionR($row_position->user_id);
-                $balancePoint   = $this->balance_point($row_position->user_id);
-                $pointTodayL    = $this->countPointTodayL($row_position->user_id);
-                $pointTodayR    = $this->countPointTodayR($row_position->user_id);
+                $pointTodayL    = $this->countPointTodayL($row_position->user_id, $balancePoint['datecreate']);
+                $pointTodayR    = $this->countPointTodayR($row_position->user_id, $balancePoint['datecreate']);
                 $idLeft         = $this->countIDL($row_position->user_id);
                 $idRight        = $this->countIDR($row_position->user_id);
                 $query_box      = $this->M_user->sumPackage($row_position->user_id);
@@ -2936,12 +2950,14 @@ class Admin extends CI_Controller
                     $balance_a = $countLeft;
                     $balance_b = $countRight;
                 }
+
+                $set_receive = $this->_get_all_set($row_position->user_id);
     
                 $output .=    '<li>';
                 $output .=      '<div class="item" style="border:7px solid ' . $package_color . '">
                                     <img class="flag-network" src="' . base_url('assets/img/') . $this->flag($row_position->country_code) . '" alt="#" width="40px">
                                     <h1 class="text-uppercase name-network" id="'.strtolower($row_position->username).'">' . strtolower($row_position->username) . '</h1>
-                                    <p>' . $row_position->fm . '</p>
+                                    <p>' . $row_position->fm . ' ('.$set_receive.' set)</p>
                                     <div class="d-flex justify-content-center align-content-center align-items-center position-relative">
                                         <div class="text-right">
                                             <p>(' . $idLeft . ' ID) left</p>
@@ -3025,11 +3041,12 @@ class Admin extends CI_Controller
     
             foreach ($query_position as $row_position) 
             {
+                $balancePoint   = $this->balance_point($row_position->user_id);
+
                 $countLeft      = $this->countPositionL($row_position->user_id);
                 $countRight     = $this->countPositionR($row_position->user_id);
-                $balancePoint   = $this->balance_point($row_position->user_id);
-                $pointTodayL    = $this->countPointTodayL($row_position->user_id);
-                $pointTodayR    = $this->countPointTodayR($row_position->user_id);
+                $pointTodayL    = $this->countPointTodayL($row_position->user_id, $balancePoint['datecreate']);
+                $pointTodayR    = $this->countPointTodayR($row_position->user_id, $balancePoint['datecreate']);
                 $idLeft         = $this->countIDL($row_position->user_id);
                 $idRight        = $this->countIDR($row_position->user_id);
                 $query_box      = $this->M_user->sumPackage($row_position->user_id);
@@ -3043,12 +3060,14 @@ class Admin extends CI_Controller
                     $balance_a = $countLeft;
                     $balance_b = $countRight;
                 }
+
+                $set_receive = $this->_get_all_set($row_position->user_id);
     
                 $output .=    '<li>';
                 $output .=      '<div class="item" style="border:7px solid ' . $package_color . '">
                                     <img class="flag-network" src="' . base_url('assets/img/') . $this->flag($row_position->country_code) . '" alt="#" width="40px">
                                     <h1 class="text-uppercase name-network" id="'.strtolower($row_position->username).'">' . strtolower($row_position->username) . '</h1>
-                                    <p>' . $row_position->fm . '</p>
+                                    <p>' . $row_position->fm . ' ('.$set_receive.' set)</p>
                                     <div class="d-flex justify-content-center align-content-center align-items-center position-relative">
                                         <div class="text-right">
                                             <p>(' . $idLeft . ' ID) left</p>
@@ -3149,7 +3168,46 @@ class Admin extends CI_Controller
         echo $output;
     }
     
+    private function _get_all_set($id)
+    {
+        $query_last_bonus = $this->M_user->get_last_pairingmatching_byuser($id);
+
+        if($query_last_bonus['reset_date'] != '0')
+        {
+            $query_second_resetdate = $this->M_user->get_second_resetdate_pairingmatching($id);
+            $reset_date = $query_second_resetdate['reset_date'];
+
+            if(!empty($reset_date))
+            {
+                $query_set_receive = $this->M_user->sum_set_receive_network($id, $reset_date);
     
+                $set_receive = $query_set_receive['set_amount']/4;
+            }
+            else
+            {
+                $set_receive = $query_last_bonus['set_amount']/4;
+            }
+
+        }
+        else
+        {
+            $query_last_resetdate  = $this->M_user->get_last_resetdate_pairingmatching($id);
+            $reset_date = $query_last_resetdate['reset_date'];
+
+            if($reset_date != 0)
+            {
+                $query_set_receive = $this->M_user->sum_set_receive_network($id, $reset_date);
+                $set_receive = $query_set_receive['set_amount']/4;
+            }
+            else
+            {
+                $query_set_receive = $this->M_user->sum_balance($id);
+                $set_receive = $query_set_receive['set_amount']/4;
+            }
+        }
+
+        return $set_receive;
+    }
     
     public function allNetwork()
     {
@@ -3181,8 +3239,8 @@ class Admin extends CI_Controller
         $query_box      = $this->M_user->sumPackage($id);
         $balancePoint   = $this->balance_point($id);
 
-        $pointTodayL    = $this->countPointTodayL($id);
-        $pointTodayR    = $this->countPointTodayR($id);
+        $pointTodayL    = $this->countPointTodayL($id, $balancePoint['datecreate']);
+        $pointTodayR    = $this->countPointTodayR($id, $balancePoint['datecreate']);
         $idLeft         = $this->countIDL($id);
         $idRight        = $this->countIDR($id);
         $package_fm     = $package['fm'] ?? null;
@@ -3197,6 +3255,8 @@ class Admin extends CI_Controller
             $balance_b = $this->countPositionR($id);
         }
 
+        $set_receive = $this->_get_all_set($id);
+
         $output = '';
 
         $output .= '<ul>';
@@ -3204,7 +3264,7 @@ class Admin extends CI_Controller
         $output .=    '<div class="item" id="me" style="border: 7px solid ' . $package_color . ';">
                             <img class="flag-network" src="' . base_url('assets/img/') . $this->flag($countryCode) . '" alt="flag">
                             <h1 class="text-uppercase name-network" id="'.strtolower($username).'">' . strtolower($username) . '</h1>
-                            <p>' . $package_fm . '</p>
+                            <p>' . $package_fm . ' ('.$set_receive.' set)</p>
                             <div class="d-flex  justify-content-center align-content-center align-items-center position-relative">
                                 <div class="text-right">
                                     <p>(' . $idLeft . ' ID) left</p>
