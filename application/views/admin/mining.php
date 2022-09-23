@@ -28,6 +28,23 @@
                                                 </form>
                                             </div>
                                         </div>
+                                        <div class="col-md-4 px-2 mb-5">
+                                            <div class="text-center font-weight-bold text-primary text-uppercase mb-3">
+                                                <img src="<?= base_url('assets/img/mtm_logo.png'); ?>" width="40px" class="my-1">&nbsp;Add AirDrop MTM
+                                            </div>
+                                            <div class="h5 mb-0 text-gray-800 text-left">
+                                                <form action="<?= base_url('admin/mining/2'); ?>" method="post">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control form-control-user" id="miningmtm" name="miningmtm" value="<?= set_value('miningmtm'); ?>"
+                                                            placeholder="Amount">
+                                                        <?= form_error('miningmtm', '<small class="text-danger pl-3">', '</small>'); ?>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                                                        Save Airdrop MTM
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -87,7 +87,8 @@ class User extends CI_Controller
         $dateNow = date('Y-m-d');
 
         //update notif
-        if (!empty($this->uri->segment(3))) {
+        if (!empty($this->uri->segment(3))) 
+        {
             $data_notif = [
                 'is_show' => 1
             ];
@@ -107,13 +108,20 @@ class User extends CI_Controller
         $query_transfer_bonus_fill  = $this->M_user->get_transfer_bonus($user_id, 'filecoin');
         $query_transfer_bonus_usdt  = $this->M_user->get_transfer_bonus($user_id, 'usdt');
         $query_transfer_bonus_krp   = $this->M_user->get_transfer_bonus($user_id, 'krp');
+        $query_transfer_bonus_mtm   = $this->M_user->get_transfer_bonus($user_id, 'mtm');
         $query_withdrawal_fil       = $this->M_user->get_total_withdrawal($user_id, 'filecoin');
         $query_withdrawal_usdt      = $this->M_user->get_total_withdrawal($user_id, 'usdt');
         $query_withdrawal_krp       = $this->M_user->get_total_withdrawal($user_id, 'krp');
+        $query_withdrawal_mtm       = $this->M_user->get_total_withdrawal($user_id, 'mtm');
+
+        $query_airdrop_mtm          = $this->M_user->sum_airdrop_byuser($user_id);
+        $query_airdrop_trf_mtm      = $this->M_user->sum_trf_airdrop_mtm_byuser($user_id);
+        $query_today_airdrop_mtm    = $this->M_user->sum_airdrop_byuser_bydate($user_id, $dateNow);
 
         $query_deposit_fil         = $this->M_user->get_sum_deposit($user_id, '1');
         $query_deposit_usdt        = $this->M_user->get_sum_deposit($user_id, '4');
-        $query_deposit_krp        = $this->M_user->get_sum_deposit($user_id, '5');
+        $query_deposit_krp         = $this->M_user->get_sum_deposit($user_id, '5');
+        $query_deposit_mtm         = $this->M_user->get_sum_deposit($user_id, '2');
 
         $query_row_notif = $this->M_user->row_newnotif_byuser($user_id);
         $query_new_notif = $this->M_user->show_newnotif_byuser($user_id);
@@ -170,14 +178,18 @@ class User extends CI_Controller
                 $data['banner2']             = $this->M_user->get_banner_home(2);
                 $data['today_usdt']          = $today_sponsorusdt + $today_sponmatchingusdt + $today_pairingmatch_usdt + $today_minmatchingusdt + $today_minpairingusdt + $today_binarymatch_usdt + $today_bonusglobal_usdt + $today_basecamp_usdt;
                 $data['today_krp']           = $today_sponsorkrp + $today_sponmatchingkrp + $today_pairingmatch_krp + $today_minmatchingkrp + $today_minpairingusdt + $today_binarymatch_usdt + $today_bonusglobal_krp + $today_basecamp_krp;
+                $data['today_krp']           = $today_sponsorkrp + $today_sponmatchingkrp + $today_pairingmatch_krp + $today_minmatchingkrp + $today_minpairingusdt + $today_binarymatch_usdt + $today_bonusglobal_krp + $today_basecamp_krp;
                 $data['total_usdt']          = $total_sponsorusdt + $total_sponmatchingusdt + $total_pairingmatchusdt + $total_minmatchingusdt + $total_minpairingusdt + $total_binarymatchusdt + $total_globalusdt + $total_basecampusdt;
                 $data['total_krp']           = $total_sponsorkrp + $total_sponmatchingkrp + $total_pairingmatch_krp + $total_minmatchingkrp + $total_minpairingkrp + $total_binarymatch_krp + $total_global_krp + $total_basecampkrp;
-
+                $data['airdrop']             = $query_airdrop_mtm['amount'];
+                
                 $data['balance_usdt']        = $data['total_usdt'] - $query_transfer_bonus_usdt['amount'];
                 $data['balance_krp']         = $data['total_krp'] - $query_transfer_bonus_krp['amount'];
                 $data['mining_fil_today']    = isset($query_today_fill['amount']) ? $query_today_fill['amount'] : 0;
                 $data['mining_fil_total']    = isset($query_total_fill['amount']) ? $query_total_fill['amount'] : 0;
                 $data['mining_fil_balance']  = $query_total_fill['amount'] - $query_transfer_fill['amount'];
+                $data['airdrop_mtm_balance'] = $query_airdrop_mtm['amount'] - $query_airdrop_trf_mtm['amount'];
+                $data['airdrop_mtm_today']   = $query_today_airdrop_mtm['amount'];
 
                 $data['market_price']        = $this->M_user->get_price_coin()->row_array();
 
@@ -188,6 +200,7 @@ class User extends CI_Controller
                 $data['total_balance_fil']      = $data['mining_fil_total'] + $query_deposit_fil['coin'] - $query_total_purchase['fill'] - $query_withdrawal_fil['amount'];
                 $data['total_balance_usdt']     =  $data['total_usdt']  + $query_deposit_usdt['coin'] - $query_total_purchase['usdt'] - $query_withdrawal_usdt['amount'];
                 $data['total_balance_krp']      =  $data['total_krp']  + $query_deposit_krp['coin'] - $query_total_purchase['krp'] - $query_withdrawal_krp['amount'];
+                $data['total_balance_mtm']      =  $data['airdrop'] + $query_deposit_mtm['coin'] - $query_withdrawal_mtm['amount'];
 
                 $this->load->view('templates/user_header', $data);
                 $this->load->view('templates/user_sidebar', $data);
@@ -2003,6 +2016,8 @@ class User extends CI_Controller
             $data['currentTab'] = 'usdt';
         } elseif ($this->uri->segment(3) == '5') {
             $data['currentTab'] = 'krp';
+        } elseif ($this->uri->segment(3) == '2') {
+            $data['currentTab'] = 'mtm';
         } else {
             $data['currentTab'] = 'fil';
         }
@@ -2197,13 +2212,13 @@ class User extends CI_Controller
         $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
         $data['market_price']       = $this->M_user->get_price_coin()->row_array();
 
-        $query_mining        = $this->M_user->show_all_byid($query_user['id'], 'mining_user', 'user_id');
-        $query_total         = $this->M_user->get_total_byuser('mining_user', 'amount', 'user_id', $query_user['id']);
-        $query_transfer_fil      = $this->M_user->get_total_byuser('mining_user_transfer', 'amount', 'user_id', $query_user['id']);
-        $query_transfer_list_fil = $this->M_user->get_transfer_list('mining_user_transfer', 'datecreate', $query_user['id'], 'DESC')->result();
+        $query_mining               = $this->M_user->show_all_byid($query_user['id'], 'mining_user', 'user_id');
+        $query_total                = $this->M_user->get_total_byuser('mining_user', 'amount', 'user_id', $query_user['id']);
+        $query_transfer_fil         = $this->M_user->get_total_byuser('mining_user_transfer', 'amount', 'user_id', $query_user['id']);
+        $query_transfer_list_fil    = $this->M_user->get_transfer_list('mining_user_transfer', 'datecreate', $query_user['id'], 'DESC')->result();
 
         $data['list_mining']        = $query_mining;
-        $data['transfer_list']      = $query_transfer_list_fil;
+        $data['transfer_list_fil']      = $query_transfer_list_fil;
         $data['balance_mining']     = $query_total['amount'] - $query_transfer_fil['amount'];
 
         if ($this->session->userdata('email')) {
@@ -2239,8 +2254,8 @@ class User extends CI_Controller
         $data['amount_notif']       = $query_row_notif;
         $data['list_notif']         = $query_new_notif;
         $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
-        $data['total_excess_usdt']       = $query_total_excess['usdt'];
-        $data['total_excess_krp']       = $query_total_excess['krp'];
+        $data['total_excess_usdt']  = $query_total_excess['usdt'];
+        $data['total_excess_krp']   = $query_total_excess['krp'];
         $data['total_usdt']         = $query_total['usdt'];
         $data['total_krp']          = $query_total['krp'];
         $data['userClass']          = $this;
@@ -2276,9 +2291,9 @@ class User extends CI_Controller
         $data['excess_bonus']       = $this->M_user->get_excess_sponsor_matching($query_user['id']);
         $data['amount_notif']       = $query_row_notif;
         $data['list_notif']         = $query_new_notif;
-        $data['total_excess_usdt']       = $query_total_excess['usdt'];
-        $data['total_excess_krp']       = $query_total_excess['krp'];
-        $data['total_usdt']          = $query_total['usdt'];
+        $data['total_excess_usdt']  = $query_total_excess['usdt'];
+        $data['total_excess_krp']   = $query_total_excess['krp'];
+        $data['total_usdt']         = $query_total['usdt'];
         $data['total_krp']          = $query_total['krp'];
         $data['cart']               = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
 
@@ -3497,7 +3512,6 @@ class User extends CI_Controller
         $query_transfer_mtm         = $this->M_user->get_total_byuser('airdrop_mtm_transfer', 'amount', 'user_id', $query_user['id']);
         $query_transfer_bonus_mtm   = $this->M_user->get_transfer_bonus($query_user['id'], 'mtm');
         $query_transfer_list        = $this->M_user->get_transfer_list('airdrop_mtm_transfer', 'datecreate', $query_user['id'], 'DESC')->result();
-        $query_transfer_bonus_list  = $this->M_user->get_transfer_bonus_list($query_user['id'], 'mtm', 'DESC')->result();
         $query_total_withdrawal     = $this->M_user->get_total_withdrawal($query_user['id'], 'mtm');
         $query_sum_deposit          = $this->M_user->get_sum_deposit($query_user['id'], '2');
         $query_total_purchase       = $this->M_user->sum_cart_byid($query_user['id']);
@@ -3519,26 +3533,14 @@ class User extends CI_Controller
         $data['amount_notif']           = $query_row_notif;
         $data['list_notif']             = $query_new_notif;
         $data['transfer_list_mining']   = $query_transfer_list;
-        $data['transfer_list_bonus']    = $query_transfer_bonus_list;
         $data['cart']                   = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
-        $data['general_balance_mtm']    = ($query_transfer_mtm['amount'] + $query_transfer_bonus_mtm['amount']) - $query_total_withdrawal['amount'] + $query_sum_deposit['coin'] - $query_total_purchase['mtm'];
+        $data['general_balance_mtm']    = ($query_transfer_mtm['amount']) - $query_total_withdrawal['amount'] + $query_sum_deposit['coin'] - $query_total_purchase['mtm'];
         $data['withdrawal']             = $this->M_user->get_withdrawal_by($query_user['id'], 'mtm')->result();
         $data['deposit']                = $this->M_user->get_deposit_general($query_user['id'], '2');
-        $data['purchase']               = $this->M_user->get_purchase_mtm_byid($query_user['id']);
         $data['market_price']           = $this->M_user->get_price_coin()->row_array();
         $data['detail']                 = $this->M_user->get_detail_user($query_user['id'])->row_array();
         $data['excess_bonus']           = $this->M_user->get_excess_bonus($query_user['id'])->row_array();
-        $data['total_mtm']              = $total_sponsormtm + $total_sponmatchingmtm + $total_pairingmatch_mtm + $total_binarymatch_mtm + $total_bonusglobal_mtm + $total_basecampmtm;
         $data['mining_mtm_total']       = isset($query_total_mtm['amount']) ? $query_total_mtm['amount'] : 0;
-
-        $data['balance']            = $data['total_mtm'] - $query_transfer_bonus_mtm['amount'];
-        $data['bonus_list']         = $this->M_user->get_bonus_bysponsor($query_user['id']);
-        $data['bonus_sm_list']      = $this->M_user->get_bonus_bysponsormatching($query_user['id']);
-        $data['bonus_pairingmatch_list'] = $this->M_user->get_bonus_pairingmatching($query_user['id']);
-        $data['bonus_binary_list']  = $this->M_user->get_bonus_binarymatch($query_user['id']);
-        $data['bonus_global_list']  = $this->M_user->get_bonus_global($query_user['id']);
-        $data['bonus_basecamp_list'] = $this->M_user->get_bonus_basecamp2($query_user['id']);
-        $data['transfer_list']      = $query_transfer_bonus_list;
         $data['market_price']       = $this->M_user->get_price_coin()->row_array();
 
         if ($this->session->userdata('email') && $this->session->userdata('role_id') == '2') {
@@ -5861,7 +5863,6 @@ class User extends CI_Controller
         return $query['username'];
     }
 
-
     public function transfer_airdrops_mtm()
     {
         $query_user      = $this->M_user->get_user_byemail($this->session->userdata('email'));
@@ -5875,7 +5876,7 @@ class User extends CI_Controller
         $data['amount_notif'] = $query_row_notif;
         $data['list_notif']   = $query_new_notif;
         $data['balance']      = $query_total['amount'] - $query_transfer['amount'];
-        $data['cart']         = $this->M_user->show_home_withsumpoint($query_user['id'])->row_array();
+        $data['cart']         = $this->M_user->show_home_withsumpoint($query_user ['id'])->row_array();
 
         if ($this->session->userdata('email') && $this->session->userdata('role_id') == '2') {
             $this->form_validation->set_rules('amount', 'Amount', 'trim|required', [

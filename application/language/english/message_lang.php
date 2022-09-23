@@ -546,6 +546,7 @@ $lang["transfer"] = "TRANSFER";
 
 //wallet fill general
 $lang["transfer_from_mining"] = "Transfer From Mining";
+$lang["transfer_from_airdrop"] = "Transfer From Airdrop";
 $lang["transfer_from_bonus"] = "Transfer From Bonus";
 $lang["purchase"] = "purchase";
 

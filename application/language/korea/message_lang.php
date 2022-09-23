@@ -545,6 +545,7 @@ $lang["transfer"] = "옮기다";
 
 //wallet fill general
 $lang["transfer_from_mining"] = "마이닝에서 전송";
+$lang["transfer_from_airdrop"] = "에어드랍에서 이체";
 $lang["transfer_from_bonus"] = "보너스에서 전송";
 $lang["purchase"] = "구입";
 

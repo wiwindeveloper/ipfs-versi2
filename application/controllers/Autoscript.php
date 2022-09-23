@@ -617,25 +617,25 @@ class Autoscript extends CI_Controller {
         $dateNow = date('Y-m-d');
 
         $query_global   = $this->M_user->get_data_bydate_user('mining', 'datecreate', 'type', $dateNow, '1')->row_array();
+        $query_mtm      = $this->M_user->get_data_bydate_user('mining', 'datecreate', 'type', $dateNow, '2')->row_array();
         $user           = $this->M_user->get_alluser_mining($dateNow)->result();
 
         $global_mining          = $query_global['amount'];
+        $global_airdrop_mtm     = $query_mtm['amount'];
         $date_mining            = $query_global['datecreate'];
         
         foreach($user as $row_user)
         {
             $user_id    = $row_user->user_id;
-            //             $hasrate    = $row_user->hashrate;
             $box        = $row_user->name;
-            //             $aidrop_mtm = $row_user->airdrp_mtm;
             $daysmining = $row_user->daysmining/2;
             $datepay    = date('Y-m-d', $row_user->datecreate);
             $cart_id    = $row_user->id;
             
-            //             $mining_result =  ((($global_mining * $hasrate)/1000) * 85)/100;
             $mining_result  =  $global_mining * $row_user->point;
 
             $start_mining = date('Y-m-d', strtotime("+45 day", strtotime($datepay)));
+            $aidrop_mtm =  $global_airdrop_mtm * $row_user->point;
 
             if($dateNow >= $start_mining)
             {
@@ -652,9 +652,7 @@ class Autoscript extends CI_Controller {
                             'datecreate' => $date_mining,
                             'cart_id' => $cart_id
                         ];
-    
-                        // echo $user_id."=> ".$box."=>".$mining_result."<br>";
-                        
+
                         $checkdata = $this->M_user->row_data_bydate_user('mining_user', 'datecreate', 'cart_id', $dateNow, $cart_id);
         
                         if($checkdata < 1)
@@ -662,46 +660,54 @@ class Autoscript extends CI_Controller {
                             $this->M_user->insert_data('mining_user', $data);
                         }
                     }
-                    // elseif($all_use_mining == ($row_user->daysmining/2)) //notifikasi belum jadi
-                    // {
-                        
-                    //     //input notification
-                    //     // $link       = 'User/updateDaysMining/'.$row_user->id;
-    
-                    //     // $data_notif = [
-                    //     //     'user_id' => $user_id,
-                    //     //     'type' => '3',
-                    //     //     'title' => 'Mining',
-                    //     //     'message' => 'Your mining time limit is over. Click to confirm.',
-                    //     //     'link' => $link,
-                    //     //     'datecreate' => time()
-                    //     // ];
-    
-                    //     // $insert_notif = $this->M_user->insert_notif($data_notif);
-                        
-                    //     //send notification
-                    //     // require APPPATH . 'views/vendor/autoload.php';
-        
-                    //     // $options = array(
-                    //     //     'cluster' => 'ap1',
-                    //     //     'useTLS' => true
-                    //     // );
-        
-                    //     // $pusher = new Pusher\Pusher(
-                    //     //     '375479f0c247cb7708d7',
-                    //     //     'cd781cf54e1b067aa767',
-                    //     //     '1243088',
-                    //     //     $options
-                    //     // );
-                        
-                    //     // $message['message'] = $insert_notif;
-                    //     // $message['email']   = $row_user->email;
-                    //     // $message['user']    = $user_id;
-    
-                    //     // $pusher->trigger('channel-auto-mining', 'event-auto-mining', $message);
-    
-                    // }
                 }
+            }
+
+            $start_mining_mtm   = date('Y-m-d', strtotime("+1 day", strtotime($datepay)));
+            $all_use_mining_mtm = (strtotime($dateNow) - strtotime($start_mining)) / (60 * 60 * 24);
+
+            $limit_bonus        = $this->_check_limit_bonus($user_id, $aidrop_mtm, 'mtm');
+
+            $excess_bonus       = $aidrop_mtm - $limit_bonus;
+            $limit_count_mtm    = $limit_bonus;
+
+            if($dateNow >= $start_mining_mtm)
+            {
+                if($global_airdrop_mtm > 0 )
+                {
+                    if($all_use_mining_mtm <= 540)
+                    {
+                        $data_airdrop = [
+                            'user_id' => $user_id,
+                            'amount' => $limit_count_mtm,
+                            'box'  => $box,
+                            'cart_id' => $cart_id,
+                            'datecreate' => $date_mining
+                        ];
+    
+                        $check_airdrop = $this->M_user->row_data_bydate_user('airdrop_mtm', 'datecreate', 'cart_id', $dateNow, $cart_id);
+    
+                        if($check_airdrop < 1)
+                        {
+                            $this->M_user->insert_data('airdrop_mtm', $data_airdrop);
+
+                            $data_excess = [
+                                'user_id' => $user_id,
+                                'type_bonus' => '1',
+                                'mtm' => $excess_bonus,
+                                'cart_id' => $cart_id,
+                                'code_bonus' => '0',
+                                'user_sponsor' => '0',
+                                'generation' => '0',
+                                'box' => $box,
+                                'note' => 'airdrop mtm',
+                                'datecreate' => $date_mining
+                            ];
+
+                            $this->M_user->insert_data('excess_bonus', $data_excess);
+                        }
+                    }
+                } 
             }
         }
     }
@@ -1517,6 +1523,14 @@ class Autoscript extends CI_Controller {
                 $query_total            = $this->M_user->get_total_bonus($user_id)->row_array();
                 $limit                  = ($box*300)/100;
                 $total_bonus            = $query_total['sponsorkrp']+$query_total['sponmatchingkrp']+$query_total['pairingmatchkrp']+$query_total['minmatchingkrp']+$query_total['minpairingkrp']+$query_total['binarymatchkrp']+$query_total['bonusglobalkrp']+$query_total['basecampkrp']+$count_coin;
+            }
+            elseif($type == 'mtm')
+            {
+                $query_box              = $this->M_user->get_totalbox_byid($user_id);
+                $box                    = $query_box['mtm'];
+                $query_total            = $this->M_user->sum_airdrop_byuser($user_id);
+                $limit                  = ($box*300)/100;
+                $total_bonus            = $query_total['amount'];
             }
             
             if($total_bonus <= $limit)

@@ -9,7 +9,7 @@
             <?= $this->lang->line('pairing_matching'); ?>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="<?= base_url('user/bonusList'); ?>"><?= $this->lang->line('mining'); ?></a>
+            <a class="dropdown-item" href="<?= base_url('user/bonusList'); ?>">Airdrop/<?= $this->lang->line('mining'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/sponsor'); ?>"><?= $this->lang->line('recommended'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/sponsorMatching'); ?>"><?= $this->lang->line('recommended_matching'); ?></a>
             <a class="dropdown-item" href="<?= base_url('user/miningMatching'); ?>"><?= $this->lang->line('recommended_mining'); ?></a>
@@ -24,7 +24,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav navbar-menubonus">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('user/bonusList'); ?>"><?= $this->lang->line('mining'); ?></a>
+                    <a class="nav-link" href="<?= base_url('user/bonusList'); ?>">Airdrop/<?= $this->lang->line('mining'); ?></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('user/sponsor'); ?>"><?= $this->lang->line('recommended'); ?></a>

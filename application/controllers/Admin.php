@@ -1848,11 +1848,13 @@ class Admin extends CI_Controller
                 $filecoin = $this->input->post('filecoin');
                 $usdt = $this->input->post('usdt');
                 $krp = $this->input->post('krp');
+                $mtm = $this->input->post('mtm');
 
                 $data = array(
                     'filecoin' => $filecoin,
                     'usdt' => $usdt,
                     'krp' => $krp,
+                    'mtm' => $mtm,
                     'time' => time()
                 );
 
@@ -1901,6 +1903,17 @@ class Admin extends CI_Controller
                     $this->session->set_flashdata('message_min_wd', '<div class="alert alert-danger" role="alert">Update minimum WD KRP failed</div>');
                     redirect('admin/marketPrice');
                 }
+            } elseif (isset($_POST['save_mtm'])) {
+                $min_wd = $this->input->post('mtm_min');
+                $this->db->set('mtm', $min_wd);
+                $update = $this->db->update('minimum_withdrawal');
+                if ($update == true) {
+                    $this->session->set_flashdata('message_min_wd', '<div class="alert alert-success" role="alert">Update minimum WD MTM success</div>');
+                    redirect('admin/marketPrice');
+                } else {
+                    $this->session->set_flashdata('message_min_wd', '<div class="alert alert-danger" role="alert">Update minimum WD MTM failed</div>');
+                    redirect('admin/marketPrice');
+                }
             }
 
             // fee WD
@@ -1935,6 +1948,17 @@ class Admin extends CI_Controller
                     redirect('admin/marketPrice');
                 } else {
                     $this->session->set_flashdata('message_fee_wd', '<div class="alert alert-danger" role="alert">Update fee WD KRP failed</div>');
+                    redirect('admin/marketPrice');
+                }
+            } elseif (isset($_POST['save_mtm_fee'])) {
+                $fee_wd = $this->input->post('mtm_fee');
+                $this->db->set('fee_mtm', $fee_wd);
+                $update = $this->db->update('minimum_withdrawal');
+                if ($update == true) {
+                    $this->session->set_flashdata('message_fee_wd', '<div class="alert alert-success" role="alert">Update fee WD MTM success</div>');
+                    redirect('admin/marketPrice');
+                } else {
+                    $this->session->set_flashdata('message_fee_wd', '<div class="alert alert-danger" role="alert">Update fee WD MTM failed</div>');
                     redirect('admin/marketPrice');
                 }
             }

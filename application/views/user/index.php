@@ -85,7 +85,7 @@
                         <div class="col-md-12">
                             <h4 class="mb-3 mt-4 text-white my-home-title"><?= $this->lang->line('market');?></h4>
                         </div>
-                        <div class="col-xl-4 col-md-4 wallet mb-2">
+                        <div class="col-xl-3 col-md-3 wallet mb-2">
                             <div class="card shadow p-2 card-market-index" style="height:124px">
                                 <div class="d-flex h-100">
                                     <div class="mr-auto p-2 position-relative w-50">
@@ -122,7 +122,43 @@
                             </div>
                         </div>
 
-                        <div class="col-xl-4 col-md-4 wallet mb-2">
+                        <div class="col-xl-3 col-md-3 wallet mb-2">
+                            <div class="card shadow p-2 card-market-index" style="height:124px">
+                                <div class="d-flex h-100">
+                                    <div class="mr-auto p-2 position-relative w-50">
+                                        <img src="<?= base_url('assets/img/mtm_logo.png') ?>" alt="img" width="40px"> <span class="text-white font-w-8 font-dollar">&nbsp;MTM</span>
+                                        <div class="font-market-index h5 mb-0 text-white font-w-8 position-absolute" style="font-size:16px; bottom:0; left:7px">
+                                            <i class="fas fa-dollar-sign"></i> <?= $market_price['mtm'] * $total_balance_mtm; ?>
+                                        </div>
+                                    </div>
+                                    <div class="p-2 position-relative w-50">
+                                        <div class="h5 mb-0 text-tb-head text-right font-w-8 font-dollar">
+                                            <i class="fas fa-dollar-sign"></i> <?= $market_price['mtm'] ?>
+                                        </div>
+                                        <p class="font-market-index text-right text-white mb-0 position-absolute" style="font-size:16px; bottom:0; right:7px">
+                                            <a href="<?= base_url('user/mywalletmtm');?>" class="link-custome">
+                                                <!-- <?= str_replace('.', ',', number_format($total_balance_mtm, 10)); ?> -->
+                                                <?= str_replace('.', ',', number_format($total_balance_mtm, 10)); ?>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="my-home-card mt-2">
+                                <a href="<?= base_url('user/mywalletmtm');?>" class="link-custome">
+                                    <div class="d-flex mb-2">
+                                        <div class="mr-auto p-2 small">
+                                            <?= $this->lang->line('general_balance');?>
+                                        </div>
+                                        <div class="p-2 small">
+                                            <?= str_replace('.', ',', number_format($total_balance_mtm, 10)); ?>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-3 wallet mb-2">
                             <div class="card shadow p-2 card-market-index" style="height:124px">
                                 <div class="d-flex h-100">
                                     <div class="mr-auto p-2 position-relative w-50">
@@ -172,11 +208,9 @@
                                     </div>
                                 </a>
                             </div>
-                        </div>
-                        
-                        
+                        </div> 
 
-                        <div class="col-xl-4 col-md-4 wallet mb-2">
+                        <div class="col-xl-3 col-md-3 wallet mb-2">
                             <div class="card shadow p-2 card-market-index" style="height:124px">
                                 <div class="d-flex h-100">
                                     <div class="mr-auto p-2 position-relative w-50">
@@ -227,6 +261,8 @@
                                 </a>
                             </div>
                         </div>
+
+                        
                     </div>
 
                     <!-- BONUS -->
@@ -235,7 +271,7 @@
                             <h4 class="mt-4 text-white my-home-title"><?= $this->lang->line('bonus');?></h4>
                         </div>
 
-                        <div class="logo-index col-md-4 text-white my-home-card text-center">
+                        <div class="logo-index col-md-3 text-white my-home-card text-center">
                             <img src="<?= base_url('assets/img/filcoin_logo.png'); ?>" width="40px" class="my-2">
                             <span style="font-size:30px;" class="align-middle">&nbsp;FIL</span>
                             <a href="<?= base_url('user/mywalletfil/bonus');?>" class="link-custome">
@@ -266,8 +302,39 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="logo-index col-md-3 text-white my-home-card text-center">
+                            <img src="<?= base_url('assets/img/mtm_logo.png'); ?>" width="40px" class="my-2">
+                            <span style="font-size:30px;" class="align-middle">&nbsp;MTM</span>
+                            <a href="<?= base_url('user/mywalletzenx/bonus');?>" class="link-custome">
+                                <div class="d-flex mb-2">
+                                    <div class="mr-auto p-2 small">
+                                        <?= $this->lang->line('balance');?>
+                                    </div>
+                                    <div class="p-2 small">
+                                        <?= str_replace('.', ',', number_format(0, 10)); ?>
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="d-flex mb-2">
+                                <div class="mr-auto p-2 small">
+                                <?= $this->lang->line('today');?>
+                                </div>
+                                <div class="p-2 small">
+                                    <?= str_replace('.', ',', number_format(0, 10)); ?>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <div class="mr-auto p-2 small">
+                                <?= $this->lang->line('total');?>
+                                </div>
+                                <div class="p-2 small">
+                                    <?= str_replace('.', ',', number_format(0, 10)); ?>
+                                </div>
+                            </div>
+                        </div>
                         
-                        <div class="logo-index col-md-4 text-white my-home-card text-center">
+                        <div class="logo-index col-md-3 text-white my-home-card text-center">
                             <img src="<?= base_url('assets/img/icon-usdt.png'); ?>" width="40px" class="my-2">
                             <span style="font-size:30px;" class="align-middle">&nbsp;USDT</span>
                             <a href="<?= base_url('user/mywalletzenx/bonus');?>" class="link-custome">
@@ -298,9 +365,7 @@
                             </div>
                         </div>
 
-                        
-
-                        <div class="logo-index col-md-4 text-white my-home-card text-center">
+                        <div class="logo-index col-md-3 text-white my-home-card text-center">
                             <img src="<?= base_url('assets/img/krp_logo.png'); ?>" width="40px" class="my-2">
                             <span style="font-size:30px;" class="align-middle">&nbsp;KRP</span>
                             <a href="<?= base_url('user/mywalletmtm/bonus');?>" class="link-custome">
@@ -338,7 +403,7 @@
                         <div class="col-md-12">
                             <h4 class="mt-4 text-white my-home-title"><?= $this->lang->line('mining');?></h4>
                         </div>
-                        <div class="logo-index col-md-4 text-white my-home-card text-center">
+                        <div class="logo-index col-md-3 text-white my-home-card text-center">
                             <img src="<?= base_url('assets/img/filcoin_logo.png'); ?>" width="40px" class="my-2">
                             <span style="font-size:30px;" class="align-middle">&nbsp;FIL</span>
                             <!-- <h1 class=" d-inline my-auto">&nbsp;FIL</h1> -->
@@ -368,7 +433,37 @@
                             </div>
                         </div>
 
-                        <div class="logo-index col-md-4 text-white my-home-card text-center">
+                        <div class="logo-index col-md-3 text-white my-home-card text-center">
+                            <img src="<?= base_url('assets/img/mtm_logo.png'); ?>" width="40px" class="my-2">
+                            <span style="font-size:30px;" class="align-middle">&nbsp;MTM</span>
+                            <!-- <h1 class=" d-inline my-auto">&nbsp;FIL</h1> -->
+                            <div class="d-flex mb-2">
+                                <div class="mr-auto p-2 small">
+                                <?= $this->lang->line('balance');?>
+                                </div>
+                                <div class="p-2 small">
+                                    <?= str_replace('.', ',', number_format($airdrop_mtm_balance, 10)); ?>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <div class="mr-auto p-2 small">
+                                <?= $this->lang->line('today');?>
+                                </div>
+                                <div class="p-2 small">
+                                    <?= str_replace('.', ',', number_format($airdrop_mtm_today, 10)); ?>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <div class="mr-auto p-2 small">
+                                <?= $this->lang->line('total');?>
+                                </div>
+                                <div class="p-2 small">
+                                    <?= str_replace('.', ',', number_format($airdrop, 10)); ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="logo-index col-md-3 text-white my-home-card text-center">
                             <img src="<?= base_url('assets/img/icon-usdt.png'); ?>" width="40px" class="my-2">
                             <span style="font-size:30px;" class="align-middle">&nbsp;USDT</span>
                             <!-- <h1 class=" d-inline my-auto">&nbsp;FIL</h1> -->
@@ -398,9 +493,7 @@
                             </div>
                         </div>
 
-                        
-
-                        <div class="logo-index col-md-4 text-white my-home-card text-center">
+                        <div class="logo-index col-md-3 text-white my-home-card text-center">
                             <img src="<?= base_url('assets/img/krp_logo.png'); ?>" width="40px" class="my-2">
                             <span style="font-size:30px;" class="align-middle">&nbsp;KRP</span>
                             <div class="d-flex mb-2">

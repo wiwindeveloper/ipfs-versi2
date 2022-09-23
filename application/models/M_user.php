@@ -152,6 +152,7 @@ class M_user extends CI_Model
         return $this->db->select_sum('cart.fill')
             ->select_sum('cart.usdt')
             ->select_sum('cart.krp')
+            ->select_sum('cart.mtm')
             ->from('cart')
             ->join('package', 'cart.package_id = package.id')
             ->where('cart.user_id', $id)
@@ -1533,7 +1534,7 @@ class M_user extends CI_Model
     }
     public function get_detail_user($id)
     {
-        return $this->db->select('user.*, level_fm.fm, cart.user_id, cart.sponsor_id, cart.position_id, cart.update_date, SUM(package.point) AS name, SUM(package.usdt) AS total_usdt, SUM(package.krp) AS total_krp')
+        return $this->db->select('user.*, level_fm.fm, cart.user_id, cart.sponsor_id, cart.position_id, cart.update_date, SUM(package.point) AS name, SUM(package.usdt) AS total_usdt, SUM(package.mtm) AS total_mtm, SUM(package.krp) AS total_krp')
             ->from('user')
             ->join('level_fm', 'level_fm.user_id = user.id', 'left outer')
             ->join('cart', 'cart.user_id = user.id', 'left outer')
@@ -1812,7 +1813,23 @@ class M_user extends CI_Model
                         ->where('user_id', $userid)
                         ->get()->row_array();
     }
+
+    public function sum_airdrop_byuser_bydate($userid, $date)
+    {
+        return $this->db->select_sum('amount')
+                        ->from('airdrop_mtm')
+                        ->where(['user_id' => $userid, 'from_unixtime(datecreate, "%Y-%m-%d") = ' => $date])
+                        ->get()->row_array();
+    }
     
+    public function sum_trf_airdrop_mtm_byuser($userid)
+    {
+        return $this->db->select_sum('amount')
+                        ->from('airdrop_mtm_transfer')
+                        ->where('user_id', $userid)
+                        ->get()->row_array();
+    }
+
     public function get_bonusdetail_bydate($date)
     {
         return $this->db->select('user.id, user.username,
@@ -2541,4 +2558,6 @@ class M_user extends CI_Model
                         ->where(['user_id' => $userid, 'datecreate > ' => $date])
                         ->get()->row_array();
     }
+
+
 }

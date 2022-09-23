@@ -802,6 +802,9 @@
              } else if (document.getElementById("coinType").value == 'krp') {
                  var fee = parseFloat(amount) * <?= $fee_withdrawal['fee_krp'] / 100 ?>;
                  $("#fee").val(fee.toFixed(10));
+             } else if (document.getElementById("coinType").value == 'mtm') {
+                 var fee = parseFloat(amount) * <?= $fee_withdrawal['fee_mtm'] / 100 ?>;
+                 $("#fee").val(fee.toFixed(10));
              }
              var total = parseFloat(amount) - parseFloat(fee);
              $("#total").val(total.toFixed(10));
