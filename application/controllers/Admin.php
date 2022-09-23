@@ -1418,6 +1418,7 @@ class Admin extends CI_Controller
         $data['withdrawal_filecoin'] = $this->M_user->get_withdrawal('filecoin')->result();
         $data['withdrawal_usdt'] = $this->M_user->get_withdrawal('usdt')->result();
         $data['withdrawal_krp'] = $this->M_user->get_withdrawal('krp')->result();
+        $data['withdrawal_mtm'] = $this->M_user->get_withdrawal('mtm')->result();
         $data['title'] = 'Withdrawal';
 
         if ($this->session->userdata('email') && $this->session->userdata('role_id') == '1') {
